@@ -1,6 +1,6 @@
 [package]
 name = "flv-node-client"
-version = "2.0.0"
+version = "2.0.0-beta.1"
 edition = "2018"
 authors = ["Fluvio Contributors <team@fluvio.io>"]
 license = "Apache-2.0"
@@ -15,10 +15,12 @@ test = false
 [dependencies]
 log = "0.4.8"
 futures = { version = "0.3.4", features = ['async-await'] }
-flv-future-aio = { version = "2.0.0" }
-node-bindgen = { version = "2.0.0" }
-kf-protocol = { version = "1.1.0", path = "../kf-protocol"}
-types = { path = "../types", package = "flv-types"}
-flv-client = { version = "2.0.0", path = "../client-rs"}
+flv-future-aio = { version = "2.1.0" }
+node-bindgen = { git = "https://github.com/infinyon/node-bindgen" }
+kf-protocol = { git = "https://github.com/infinyon/fluvio" }
+types = { version = "0.1.0", package = "flv-types"}
+flv-client = { git = "https://github.com/infinyon/fluvio" }
 
-
+#[patch.crates-io]
+#flv-client = { path = "../fluvio/src/client-rs"}
+#node-bindgen = { path = "../nodebindgen"}
