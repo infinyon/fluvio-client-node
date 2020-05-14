@@ -13,7 +13,7 @@ console.log("loaded client");
 
 emitter.on('data', (record) => {
 
-    console.log("received record",record);
+   // console.log("received record",record);
     console.log("received event",record.offset,Buffer.from(record.record).toString());
     
 })
@@ -26,10 +26,52 @@ addon.connect().then( sc => {
         
         try {
 
+            /*
             leader.consume(
                 emitter.emit.bind(emitter),
                 "earliest"
             );
+            */
+
+            /*
+            // start from absolute offset 5
+            leader.consume(
+                emitter.emit.bind(emitter),
+                5
+            );
+            */
+
+            /*
+            // start from last 2
+            leader.consume(
+                emitter.emit.bind(emitter),
+                {
+                    offset: 2,
+                    start: 'latest'
+                }
+            );
+            */
+
+            /*
+            // start from 2 offset from begining
+            leader.consume(
+                emitter.emit.bind(emitter),
+                {
+                    offset: 2,
+                    start: 'earliest'
+                }
+            );
+            */
+
+            // start from absolute offset 5
+            leader.consume(
+                emitter.emit.bind(emitter),
+                {
+                    offset: 6
+                }
+            );
+            
+
         } catch(ex) {
             console.log(ex);
         } 

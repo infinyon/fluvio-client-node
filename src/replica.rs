@@ -52,18 +52,48 @@ impl JSValue for JsFetchOffset {
 
         if let Ok(fetch_offset) = env.convert_to_rust::<i64>(n_value) {
             Ok(JsFetchOffset(FetchOffset::Offset(fetch_offset)))
-        } else {
-            let fetch_str = env.convert_to_rust::<String>(n_value)?;
+        } else if let Ok(fetch_str) = env.convert_to_rust::<String>(n_value) {
 
             match fetch_str.as_str() {
-                "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest)),
-                "latest" => Ok(JsFetchOffset(FetchOffset::Latest)),
+                "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest(None))),
+                "latest" => Ok(JsFetchOffset(FetchOffset::Latest(None))),
                 _ => Err(NjError::Other(format!(
                     "invalid fetch offset: {}, valid values are: earliest/latest",
                     fetch_str
                 )))
             }
-        } 
+        } else if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
+
+            let mut offset: i64 = 0;
+
+            if let Some(offset_prop) = js_obj.get_property("offset")? {
+                match offset_prop.as_value::<i64>() {
+                    Ok(v) => offset = v,
+                    Err(_) => return Err(NjError::Other("offset must be number".to_owned()))
+                }
+            }
+
+            if let Some(fetch_property) = js_obj.get_property("start")? {
+                match fetch_property.as_value::<String>() {
+                    Ok(fetch_str) => {
+                        match fetch_str.as_str() {
+                            "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest(Some(offset)))),
+                            "latest" => Ok(JsFetchOffset(FetchOffset::Latest(Some(offset)))),
+                            _ => Err(NjError::Other(format!(
+                                "invalid fetch offset: {}, valid values are: earliest/latest",
+                                fetch_str
+                            )))
+                        }
+                    },
+                    Err(_) => return Err(NjError::Other("start must be string".to_owned()))
+                }
+            } else {
+                Ok(JsFetchOffset(FetchOffset::Offset(offset)))   
+            }
+
+        } else {
+            return Err(NjError::Other("invalid fetch type".to_owned()))
+        }
     }
 }
 
@@ -151,8 +181,12 @@ impl JsReplicaLeader {
 
     /// consume message from replica (cb,offset,config)
     /// offset can be 
-    ///     string:     'earliest','latest'
-    ///     number:     offset
+    ///     string:      'earliest','latest'
+    ///     number:      absolute offset  (ex.  50)
+    ///     json:          {
+    ////                         "offset:": 20          // absolute or relative
+    ///                          "start": "earliest"    // earliest or latest
+    ///                    }
     /// config is optional param to effect offset, this is json with following structure
     /// {
     ///    maxBytes: integer,

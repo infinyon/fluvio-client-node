@@ -11,6 +11,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "addr2line"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "456d75cbb82da1ad150c8a9d97285ffcd21c9931dcb11e995903e7d75141b38b"
+dependencies = [
+ "gimli",
+]
+
+[[package]]
 name = "aho-corasick"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -81,13 +90,13 @@ dependencies = [
 
 [[package]]
 name = "async-trait"
-version = "0.1.30"
+version = "0.1.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da71fef07bc806586090247e971229289f64c210a278ee5ae419314eb386b31d"
+checksum = "26c4f3195085c36ea8d24d32b2f828d23296a9370a28aa39d111f6f16bef9f3b"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -109,24 +118,15 @@ checksum = "f8aac770f1885fd7e387acedd76065302551364496e46b3dd00860b2f8359b9d"
 
 [[package]]
 name = "backtrace"
-version = "0.3.46"
+version = "0.3.48"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1e692897359247cc6bb902933361652380af0f1b7651ae5c5013407f30e109e"
+checksum = "0df2f85c8a2abbe3b7d7e748052fdd9b76a0458fdeb16ad4223f5eca78c7c130"
 dependencies = [
- "backtrace-sys",
+ "addr2line",
  "cfg-if",
  "libc",
+ "object",
  "rustc-demangle",
-]
-
-[[package]]
-name = "backtrace-sys"
-version = "0.1.37"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18fbebbe1c9d1f383a9cc7e8ccdb471b91c8d024ee9c2ca5b5346121fe8b4399"
-dependencies = [
- "cc",
- "libc",
 ]
 
 [[package]]
@@ -174,9 +174,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.2.1"
+version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12ae9db68ad7fac5fe51304d20f016c911539251075a214f8e663babefa35187"
+checksum = "5356f1d23ee24a1f785a56d1d1a5f0fd5b0f6a0c0fb2412ce11da71649ab78f6"
 
 [[package]]
 name = "byteorder"
@@ -316,8 +316,8 @@ version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf6b25ee9ac1995c54d7adb2eff8cfffb7260bc774fb63c601ec65467f43cd9d"
 dependencies = [
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -363,7 +363,7 @@ dependencies = [
 [[package]]
 name = "flv-api-sc"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "flv-metadata",
  "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
@@ -376,7 +376,7 @@ dependencies = [
 [[package]]
 name = "flv-api-spu"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "flv-future-aio",
  "kf-protocol",
@@ -387,7 +387,7 @@ dependencies = [
 [[package]]
 name = "flv-client"
 version = "2.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "async-trait",
  "base64 0.12.1",
@@ -432,7 +432,7 @@ dependencies = [
 [[package]]
 name = "flv-k8-partition"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "k8-obj-metadata",
  "log",
@@ -443,7 +443,7 @@ dependencies = [
 [[package]]
 name = "flv-k8-spg"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "flv-k8-spu",
  "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
@@ -458,7 +458,7 @@ dependencies = [
 [[package]]
 name = "flv-k8-spu"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "k8-obj-core",
  "k8-obj-metadata",
@@ -470,7 +470,7 @@ dependencies = [
 [[package]]
 name = "flv-k8-topic"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "k8-obj-metadata",
  "log",
@@ -481,7 +481,7 @@ dependencies = [
 [[package]]
 name = "flv-metadata"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
  "k8-flv-metadata",
@@ -505,7 +505,7 @@ dependencies = [
 [[package]]
 name = "flv-types"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "log",
 ]
@@ -614,8 +614,8 @@ checksum = "d0b5a30a4328ab5473878237c447333c093297bded83a4983d10f4deea240d39"
 dependencies = [
  "proc-macro-hack",
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -677,9 +677,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a36606a68532b5640dc86bb1f33c64b45c4682aad4c50f3937b317ea387f3d6"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
+
+[[package]]
+name = "gimli"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bcc8e0c9bce37868955864dbecd2b1ab2bdf967e6f28066d65aaac620444b65c"
 
 [[package]]
 name = "hermit-abi"
@@ -728,8 +734,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9092a4fefc9d503e9287ef137f03180a6e7d1b04c419563171ee14947c5e80ec"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -759,7 +765,7 @@ dependencies = [
 [[package]]
 name = "k8-flv-metadata"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "flv-k8-partition",
  "flv-k8-spg",
@@ -825,7 +831,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol"
 version = "1.1.2"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "kf-protocol-api",
  "kf-protocol-core",
@@ -839,7 +845,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-api"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "content_inspector",
  "crc32c",
@@ -854,7 +860,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-core"
 version = "0.1.1"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "bytes 0.5.4",
  "log",
@@ -866,7 +872,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-derive"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "log",
  "proc-macro2 0.4.30",
@@ -877,7 +883,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-fs"
 version = "1.0.1"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "bytes 0.5.4",
  "flv-future-aio",
@@ -891,7 +897,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-message"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "content_inspector",
  "crc32c",
@@ -907,7 +913,7 @@ dependencies = [
 [[package]]
 name = "kf-protocol-transport"
 version = "2.0.1"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "bytes 0.5.4",
  "flv-future-aio",
@@ -919,7 +925,7 @@ dependencies = [
 [[package]]
 name = "kf-socket"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#bafac71033ad4d8f9fd5ebd574c13a5a6ea7ee97"
+source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
 dependencies = [
  "async-trait",
  "bytes 0.5.4",
@@ -949,9 +955,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.69"
+version = "0.2.70"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99e85c08494b21a9054e7fe1374a732aeadaff3980b6990b94bfd3a70f690005"
+checksum = "3baa92041a6fec78c687fa0cc2b3fae8884f743d672cf551bed1d6dac6988d0f"
 
 [[package]]
 name = "lock_api"
@@ -1092,8 +1098,8 @@ source = "git+https://github.com/infinyon/node-bindgen#c70788825d967e0b753fe60e0
 dependencies = [
  "Inflector",
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -1152,10 +1158,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "once_cell"
-version = "1.3.1"
+name = "object"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1c601810575c99596d4afc46f78a678c80105117c379eb3650cf99b8a21ce5b"
+checksum = "9cbca9424c482ee628fa549d9c812e2cd22f1180b9222c9200fdfa6eb31aecb2"
+
+[[package]]
+name = "once_cell"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b631f7e854af39a1739f401cf34a8a013dfe09eac4fa4dba91e9768bd28168d"
 
 [[package]]
 name = "owning_ref"
@@ -1230,8 +1242,8 @@ checksum = "2e0bf239e447e67ff6d16a8bb5e4d4bd2343acf5066061c0e8e06ac5ba8ca68c"
 dependencies = [
  "proc-macro-hack",
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -1256,8 +1268,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a82996f11efccb19b685b14b5df818de31c1edcee3daa256ab5775dd98e72feb"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -1325,9 +1337,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.4"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c1f4b0efa5fc5e8ceb705136bfee52cfdb6a4e3509f770b478cd6ed434232a7"
+checksum = "42934bc9c8ab0d3b273a16d8551c8f0fcff46be73276ca083ec2414c15c4ba5e"
 dependencies = [
  "proc-macro2 1.0.12",
 ]
@@ -1529,8 +1541,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "818fbf6bfa9a42d3bfcaca148547aa00c7b915bec71d1757aa2d44ca68771984"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
 ]
 
 [[package]]
@@ -1602,12 +1614,12 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.19"
+version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e8e5aa70697bb26ee62214ae3288465ecec0000f05182f039b477001f08f5ae7"
+checksum = "4696caa4048ac7ce2bcd2e484b3cef88c1004e41b8e945a277e2c25dc0b72060"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
+ "quote 1.0.5",
  "unicode-xid 0.2.0",
 ]
 
@@ -1641,9 +1653,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "0.2.20"
+version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05c1d570eb1a36f0345a5ce9c6c6e665b70b73d11236912c0b477616aeec47b1"
+checksum = "d099fa27b9702bed751524694adbe393e18b36b204da91eb1cbbbbb4a5ee2d58"
 dependencies = [
  "bytes 0.5.4",
  "fnv",
@@ -1731,8 +1743,8 @@ dependencies = [
  "lazy_static",
  "log",
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
  "wasm-bindgen-shared",
 ]
 
@@ -1742,7 +1754,7 @@ version = "0.2.62"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2cd85aa2c579e8892442954685f0d801f9129de24fa2136b2c6a539c76b65776"
 dependencies = [
- "quote 1.0.4",
+ "quote 1.0.5",
  "wasm-bindgen-macro-support",
 ]
 
@@ -1753,8 +1765,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8eb197bd3a47553334907ffd2f16507b4f4f01bbec3ac921a7719e0decdfe72a"
 dependencies = [
  "proc-macro2 1.0.12",
- "quote 1.0.4",
- "syn 1.0.19",
+ "quote 1.0.5",
+ "syn 1.0.21",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
