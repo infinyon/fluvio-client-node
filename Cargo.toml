@@ -15,12 +15,11 @@ test = false
 [dependencies]
 log = "0.4.8"
 futures = { version = "0.3.4", features = ['async-await'] }
+serde = { version = "1.0.110", features = ["derive"] }
+serde_json = "1.0.53"
 flv-future-aio = { version = "2.1.0" }
-node-bindgen = { git = "https://github.com/infinyon/node-bindgen" }
-kf-protocol = { git = "https://github.com/infinyon/fluvio" }
-types = { version = "0.1.0", package = "flv-types"}
-flv-client = { git = "https://github.com/infinyon/fluvio" }
-
-#[patch.crates-io]
-#flv-client = { path = "../fluvio/src/client-rs"}
-#node-bindgen = { path = "../nodebindgen"}
+flv-api-sc = "1.1.0"
+node-bindgen = { version = "2.1.1" }
+kf-protocol = "1.1.2"
+flv-types = "0.1.0"
+flv-client = "2.0.0"

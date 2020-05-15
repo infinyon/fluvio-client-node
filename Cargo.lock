@@ -202,9 +202,9 @@ checksum = "130aac562c0dd69c56b3b1cc8ffd2e17be31d0b6c25b61c96b76231aa23e39e1"
 
 [[package]]
 name = "cc"
-version = "1.0.52"
+version = "1.0.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3d87b23d6a92cd03af510a5ade527033f6aa6fa92161e2d5863a907d4c5e31d"
+checksum = "404b1fe4f65288577753b17e3b36a04596ee784493ec249bf81c7f2d2acd751c"
 
 [[package]]
 name = "cfg-if"
@@ -363,10 +363,11 @@ dependencies = [
 [[package]]
 name = "flv-api-sc"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9158e5254c4f272622fe46cf30a4dbef84400a3755b9091cc79ca980c4616b22"
 dependencies = [
  "flv-metadata",
- "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
+ "flv-types",
  "k8-flv-metadata",
  "kf-protocol",
  "log",
@@ -376,7 +377,8 @@ dependencies = [
 [[package]]
 name = "flv-api-spu"
 version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "777c100abc8948ef52808f03eb853922c67f3f3ad3f5a932cb24ea35468be339"
 dependencies = [
  "flv-future-aio",
  "kf-protocol",
@@ -387,7 +389,8 @@ dependencies = [
 [[package]]
 name = "flv-client"
 version = "2.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dadf52555c4489bc5f6dcb4a12557d05f3b6b534038b99201df9ff7b08be6fee"
 dependencies = [
  "async-trait",
  "base64 0.12.1",
@@ -395,7 +398,7 @@ dependencies = [
  "flv-api-sc",
  "flv-api-spu",
  "flv-future-aio",
- "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
+ "flv-types",
  "futures",
  "kf-protocol",
  "kf-socket",
@@ -432,7 +435,8 @@ dependencies = [
 [[package]]
 name = "flv-k8-partition"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84f05f3a12cfe2d61d8851cc148484980d4ce855ca69d22ac2767730ba0540d8"
 dependencies = [
  "k8-obj-metadata",
  "log",
@@ -443,10 +447,11 @@ dependencies = [
 [[package]]
 name = "flv-k8-spg"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ca140404620ed624d9773e4f5bc97323c9c8173163609545b1a677eb2e701de"
 dependencies = [
  "flv-k8-spu",
- "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
+ "flv-types",
  "k8-obj-metadata",
  "log",
  "serde",
@@ -458,7 +463,8 @@ dependencies = [
 [[package]]
 name = "flv-k8-spu"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "79b4a38729e115bedfa8acdcff3640f1d2074560cef282824ccd5fe3941983b5"
 dependencies = [
  "k8-obj-core",
  "k8-obj-metadata",
@@ -470,7 +476,8 @@ dependencies = [
 [[package]]
 name = "flv-k8-topic"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff06ea127990cd3184c1a978a79ff195bfd9d137b80b44b7813a403811bf45f6"
 dependencies = [
  "k8-obj-metadata",
  "log",
@@ -481,9 +488,10 @@ dependencies = [
 [[package]]
 name = "flv-metadata"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2875a181da80bb261b07a47ce8ab2994dee1028f564a5fb70c90c883aa71206"
 dependencies = [
- "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
+ "flv-types",
  "k8-flv-metadata",
  "kf-protocol",
  "log",
@@ -493,21 +501,16 @@ dependencies = [
 name = "flv-node-client"
 version = "2.0.0-beta.1"
 dependencies = [
+ "flv-api-sc",
  "flv-client",
  "flv-future-aio",
- "flv-types 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "flv-types",
  "futures",
  "kf-protocol",
  "log",
  "node-bindgen",
-]
-
-[[package]]
-name = "flv-types"
-version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
-dependencies = [
- "log",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -532,9 +535,9 @@ dependencies = [
 
 [[package]]
 name = "fnv"
-version = "1.0.6"
+version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fad85553e09a6f881f739c29f0b00b0f01357c743266d478b68951ce23285f3"
+checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "fuchsia-cprng"
@@ -764,8 +767,9 @@ dependencies = [
 
 [[package]]
 name = "k8-flv-metadata"
-version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c767be0eecdb4a05925ef8ad4e4bfa7d393268e4a949983013bd3f9f7582c6f6"
 dependencies = [
  "flv-k8-partition",
  "flv-k8-spg",
@@ -831,7 +835,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol"
 version = "1.1.2"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f77a8823d54e4657e2d27e5c10f92dba963a56c6939dca9e2c87b3725fa5b6c5"
 dependencies = [
  "kf-protocol-api",
  "kf-protocol-core",
@@ -845,7 +850,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol-api"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9d2e0580cdcadf4be7c75abe9f74f4ac011abddfc9561f493eb21d25086d82b"
 dependencies = [
  "content_inspector",
  "crc32c",
@@ -860,7 +866,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol-core"
 version = "0.1.1"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7a367cbbc374f8dd72a30700b642afda74653582194f2c67dd4f281c1b30c03"
 dependencies = [
  "bytes 0.5.4",
  "log",
@@ -872,7 +879,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol-derive"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49cadc543a9fa88ccc26f7fad99484a3ac395c2dd8ec225eb78b784db17424cd"
 dependencies = [
  "log",
  "proc-macro2 0.4.30",
@@ -883,7 +891,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol-fs"
 version = "1.0.1"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "728b9376fcd4ac2e9538f2323d4b1a59a992b7553be53b7e71497d3f10d7f02f"
 dependencies = [
  "bytes 0.5.4",
  "flv-future-aio",
@@ -897,11 +906,12 @@ dependencies = [
 [[package]]
 name = "kf-protocol-message"
 version = "0.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a132495493dd46b3712d8e2fa853379dad588e667983788617f69fde31f6908e"
 dependencies = [
  "content_inspector",
  "crc32c",
- "flv-types 0.1.0 (git+https://github.com/infinyon/fluvio)",
+ "flv-types",
  "kf-protocol-api",
  "kf-protocol-core",
  "kf-protocol-derive",
@@ -913,7 +923,8 @@ dependencies = [
 [[package]]
 name = "kf-protocol-transport"
 version = "2.0.1"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cacc87d7dbd419c8658ab62d61ff650f1298cef7e6b7afe18ce4eae7094c7bb9"
 dependencies = [
  "bytes 0.5.4",
  "flv-future-aio",
@@ -924,8 +935,9 @@ dependencies = [
 
 [[package]]
 name = "kf-socket"
-version = "1.1.0"
-source = "git+https://github.com/infinyon/fluvio#3964c15cd5d56520a6b25e70dc3028119c641244"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98e42ef4f94826c1ea876a1906419c1e809520bf21a8353ab14c154a3dc339ee"
 dependencies = [
  "async-trait",
  "bytes 0.5.4",
@@ -1076,8 +1088,9 @@ dependencies = [
 
 [[package]]
 name = "nj-core"
-version = "2.1.0-beta.1"
-source = "git+https://github.com/infinyon/node-bindgen#c70788825d967e0b753fe60e03348326f92ca510"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b671c5fb692332998e7fad074490fe4d3ab714ddc19fb41a6be261edd70aff9"
 dependencies = [
  "async-trait",
  "ctor",
@@ -1094,7 +1107,8 @@ dependencies = [
 [[package]]
 name = "nj-derive"
 version = "2.0.0"
-source = "git+https://github.com/infinyon/node-bindgen#c70788825d967e0b753fe60e03348326f92ca510"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1281d9bd1045bcc38269d32c8b28c4f9699274b45620000a301b8171dbe1d4f"
 dependencies = [
  "Inflector",
  "proc-macro2 1.0.12",
@@ -1105,12 +1119,14 @@ dependencies = [
 [[package]]
 name = "nj-sys"
 version = "1.0.0"
-source = "git+https://github.com/infinyon/node-bindgen#c70788825d967e0b753fe60e03348326f92ca510"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "265486f44e56487f1fceb7f8637344f0a0c7764940ab0e8b52eb12f53a16b3d4"
 
 [[package]]
 name = "node-bindgen"
-version = "2.1.0-beta.1"
-source = "git+https://github.com/infinyon/node-bindgen#c70788825d967e0b753fe60e03348326f92ca510"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0f913a905854570d8cd1f3c6d76992b7a11cdf06b2bd01dc4cd4853ef3156fc6"
 dependencies = [
  "nj-core",
  "nj-derive",

@@ -1,6 +1,3 @@
-// wrap ScClient
-// JS Wrapper for ScClient
-
 use std::sync::Arc;
 
 use log::debug;
@@ -18,10 +15,11 @@ use node_bindgen::core::val::JsEnv;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
 
-use crate::ReplicaLeaderWrapper;
 
+use crate::SharedScClient;
+use crate::replica::ReplicaLeaderWrapper;
+use crate::admin::AdminScClientWrapper;
 
-type SharedScClient = Arc<RwLock<ScClient>>;
 
 // simple wrapper to facilitate conversion to JS Class
 pub struct ScClientWrapper(ScClient);
@@ -48,6 +46,7 @@ pub struct JsScClient {
 
 #[node_bindgen]
 impl JsScClient {
+
     #[node_bindgen(constructor)]
     pub fn new() -> Self {
         Self { inner: None }
@@ -73,6 +72,11 @@ impl JsScClient {
     fn addr(&self) -> String {
         self.rust_addr()
     }
+
+    #[node_bindgen]
+    fn admin(&self) -> AdminScClientWrapper {
+        AdminScClientWrapper::new(self.inner.as_ref().unwrap().clone())
+    } 
 
     /// find replica
     #[node_bindgen]

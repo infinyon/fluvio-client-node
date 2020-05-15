@@ -1,8 +1,6 @@
-// run test
-// this assume stream controller is running at localhost: 9003
-// use flv-integration-test to run locally
 
-let addon = require('./dist');
+
+let addon = require('../dist');
 // let addon = require('@fluvio/client');
 
 
