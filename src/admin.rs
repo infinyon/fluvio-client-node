@@ -75,6 +75,30 @@ impl AdminScClient {
 
     }
 
+    #[node_bindgen]
+    async fn find_topic(&self,topic_name: String) -> Result<TopicInfo,ClientError> {
+
+        debug!("trying find topic: {}",topic_name);
+
+        let client = self.inner.as_ref().unwrap().clone();
+        let mut client_w = client.write().await;
+
+        let list_topics = client_w.topic_metadata(None).await?;
+
+        debug!("topics: {:#?}",list_topics);
+        if let Some(topic) = list_topics.iter().find( |topic| topic.name == topic_name) {
+            debug!("found topic {}",topic_name);
+            let json = serde_json::to_vec(topic)
+                .map_err(|err| ClientError::Other(format!("serialization error: {}",err.to_string())))?;
+                
+            Ok(TopicInfo(Some(ArrayBuffer::new(json))))
+        } else {
+            debug!("no topic found");
+            Ok(TopicInfo(None))
+        }
+
+    }
+
     /// create topic
     /// replica configuration can be computed as below or
     ///  {
@@ -225,11 +249,11 @@ impl JSValue for ReplicaParam  {
             debug!("assume computed, will extract as object");
 
             // check replication
-            let replication = must_property!("replication",i32,js_obj);
-            let partitions = optional_property!("partition",i32,1,js_obj) as i16;
+            let replication = must_property!("replication",i32,js_obj) as i16;
+            let partitions = optional_property!("partition",i32,1,js_obj);
             let rack = optional_property!("rack",bool,false,js_obj);
 
-            Ok(Self(ReplicaConfig::Computed(replication,partitions,rack)))
+            Ok(Self(ReplicaConfig::Computed(partitions,replication,rack)))
 
         } else {
             return Err(NjError::Other("must pass json param".to_owned()))
@@ -382,4 +406,16 @@ impl JSValue for ManagedGroup {
 }
 
 
+struct TopicInfo(Option<ArrayBuffer>);
 
+
+impl TryIntoJs for TopicInfo {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+
+        if let Some(buffer) = self.0 {
+            buffer.try_to_js(js_env)
+        } else {
+            ().try_to_js(js_env)
+        }
+    }
+}

@@ -20,6 +20,9 @@ clean:
 test_consume:	build
 	node examples/consume.js
 
+test_fetch:	build
+	node examples/consume_batches.js
+
 test_list:	build
 	node examples/list_topic.js
 
@@ -28,6 +31,9 @@ test_create:	build
 
 test_delete:	build
 	node examples/delete_topic.js
+
+test_find:	build
+	node examples/find_topic.js
 
 test_spu:	build
 	node examples/list_spu.js

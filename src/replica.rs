@@ -42,7 +42,7 @@ impl TryIntoJs for ReplicaLeaderWrapper {
 }
 
 
-
+#[derive(Debug)]
 struct JsFetchOffset(FetchOffset);
 
 
@@ -148,6 +148,20 @@ impl TryIntoJs for JsRecord {
     }
 }
 
+struct JsBatch {
+    base_offset: i64,
+    records: Vec<ArrayBuffer>
+}
+
+impl TryIntoJs for JsBatch {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        let mut json = JsObject::create(js_env)?;
+        json.set_property("base_offset",js_env.create_int64(self.base_offset)?)?;
+        json.set_property("records",self.records.try_to_js(js_env)?)?;
+        json.try_to_js(js_env)
+    }
+}
+
 
 
 pub struct JsReplicaLeader {
@@ -179,7 +193,7 @@ impl JsReplicaLeader {
         producer.send_record(bytes).await.map(|_| len as i64)
     }
 
-    /// consume message from replica (cb,offset,config)
+    /// consume message as stream of records (cb,offset,config)
     /// offset can be 
     ///     string:      'earliest','latest'
     ///     number:      absolute offset  (ex.  50)
@@ -219,6 +233,51 @@ impl JsReplicaLeader {
 
         Ok(())
     }
+
+
+    #[node_bindgen]
+    /// get batch of records
+    async fn fetch_batches(
+        &self,
+        offset: JsFetchOffset, 
+        fetch_option: Option<JsFetchLogOption>
+    ) -> Result<Vec<JsBatch>,ClientError> {
+
+        let leader = self.inner.as_ref().unwrap().clone();
+        let mut leader_w = leader.write().await;
+
+        debug!("getting fetch batch offset: {:#?}",offset);
+
+        let mut log_stream = leader_w.fetch_logs(offset.0, fetch_option.unwrap_or(JsFetchLogOption::default()).fetch);
+
+        if let Some(partition_response) = log_stream.next().await {
+            let records = partition_response.records;
+
+            debug!("received records: {:#?}", records);
+
+            let batches: Vec<JsBatch> = 
+                records.batches.into_iter()
+                    .map(| batch | 
+                        JsBatch {
+                            base_offset: batch.base_offset,
+                            records: batch.records.into_iter().map(|r| {
+                                if let Some(bytes) = r.value().inner_value() {
+                                    ArrayBuffer::new(bytes)
+                                } else {
+                                    ArrayBuffer::new(vec![])
+                                }
+                            }).collect()
+                        }
+                    )
+                    .collect();
+            Ok(batches)
+        } else {
+            Err(ClientError::Other("fetch failed".to_owned()))
+        }
+
+    }
+
+
 }
 
 // perform async fetching of stream and send back to JS callback
