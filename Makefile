@@ -20,6 +20,12 @@ clean:
 test_consume:	build
 	node examples/consume.js
 
+test_produce:	build
+	node examples/produce_consume.js
+
+test_event:	build
+	node examples/event_to_produce.js
+
 test_fetch:	build
 	node examples/consume_batches.js
 
