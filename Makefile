@@ -23,6 +23,9 @@ test_consume:	build
 test_produce:	build
 	node examples/produce_consume.js
 
+test_stress:	build
+	node examples/produce_stress.js
+
 test_event:	build
 	node examples/event_to_produce.js
 
@@ -55,3 +58,4 @@ test_managed_create:	build
 
 test_managed_delete:	build
 	node examples/delete_managed_spu.js
+

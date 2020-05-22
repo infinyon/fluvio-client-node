@@ -1,4 +1,4 @@
 fn main() {
-    println!("cargo:rustc-cdylib-link-arg=-undefined");
-    println!("cargo:rustc-cdylib-link-arg=dynamic_lookup");
+    println!("cargo:rerun-if-changed=build.rs");
+    node_bindgen::build::configure();
 }
