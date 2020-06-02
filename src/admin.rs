@@ -4,7 +4,7 @@ use std::io::Error as IoError;
 
 use log::debug;
 
-use flv_types::socket_helpers::ServerAddress;
+use flv_util::socket_helpers::ServerAddress;
 use flv_client::ClientError;
 use flv_client::SpuController;
 use flv_api_sc::spu::FlvCustomSpu;
@@ -157,7 +157,7 @@ impl AdminScClient {
         let mut client_w = client.write().await;
 
         debug!("creating custom spu: {:#?}",param);
-        client_w.create_custom_spu(param.id,param.name,param.public,param.private,param.rack).await
+        client_w.register_custom_spu(param.id,param.name,param.public,param.private,param.rack).await
 
     }
 
@@ -167,7 +167,7 @@ impl AdminScClient {
         let client = self.inner.as_ref().unwrap().clone();
         let mut client_w = client.write().await;
 
-        client_w.delete_custom_spu(spu_param.0).await
+        client_w.unregister_custom_spu(spu_param.0).await
     }
 
 

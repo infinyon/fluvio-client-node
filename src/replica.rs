@@ -41,62 +41,52 @@ impl TryIntoJs for ReplicaLeaderWrapper {
     }
 }
 
-
 #[derive(Debug)]
 struct JsFetchOffset(FetchOffset);
 
-
 impl JSValue for JsFetchOffset {
-
-    fn convert_to_rust(env: &JsEnv,n_value: napi_value) -> Result<Self,NjError> {
-
+    fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(fetch_offset) = env.convert_to_rust::<i64>(n_value) {
             Ok(JsFetchOffset(FetchOffset::Offset(fetch_offset)))
         } else if let Ok(fetch_str) = env.convert_to_rust::<String>(n_value) {
-
             match fetch_str.as_str() {
                 "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest(None))),
                 "latest" => Ok(JsFetchOffset(FetchOffset::Latest(None))),
                 _ => Err(NjError::Other(format!(
                     "invalid fetch offset: {}, valid values are: earliest/latest",
                     fetch_str
-                )))
+                ))),
             }
         } else if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
-
             let mut offset: i64 = 0;
 
             if let Some(offset_prop) = js_obj.get_property("offset")? {
                 match offset_prop.as_value::<i64>() {
                     Ok(v) => offset = v,
-                    Err(_) => return Err(NjError::Other("offset must be number".to_owned()))
+                    Err(_) => return Err(NjError::Other("offset must be number".to_owned())),
                 }
             }
 
             if let Some(fetch_property) = js_obj.get_property("start")? {
                 match fetch_property.as_value::<String>() {
-                    Ok(fetch_str) => {
-                        match fetch_str.as_str() {
-                            "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest(Some(offset)))),
-                            "latest" => Ok(JsFetchOffset(FetchOffset::Latest(Some(offset)))),
-                            _ => Err(NjError::Other(format!(
-                                "invalid fetch offset: {}, valid values are: earliest/latest",
-                                fetch_str
-                            )))
-                        }
+                    Ok(fetch_str) => match fetch_str.as_str() {
+                        "earliest" => Ok(JsFetchOffset(FetchOffset::Earliest(Some(offset)))),
+                        "latest" => Ok(JsFetchOffset(FetchOffset::Latest(Some(offset)))),
+                        _ => Err(NjError::Other(format!(
+                            "invalid fetch offset: {}, valid values are: earliest/latest",
+                            fetch_str
+                        ))),
                     },
-                    Err(_) => return Err(NjError::Other("start must be string".to_owned()))
+                    Err(_) => return Err(NjError::Other("start must be string".to_owned())),
                 }
             } else {
-                Ok(JsFetchOffset(FetchOffset::Offset(offset)))   
+                Ok(JsFetchOffset(FetchOffset::Offset(offset)))
             }
-
         } else {
-            return Err(NjError::Other("invalid fetch type".to_owned()))
+            return Err(NjError::Other("invalid fetch type".to_owned()));
         }
     }
 }
-
 
 #[derive(Default)]
 struct JsFetchLogOption {
@@ -104,77 +94,72 @@ struct JsFetchLogOption {
 }
 
 impl JSValue for JsFetchLogOption {
-
-    fn convert_to_rust(env: &JsEnv,n_value: napi_value) -> Result<Self,NjError> {
-
-        if  let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
+    fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
+        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
             let mut option = JsFetchLogOption::default();
-            if let Some(bytes) =  js_obj.get_property("maxBytes")? {
+            if let Some(bytes) = js_obj.get_property("maxBytes")? {
                 option.fetch.max_bytes = bytes.as_value::<i32>()?;
             }
             if let Some(isolation_prop) = js_obj.get_property("isolation")? {
-
                 let isolation = isolation_prop.as_value::<String>()?;
                 match isolation.as_ref() {
                     "ReadUncommitted" => option.fetch.isolation = Isolation::ReadUncommitted,
                     "ReadCommitted" => option.fetch.isolation = Isolation::ReadCommitted,
-                    _ =>  return Err(NjError::Other(format!("invalid isolation param: {}",isolation)))
+                    _ => {
+                        return Err(NjError::Other(format!(
+                            "invalid isolation param: {}",
+                            isolation
+                        )))
+                    }
                 }
             }
 
-            
             Ok(option)
         } else {
-            return Err(NjError::Other("must pass json param".to_owned()))
+            return Err(NjError::Other("must pass json param".to_owned()));
         }
     }
 }
-
 
 /// record that are passed back to Node.js stream
 #[derive(Debug)]
 struct JsRecord {
     record: ArrayBuffer,
-    offset: i64
-} 
-
+    offset: i64,
+}
 
 impl TryIntoJs for JsRecord {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
         let mut json = JsObject::create(js_env)?;
-        json.set_property("offset",js_env.create_int64(self.offset)?)?;
-        json.set_property("record",self.record.try_to_js(js_env)?)?;
+        json.set_property("offset", js_env.create_int64(self.offset)?)?;
+        json.set_property("record", self.record.try_to_js(js_env)?)?;
         json.try_to_js(js_env)
     }
 }
 
 struct JsBatch {
     base_offset: i64,
-    records: Vec<ArrayBuffer>
+    records: Vec<ArrayBuffer>,
 }
 
 impl TryIntoJs for JsBatch {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
         let mut json = JsObject::create(js_env)?;
-        json.set_property("base_offset",js_env.create_int64(self.base_offset)?)?;
-        json.set_property("records",self.records.try_to_js(js_env)?)?;
+        json.set_property("base_offset", js_env.create_int64(self.base_offset)?)?;
+        json.set_property("records", self.records.try_to_js(js_env)?)?;
         json.try_to_js(js_env)
     }
 }
 
-
-
 pub struct JsReplicaLeader {
-    inner: Option<SharedReplicaLeader>
+    inner: Option<SharedReplicaLeader>,
 }
 
 #[node_bindgen]
 impl JsReplicaLeader {
     #[node_bindgen(constructor)]
     pub fn new() -> Self {
-        Self {
-            inner: None
-        }
+        Self { inner: None }
     }
 
     pub fn set_leader(&mut self, leader: SpuReplicaLeader) {
@@ -194,7 +179,7 @@ impl JsReplicaLeader {
     }
 
     /// consume message as stream of records (cb,offset,config)
-    /// offset can be 
+    /// offset can be
     ///     string:      'earliest','latest'
     ///     number:      absolute offset  (ex.  50)
     ///     json:          {
@@ -223,61 +208,65 @@ impl JsReplicaLeader {
         &self,
         cb: F,
         offset: JsFetchOffset,
-        fetch_option: Option<JsFetchLogOption>
+        fetch_option: Option<JsFetchLogOption>,
     ) -> Result<(), NjError> {
         debug!("consume, checking to see offset is");
-        
+
         let leader = self.inner.as_ref().unwrap().clone();
         debug!("starting inner consume");
-        spawn(consume_inner(leader, offset.0, fetch_option.unwrap_or(JsFetchLogOption::default()), cb));
+        spawn(consume_inner(
+            leader,
+            offset.0,
+            fetch_option.unwrap_or(JsFetchLogOption::default()),
+            cb,
+        ));
 
         Ok(())
     }
-
 
     #[node_bindgen]
     /// get batch of records
     async fn fetch_batches(
         &self,
-        offset: JsFetchOffset, 
-        fetch_option: Option<JsFetchLogOption>
-    ) -> Result<Vec<JsBatch>,ClientError> {
-
+        offset: JsFetchOffset,
+        fetch_option: Option<JsFetchLogOption>,
+    ) -> Result<Vec<JsBatch>, ClientError> {
         let leader = self.inner.as_ref().unwrap().clone();
         let mut leader_w = leader.write().await;
 
-        debug!("getting fetch batch offset: {:#?}",offset);
+        debug!("getting fetch batch offset: {:#?}", offset);
 
-        let mut log_stream = leader_w.fetch_logs(offset.0, fetch_option.unwrap_or(JsFetchLogOption::default()).fetch);
+        let partition_response = leader_w
+            .fetch_logs_once(
+                offset.0,
+                fetch_option.unwrap_or(JsFetchLogOption::default()).fetch,
+            )
+            .await?;
 
-        if let Some(partition_response) = log_stream.next().await {
-            let records = partition_response.records;
+        let records = partition_response.records;
 
-            debug!("received records: {:#?}", records);
+        debug!("received records: {:#?}", records);
 
-            let batches: Vec<JsBatch> = 
-                records.batches.into_iter()
-                    .map(| batch | 
-                        JsBatch {
-                            base_offset: batch.base_offset,
-                            records: batch.records.into_iter().map(|r| {
-                                if let Some(bytes) = r.value().inner_value() {
-                                    ArrayBuffer::new(bytes)
-                                } else {
-                                    ArrayBuffer::new(vec![])
-                                }
-                            }).collect()
+        let batches: Vec<JsBatch> = records
+            .batches
+            .into_iter()
+            .map(|batch| JsBatch {
+                base_offset: batch.base_offset,
+                records: batch
+                    .records
+                    .into_iter()
+                    .map(|r| {
+                        if let Some(bytes) = r.value().inner_value() {
+                            ArrayBuffer::new(bytes)
+                        } else {
+                            ArrayBuffer::new(vec![])
                         }
-                    )
-                    .collect();
-            Ok(batches)
-        } else {
-            Err(ClientError::Other("fetch failed".to_owned()))
-        }
-
+                    })
+                    .collect(),
+            })
+            .collect();
+        Ok(batches)
     }
-
-
 }
 
 // perform async fetching of stream and send back to JS callback
@@ -303,15 +292,17 @@ async fn consume_inner<F: Fn(String, JsRecord)>(
         debug!("received records: {:#?}", records);
 
         for batch in records.batches {
-           let mut offset = batch.base_offset;
-           debug!("header: {:#?}",batch.header);
+            let mut offset = batch.base_offset;
+            debug!("header: {:#?}", batch.header);
             for record in batch.records {
                 if let Some(bytes) = record.value().inner_value() {
-                  
-                    cb(event.clone(), JsRecord {
-                        record: ArrayBuffer::new(bytes),
-                        offset
-                    });
+                    cb(
+                        event.clone(),
+                        JsRecord {
+                            record: ArrayBuffer::new(bytes),
+                            offset,
+                        },
+                    );
                     offset = offset + 1;
                 }
             }
@@ -320,7 +311,3 @@ async fn consume_inner<F: Fn(String, JsRecord)>(
 
     Ok(())
 }
-
-
-
-

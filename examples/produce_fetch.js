@@ -1,6 +1,7 @@
-/// consume as stream
-
 let flv = require('../dist');
+
+const TOPIC_NAME = "message";
+const MESSAGE_COUNT = 10;
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -8,18 +9,8 @@ function sleep(ms) {
     });
 } 
 
-/// create listener on emitter
-const EventEmitter = require('events').EventEmitter;
-const emitter = new EventEmitter();
-emitter.on('data', (record) => {
-    console.log("received event", record.offset, Buffer.from(record.record).toString());
 
-})
-
-const TOPIC_NAME = "message2";
-const MESSAGE_COUNT = 100;
-
-async function consume() {
+async function fetch() {
 
     try {
         console.log("connecting client to sc");
@@ -36,6 +27,7 @@ async function consume() {
             await admin.createTopic(TOPIC_NAME, { partition: 1, replication: 1 });
             await sleep(2000);
         } 
+       
 
         // look up replica
         let replica = await sc.replica(TOPIC_NAME, 0);
@@ -47,14 +39,15 @@ async function consume() {
             console.log('>> ', recordStr);
         }
 
-        /// consume as stream
-        replica.consume(
-            emitter.emit.bind(emitter),
-            {
-                offset: 0
-            }
-        );
-        
+        // fetch
+        let batches = await replica.fetchBatches('earliest');
+        console.log("batches: {}",batches.length);
+        batches.forEach(batch => {
+            console.log("base offset: {}",batch.base_offset);
+            batch.records.forEach(record => {
+                console.log("record ",Buffer.from(record).toString());
+            })
+        }); 
         
     } catch (ex) {
         console.log("error", ex);
@@ -62,4 +55,4 @@ async function consume() {
 }
 
 
-consume()
+fetch()

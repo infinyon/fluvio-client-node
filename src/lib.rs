@@ -1,7 +1,6 @@
 mod connect;
 mod sc;
 mod replica;
-mod consume_stream;
 mod metadata;
 mod admin;
 

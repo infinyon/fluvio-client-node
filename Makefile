@@ -17,45 +17,38 @@ publish:
 clean:
 	rm -rf dist
 
-test_consume:	build
-	node examples/consume.js
+test_produce_fetch:	build
+	node examples/produce_fetch.js
 
-test_produce:	build
+test_produce_consume:	build
 	node examples/produce_consume.js
 
-test_stress:	build
-	node examples/produce_stress.js
 
-test_event:	build
-	node examples/event_to_produce.js
 
-test_fetch:	build
-	node examples/consume_batches.js
-
-test_list:	build
+test_list_topic:	build
 	node examples/list_topic.js
 
-test_create:	build
+test_create_topic:	build
 	node examples/create_topic.js
 
-test_delete:	build
+test_delete_topic:	build
 	node examples/delete_topic.js
 
-test_find:	build
+test_find_topic:	build
 	node examples/find_topic.js
 
-test_spu:	build
+test_list_spu:	build
 	node examples/list_spu.js
 
-test_custom_create:	build
+test_create_custom_spu:	build
 	node examples/create_custom_spu.js
 
-test_custom_delete:	build
+test_delete_custom_spu:	build
 	node examples/delete_custom_spu.js
 
-test_managed_create:	build
+test_create_managed_spu:	build
 	node examples/create_managed_spu.js
 
-test_managed_delete:	build
+test_delete_managed_spu:	build
 	node examples/delete_managed_spu.js
 
