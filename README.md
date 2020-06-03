@@ -1,6 +1,13 @@
-# Fluvio Client for Node.js
+<h1 align="center">Fluvio Client for Node.js</h1>
+<div align="center">
+ <strong>
+   Node.js binding for Fluvio streaming platform.
+ </strong>
+</div>
+<br />
+  
+[![Build Status](https://github.com/infinyon/flv-client-node/workflows/Smoke%20Test/badge.svg)](https://github.com/infinyon/flv-client-node/actions) [![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)]() [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE)
 
-Node.js binding for Fluvio streaming platform.
 
 ## Installation on NPM
 
@@ -28,21 +35,26 @@ Finally, install build tool
 cargo install nj-cli
 ```
 
+#### Pre-requisites
+[Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client.
 
-### Install NPM package
+### Usage
+
+#### Install NPM package
+This package can be installed using
 
 ```
 npm install @fluvio/client
 ```
 
-### Example usage
+#### Example usage
 
 ```
 var flvClient = require('@fluvio/client');
 
 ```
 
-Please see test.js in the node_modules for example.
+Please look at `examples` folder in the node_modules for more detailed examples.
 
 
 # Development Build and Test
@@ -53,10 +65,10 @@ To compile rust library:
 make
 ```
 
-To test development module:
+To test development module, refer to makefile under this repositry. For example
 
 ```
-node test.js
+make test_produce_consume
 ```
 
 
