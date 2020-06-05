@@ -71,13 +71,11 @@ To test development module, refer to makefile under this repositry. For example
 make test_produce_consume
 ```
 
+## Contributing
+
+If you'd like to contribute to the project, please read our [Contributing guide](CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the [Apache license](LICENSE-APACHE).
-
-### Contribution
-
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in Fluvio by you, shall be licensed as Apache, without any additional
+This project is licensed under the [Apache license](LICENSE-APACHE). Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Fluvio Client by you, shall be licensed as Apache, without any additional
 terms or conditions.
