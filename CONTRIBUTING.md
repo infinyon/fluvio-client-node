@@ -17,7 +17,7 @@ Thank you for contributing. No matter how large or small, contributions are alwa
 ## Assumptions
 Familiarity with
 - [Rust](https://www.rust-lang.org)
-- [Kubernetes](https://kubernetes.io)
+- [Fluvio](https://www.fluvio.io/docs)
 
 Currently, fluvio supports the following platforms:
 - macOS X
