@@ -1,0 +1,59 @@
+name: CD
+
+# See article for setting up github site pages for docs;
+# https://docs.github.com/en/free-pro-team@latest/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+jobs:
+  publish:
+    name: Publish Fluvio Client to NPM
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [ '10', '12' ]
+    steps:
+      - uses: actions/checkout@master
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Publish
+        run: |
+           make run_publish
+  push_docs:
+    name: build and push static docs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [ '10', '12' ]
+    steps:
+      - uses: actions/checkout@master
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Build docs
+        run: |
+          make run_docs
+      - name: Commit files
+        run: |
+          git add --force docs
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Updated Fluvio NodeJS client docs" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: docs
