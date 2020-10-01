@@ -1,7 +1,4 @@
-use crate::{
-    SharedFluvio, DEFAULT_TOPIC, DEFAULT_PARTITION, OFFSET_BEGINNING, OFFSET_END,
-    CLIENT_NOT_FOUND_ERROR_MSG,
-};
+use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
 use log::debug;
@@ -59,18 +56,12 @@ const VALUE_KEY: &str = "value";
 const BATCHES_KEY: &str = "batches";
 
 pub struct PartitionConsumerWrapper {
-    client: SharedFluvio,
-    topic: String,
-    partition: i32,
+    client: PartitionConsumer,
 }
 
 impl PartitionConsumerWrapper {
-    pub fn new(client: SharedFluvio, topic: String, partition: i32) -> Self {
-        Self {
-            client,
-            topic,
-            partition,
-        }
+    pub fn new(client: PartitionConsumer) -> Self {
+        Self { client }
     }
 }
 
@@ -80,39 +71,23 @@ impl TryIntoJs for PartitionConsumerWrapper {
         let new_instance = PartitionConsumerJS::new_instance(js_env, vec![])?;
         debug!("instance created");
         PartitionConsumerJS::unwrap_mut(js_env, new_instance)?.set_client(self.client);
-        PartitionConsumerJS::unwrap_mut(js_env, new_instance)?.set_topic(self.topic);
-        PartitionConsumerJS::unwrap_mut(js_env, new_instance)?.set_partition(self.partition);
         Ok(new_instance)
     }
 }
 
 pub struct PartitionConsumerJS {
-    inner: Option<SharedFluvio>,
-    topic: Option<String>,
-    partition: Option<i32>,
+    inner: Option<PartitionConsumer>,
 }
 
 #[node_bindgen]
 impl PartitionConsumerJS {
     #[node_bindgen(constructor)]
     pub fn new() -> Self {
-        Self {
-            inner: None,
-            topic: None,
-            partition: None,
-        }
+        Self { inner: None }
     }
 
-    pub fn set_client(&mut self, client: SharedFluvio) {
+    pub fn set_client(&mut self, client: PartitionConsumer) {
         self.inner.replace(client);
-    }
-
-    pub fn set_topic(&mut self, topic: String) {
-        self.topic.replace(topic);
-    }
-
-    pub fn set_partition(&mut self, partition: i32) {
-        self.partition.replace(partition);
     }
 
     #[node_bindgen]
@@ -120,19 +95,7 @@ impl PartitionConsumerJS {
         &self,
         offset: OffsetWrapper,
     ) -> Result<FetchablePartitionResponseWrapper, FluvioError> {
-        let topic = self
-            .topic
-            .clone()
-            .unwrap_or_else(|| String::from(DEFAULT_TOPIC));
-        let partition = self.partition.unwrap_or_else(|| DEFAULT_PARTITION);
-
-        if let Some(client) = self.inner.clone() {
-            let client: PartitionConsumer = client
-                .write()
-                .await
-                .partition_consumer(topic, partition)
-                .await?;
-
+        if let Some(client) = &self.inner {
             let response = client.fetch(offset.0).await?;
             Ok(FetchablePartitionResponseWrapper(response))
         } else {
@@ -142,23 +105,11 @@ impl PartitionConsumerJS {
 
     #[node_bindgen(mt)]
     async fn stream<F: Fn(String, RecordSetWrapper) + 'static + Send + Sync>(
-        &self,
+        &'static self,
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<(), FluvioError> {
-        let topic = self
-            .topic
-            .clone()
-            .unwrap_or_else(|| String::from(DEFAULT_TOPIC));
-        let partition = self.partition.unwrap_or_else(|| DEFAULT_PARTITION);
-
-        if let Some(client) = self.inner.clone() {
-            let client: PartitionConsumer = client
-                .write()
-                .await
-                .partition_consumer(topic, partition)
-                .await?;
-
+        if let Some(client) = &self.inner {
             spawn(PartitionConsumerJS::stream_inner(client, offset, cb));
 
             Ok(())
@@ -168,7 +119,7 @@ impl PartitionConsumerJS {
     }
 
     async fn stream_inner<F: Fn(String, RecordSetWrapper)>(
-        client: PartitionConsumer,
+        client: &'static PartitionConsumer,
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<(), FluvioError> {

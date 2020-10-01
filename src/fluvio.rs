@@ -62,16 +62,19 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    fn partition_consumer(
+    async fn partition_consumer(
         &self,
         topic: String,
         partition: i32,
     ) -> Result<PartitionConsumerWrapper, FluvioError> {
         if let Some(client) = self.inner.as_ref() {
             Ok(PartitionConsumerWrapper::new(
-                client.clone(),
-                topic,
-                partition,
+                client
+                    .clone()
+                    .write()
+                    .await
+                    .partition_consumer(topic, partition)
+                    .await?,
             ))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -79,9 +82,11 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    fn topic_producer(&self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
+    async fn topic_producer(&self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
         if let Some(client) = self.inner.as_ref() {
-            Ok(TopicProducerWrapper::new(client.clone(), topic))
+            Ok(TopicProducerWrapper::new(
+                client.clone().write().await.topic_producer(topic).await?,
+            ))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }

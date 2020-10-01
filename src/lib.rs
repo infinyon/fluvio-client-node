@@ -14,10 +14,6 @@ mod shared {
 
     pub type SharedFluvio = Arc<RwLock<Fluvio>>;
 
-    // Default topic name if a user does not provide a topic;
-    pub const DEFAULT_TOPIC: &str = "default";
-    pub const DEFAULT_PARTITION: i32 = 0;
-
     pub const OFFSET_BEGINNING: &str = "beginning";
     pub const OFFSET_END: &str = "end";
 
