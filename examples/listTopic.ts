@@ -2,7 +2,7 @@ import Fluvio from '../src/index'
 
 console.log('connecting client to sc')
 
-async function list_topics() {
+async function listTopics() {
     try {
         const fluvio = new Fluvio({
             host: '0.0.0.0',
@@ -26,4 +26,4 @@ async function list_topics() {
     }
 }
 
-list_topics()
+listTopics()

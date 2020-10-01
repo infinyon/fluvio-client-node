@@ -2,7 +2,7 @@ import Fluvio from '../src/index'
 
 console.log('connecting client to sc')
 
-async function list_spu() {
+async function listSpu() {
     try {
         const fluvio = new Fluvio({
             host: '0.0.0.0',
@@ -20,11 +20,12 @@ async function list_spu() {
 
         const spu = await admin.listSpu()
 
-        let buffer = Buffer.from(spu)
-        console.log('spu', buffer)
+        console.log('spu', spu)
+        return
     } catch (ex) {
         console.log('problem getting spu', ex)
+        return
     }
 }
 
-list_spu()
+listSpu()
