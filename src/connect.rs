@@ -1,13 +1,19 @@
-// implement connect workflow
-
-use flv_client::profile::ScConfig;
 use node_bindgen::derive::node_bindgen;
-use flv_client::ClientError;
+use fluvio::{Fluvio, FluvioConfig, FluvioError};
 
-use crate::sc::ScClientWrapper;
+use crate::fluvio::FluvioWrapper;
 
 #[node_bindgen()]
-async fn connect(host_addr: Option<String>) -> Result<ScClientWrapper, ClientError> {
-    let config = ScConfig::new(host_addr,None)?;
-    config.connect().await.map(|client| client.into())
+async fn connect(host_addr: Option<String>) -> Result<FluvioWrapper, FluvioError> {
+    match host_addr {
+        Some(host) => {
+            let config = FluvioConfig::new(host);
+            let socket = Fluvio::connect_with_config(&config).await?;
+            Ok(FluvioWrapper::from(socket))
+        }
+        None => {
+            let socket = Fluvio::connect().await?;
+            Ok(FluvioWrapper::from(socket))
+        }
+    }
 }
