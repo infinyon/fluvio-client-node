@@ -7,8 +7,6 @@ mod fluvio;
 use shared::*;
 
 mod shared {
-    use fluvio::Fluvio;
-
     pub const OFFSET_BEGINNING: &str = "beginning";
     pub const OFFSET_END: &str = "end";
 

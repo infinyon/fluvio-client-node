@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  check_fmt:
+    name: check formatting
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [stable]
+        node: [ '12' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: check fmt
+        run: cargo fmt -- --check
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: check prettier
+        run: npm run prettier:check
+  smoke_test:
+    name: Smoke test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [stable]
+        node: [ '10', '12' ]
+    steps:
+      - name: Install Fluvio Local Cluster
+        uses: infinyon/fluvio@master
+        with:
+          cluster-type: local
+      - name: Check Fluvio Installation
+        run: |
+          fluvio --help
+      - name: Create Topic
+        run: |
+          fluvio topic create -c 127.0.0.1:9003 -p 1 -r 1 my-topic
+      - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true    
+      - name: Install nj-cli build
+        run:  cargo install nj-cli
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install and Build
+        run: |
+          npm install
+      - name: Test
+        run: npm run test

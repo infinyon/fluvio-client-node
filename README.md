@@ -8,67 +8,117 @@
   
 [![Build Status](https://github.com/infinyon/flv-client-node/workflows/Smoke%20Test/badge.svg)](https://github.com/infinyon/flv-client-node/actions) [![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)]() [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE)
 
-
 ## Installation on NPM
 
-Fluvio client is native module.  It is written using rust.  
+`npm install @fluvio/client`
+
+Fluvio client is native module.  It is written using Rust. The published NPM package
+exports a pre-built distributed native module `.node` binary.
+
+Currently, the Fluvio client is only supported in NodeJS. In the future, there will be support for a WebAssemby client module `.wasm` for compatibility with web browsers.
+
+The Fluvio client uses TypeScript for typed definitions.
+
+## Documentation
+
+Fluvio client uses Typedoc to generate the client API [documentation]().
+
+## Pre-Requisites
+[Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client. 
+
+Click the link for installation instructions on the Fluvio GitHub repository.
+
+
+## Example usage
+
+```TypeScript
+import Fluvio, { RecordSet } from '@fluvio/client';
+
+// define the name of the topic to use
+const TOPIC_NAME = "my-topic"
+
+// define the partition where the topic
+// records will be stored;
+const PARTITION = 0
+
+// Instantiate a new fluvio client
+const fluvio = new Fluvio({
+  host: '127.0.0.1',
+  port: 9003
+});
+
+// Explicitly connect to the fluvio cluster;
+await fluvio.connect();
+
+//// Fluvio Admin Client
+
+// Create a new Fluvio Admin Client to manage
+// topics and partitions
+const admin = await fluvio.admin();
+
+// Create a new topic
+await admin.createTopic(TOPIC_NAME)
+
+//// Topic Producer
+
+// Create a topic producer for the topic;
+const producer = await fluvio.topicProducer(TOPIC_NAME);
+
+// Send a new topic record
+producer.sendRecord("stringified data", PARTITION)
+
+//// Partition Consumer
+
+// Instantiate a new topic listener;
+const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
+
+// Listen for new topics sent by a topic producer;
+await consumer.listen(async (data: RecordSet) => {
+  // handle data record
+})
+
+```
+
+Please look at [`./examples`](./examples) and [`./test`](./test) folder for more detailed examples.
+
+## Demo Applications
+
+Writing an application and considering using Fluvio? Check out the [`./demos`](./demos) folder for example
+applications using the fluvio node client. 
+
+__Apps:__
+
+- [Streaming App](./demos/streaming-app)
+
+## Developing
+
+For those who would like to build the native module, follow these instructions:
 
 ### Install Rust tooling
 
 First, install rust tooling by following [rustup](https://rustup.rs).
+
 ```
 <follow instruction on rustup>
 ```
 
-Then, you must enable nightly toolchain:
-```
-rustup toolchain install nightly
-```
-
-And enable nightly as default
-```
-rustup default nightly
-```
-
-Finally, install build tool
+Install build tool
 ```
 cargo install nj-cli
 ```
-
-#### Pre-requisites
-[Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client.
-
-### Usage
-
-#### Install NPM package
-This package can be installed using
-
-```
-npm install @fluvio/client
-```
-
-#### Example usage
-
-```
-var flvClient = require('@fluvio/client');
-
-```
-
-Please look at `examples` folder in the node_modules for more detailed examples.
-
 
 # Development Build and Test
 
 To compile rust library:
 
 ```
-make
+make build
 ```
 
-To test development module, refer to makefile under this repositry. For example
+To test development module, refer to makefile under this repository. For example
 
 ```
-make test_produce_consume
+make run_test
 ```
 
 ## Contributing
