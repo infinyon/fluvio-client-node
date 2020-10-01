@@ -65,8 +65,6 @@ export class FluvioClientTests {
         const arrayBuffer = stringToArrayBuffer(string)
         expect.toBeEqual(arrayBufferToString(arrayBuffer), string)
 
-        console.log('Creating Default Spu')
-
         // Setup Default spu;
         this.defaultSpuName = 'default-spu'
         this.tmpDir = 'fluvio-test'
