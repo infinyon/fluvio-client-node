@@ -159,11 +159,7 @@ impl PartitionConsumerJS {
                 .partition_consumer(topic, partition)
                 .await?;
 
-            let handle = spawn(PartitionConsumerJS::stream_inner(client, offset, cb)).await;
-
-            if let Err(e) = handle {
-                debug!("Error found for inner stream: {:?}", e);
-            }
+            spawn(PartitionConsumerJS::stream_inner(client, offset, cb));
 
             Ok(())
         } else {
