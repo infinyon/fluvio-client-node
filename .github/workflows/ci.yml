@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Install Fluvio Local Cluster
         uses: infinyon/fluvio@feature/actions/install_fluvio
+        with:
+          cluster-type: local
       - name: Check Fluvio Installation
         run: |
           fluvio --help
