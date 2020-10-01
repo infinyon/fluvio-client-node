@@ -12,7 +12,7 @@ export const DEFAULT_REPLICATION_FACTOR = 1
 export const DEFAULT_IGNORE_RACK_ASSIGNMENT = false
 export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
-export const DEFAULT_OFFSET_FROM = 'end'
+export const DEFAULT_OFFSET_FROM = 'beginning'
 
 /**
  * Top-level Fluvio Client options;
@@ -740,7 +740,6 @@ export enum OffsetFrom {
     End = 'end',
 }
 
-//
 export interface Offset {
     index: number
     from?: OffsetFrom | string

@@ -71,13 +71,10 @@ async function consume() {
 
         const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
-        let offset: Offset = {
-            index: 0,
-            from: OffsetFrom.Beginning,
-        }
+        let offset: Offset = new Offset()
 
         console.log('listening for events')
-        await consumer.stream(offset, (record: RecordSet) => {
+        await consumer.stream(offset, async (record: RecordSet) => {
             // handle record;
             console.log('record', record)
         })
