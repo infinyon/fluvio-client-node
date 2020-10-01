@@ -343,6 +343,7 @@ export class FluvioAdmin {
 
     /**
      * List SPUs
+     * TODO: convert stringified json to structured types;
      */
     async listSpu(): Promise<string> {
         const buffer = await this.inner.listSpu()
