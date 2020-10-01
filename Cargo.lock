@@ -449,6 +449,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "fluvio-client-node"
+version = "4.0.0"
+dependencies = [
+ "anyhow",
+ "fluvio",
+ "fluvio-protocol",
+ "fluvio-socket",
+ "fluvio-types",
+ "flv-future-aio",
+ "flv-util 0.5.2",
+ "futures",
+ "log",
+ "node-bindgen",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "fluvio-controlplane-metadata"
 version = "0.1.0"
 source = "git+https://github.com/infinyon/fluvio.git#7aa8d4f46cd029cc5fe6829e46077c05db3e8a49"
@@ -500,24 +518,6 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "webpki",
-]
-
-[[package]]
-name = "fluvio-node-client"
-version = "4.0.0"
-dependencies = [
- "anyhow",
- "fluvio",
- "fluvio-protocol",
- "fluvio-socket",
- "fluvio-types",
- "flv-future-aio",
- "flv-util 0.5.2",
- "futures",
- "log",
- "node-bindgen",
- "serde",
- "serde_json",
 ]
 
 [[package]]
