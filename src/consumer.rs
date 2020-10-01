@@ -1,4 +1,7 @@
-use crate::{SharedFluvio, DEFAULT_TOPIC, DEFAULT_PARTITION, OFFSET_BEGINNING, OFFSET_END};
+use crate::{
+    SharedFluvio, DEFAULT_TOPIC, DEFAULT_PARTITION, OFFSET_BEGINNING, OFFSET_END,
+    CLIENT_NOT_FOUND_ERROR_MSG,
+};
 use crate::{optional_property, must_property};
 
 use log::debug;
@@ -133,10 +136,7 @@ impl PartitionConsumerJS {
             let response = client.fetch(offset.0).await?;
             Ok(FetchablePartitionResponseWrapper(response))
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -163,10 +163,7 @@ impl PartitionConsumerJS {
 
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 

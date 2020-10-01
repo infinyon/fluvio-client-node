@@ -1,4 +1,4 @@
-use crate::SharedFluvio;
+use crate::{SharedFluvio, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
 use std::convert::{TryFrom, TryInto};
@@ -93,10 +93,7 @@ impl FluvioAdminJS {
             // // convert to array buffer and wrap in the buffer
             Ok(ArrayBuffer::new(json_slice))
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -119,10 +116,7 @@ impl FluvioAdminJS {
             // // convert to array buffer and wrap in the buffer
             Ok(TopicInfo(Some(ArrayBuffer::new(json))))
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -137,10 +131,7 @@ impl FluvioAdminJS {
             client.create(topic.clone(), false, spec.0).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -151,10 +142,7 @@ impl FluvioAdminJS {
             client.delete::<TopicSpec, String>(topic.clone()).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -184,10 +172,7 @@ impl FluvioAdminJS {
                 Err(FluvioError::Other("failed to find partition".to_owned()))
             }
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -207,10 +192,7 @@ impl FluvioAdminJS {
             client.create(name, false, spec.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -221,10 +203,7 @@ impl FluvioAdminJS {
             client.delete::<CustomSpuSpec, _>(key.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -239,10 +218,7 @@ impl FluvioAdminJS {
             client.create::<SpuGroupSpec>(name, false, spec.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -253,10 +229,7 @@ impl FluvioAdminJS {
             client.delete::<SpuGroupSpec, _>(name).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 }

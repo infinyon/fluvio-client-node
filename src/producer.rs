@@ -1,4 +1,4 @@
-use crate::{SharedFluvio, DEFAULT_TOPIC};
+use crate::{SharedFluvio, DEFAULT_TOPIC, CLIENT_NOT_FOUND_ERROR_MSG};
 
 use log::debug;
 use fluvio::TopicProducer;
@@ -69,10 +69,7 @@ impl TopicProducerJS {
             client.send_record(data.into_bytes(), partition).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(
-                "fluvio client not found; ensure fluvio client is instantiated correctly."
-                    .to_owned(),
-            ))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 }

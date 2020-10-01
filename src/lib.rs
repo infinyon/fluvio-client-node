@@ -21,6 +21,9 @@ mod shared {
     pub const OFFSET_BEGINNING: &str = "beginning";
     pub const OFFSET_END: &str = "end";
 
+    pub const CLIENT_NOT_FOUND_ERROR_MSG: &str =
+        "fluvio client not found; ensure fluvio client is instantiated correctly.";
+
     #[macro_export]
     macro_rules! must_property {
         ($name:expr,$ty:ty,$js_obj:expr) => {

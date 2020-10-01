@@ -1,4 +1,4 @@
-use crate::SharedFluvio;
+use crate::{SharedFluvio, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::admin::FluvioAdminWrapper;
 use crate::consumer::PartitionConsumerWrapper;
 use crate::producer::TopicProducerWrapper;
@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 use log::debug;
 
-use fluvio::{Fluvio};
+use fluvio::{Fluvio, FluvioError};
 
 use flv_future_aio::sync::RwLock;
 
@@ -53,17 +53,37 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    fn admin(&self) -> FluvioAdminWrapper {
-        FluvioAdminWrapper::new(self.inner.as_ref().unwrap().clone())
+    fn admin(&self) -> Result<FluvioAdminWrapper, FluvioError> {
+        if let Some(client) = self.inner.as_ref() {
+            Ok(FluvioAdminWrapper::new(client.clone()))
+        } else {
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+        }
     }
 
     #[node_bindgen]
-    fn partition_consumer(&self, topic: String, partition: i32) -> PartitionConsumerWrapper {
-        PartitionConsumerWrapper::new(self.inner.as_ref().unwrap().clone(), topic, partition)
+    fn partition_consumer(
+        &self,
+        topic: String,
+        partition: i32,
+    ) -> Result<PartitionConsumerWrapper, FluvioError> {
+        if let Some(client) = self.inner.as_ref() {
+            Ok(PartitionConsumerWrapper::new(
+                client.clone(),
+                topic,
+                partition,
+            ))
+        } else {
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+        }
     }
 
     #[node_bindgen]
-    fn topic_producer(&self, topic: String) -> TopicProducerWrapper {
-        TopicProducerWrapper::new(self.inner.as_ref().unwrap().clone(), topic)
+    fn topic_producer(&self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
+        if let Some(client) = self.inner.as_ref() {
+            Ok(TopicProducerWrapper::new(client.clone(), topic))
+        } else {
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+        }
     }
 }
