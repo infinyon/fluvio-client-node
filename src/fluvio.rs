@@ -56,7 +56,7 @@ impl FluvioJS {
     async fn admin(&self) -> Result<FluvioAdminWrapper, FluvioError> {
         if let Some(client) = self.inner.as_ref() {
             let admin_client = client.clone().write().await.admin().await;
-            Ok(FluvioAdminWrapper::new(Arc::new(RwLock::new(admin_client))))
+            Ok(FluvioAdminWrapper::new(admin_client))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
