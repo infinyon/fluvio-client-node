@@ -1,15 +1,11 @@
-use crate::{SharedFluvio, CLIENT_NOT_FOUND_ERROR_MSG};
+use crate::CLIENT_NOT_FOUND_ERROR_MSG;
 use crate::admin::FluvioAdminWrapper;
 use crate::consumer::PartitionConsumerWrapper;
 use crate::producer::TopicProducerWrapper;
 
-use std::sync::Arc;
-
 use log::debug;
 
 use fluvio::{Fluvio, FluvioError};
-
-use flv_future_aio::sync::RwLock;
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::TryIntoJs;
@@ -38,7 +34,7 @@ impl TryIntoJs for FluvioWrapper {
 }
 
 pub struct FluvioJS {
-    inner: Option<SharedFluvio>,
+    inner: Option<Fluvio>,
 }
 
 #[node_bindgen]
@@ -49,13 +45,13 @@ impl FluvioJS {
     }
 
     pub fn set_client(&mut self, client: Fluvio) {
-        self.inner.replace(Arc::new(RwLock::new(client)));
+        self.inner.replace(client);
     }
 
     #[node_bindgen]
-    async fn admin(&self) -> Result<FluvioAdminWrapper, FluvioError> {
-        if let Some(client) = self.inner.as_ref() {
-            let admin_client = client.clone().write().await.admin().await;
+    async fn admin(&mut self) -> Result<FluvioAdminWrapper, FluvioError> {
+        if let Some(client) = &mut self.inner {
+            let admin_client = client.admin().await;
             Ok(FluvioAdminWrapper::new(admin_client))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -64,18 +60,13 @@ impl FluvioJS {
 
     #[node_bindgen]
     async fn partition_consumer(
-        &self,
+        &mut self,
         topic: String,
         partition: i32,
     ) -> Result<PartitionConsumerWrapper, FluvioError> {
-        if let Some(client) = self.inner.as_ref() {
+        if let Some(client) = &mut self.inner {
             Ok(PartitionConsumerWrapper::new(
-                client
-                    .clone()
-                    .write()
-                    .await
-                    .partition_consumer(topic, partition)
-                    .await?,
+                client.partition_consumer(topic, partition).await?,
             ))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -83,10 +74,10 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    async fn topic_producer(&self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
-        if let Some(client) = self.inner.as_ref() {
+    async fn topic_producer(&mut self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
+        if let Some(client) = &mut self.inner {
             Ok(TopicProducerWrapper::new(
-                client.clone().write().await.topic_producer(topic).await?,
+                client.topic_producer(topic).await?,
             ))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))

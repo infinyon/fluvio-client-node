@@ -7,12 +7,7 @@ mod fluvio;
 use shared::*;
 
 mod shared {
-
-    use std::sync::Arc;
     use fluvio::Fluvio;
-    use flv_future_aio::sync::RwLock;
-
-    pub type SharedFluvio = Arc<RwLock<Fluvio>>;
 
     pub const OFFSET_BEGINNING: &str = "beginning";
     pub const OFFSET_END: &str = "end";

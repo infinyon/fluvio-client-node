@@ -2,11 +2,8 @@ use crate::{CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
 use std::convert::{TryFrom, TryInto};
-use std::sync::Arc;
 use std::fmt::Display;
 use log::debug;
-
-use flv_future_aio::sync::RwLock;
 
 use fluvio::{FluvioAdmin, FluvioError};
 use fluvio::metadata::objects::{ListSpec, ListResponse};
