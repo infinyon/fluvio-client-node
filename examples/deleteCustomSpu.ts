@@ -6,8 +6,6 @@ console.log('connecting client to sc')
 async function deleteCustomSpu() {
     try {
         const fluvio = new Fluvio({
-            host: '0.0.0.0',
-            port: 9003,
             partitions: 1,
             replicationFactor: 3,
             ignoreRackAssignment: false,

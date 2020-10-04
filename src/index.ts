@@ -495,6 +495,16 @@ export default class Fluvio implements FluvioClient {
     }
 
     /**
+     * Add static method to quickly create a connected client;
+     * @param options Fluvio options passed into new fluvio instance;
+     */
+    public static async connect(options?: Options): Promise<Fluvio> {
+        const fluvio = new Fluvio(options)
+        await fluvio.connect()
+        return fluvio
+    }
+
+    /**
      *
      * @param options Optionally pass in connection host options (e.g. { host: '' })
      * uses the partial Options type; This does not override the default options,

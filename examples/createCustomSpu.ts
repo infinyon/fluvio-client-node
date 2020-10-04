@@ -6,10 +6,7 @@ console.log('connecting client to sc')
 
 async function createCustomSpu() {
     try {
-        const fluvio = new Fluvio({
-            host: '0.0.0.0',
-            port: 9003,
-        })
+        const fluvio = new Fluvio()
 
         // Explicitly call `.connect()` to connect to the cluster;
         // This allows for lazily-loading the connection, useful in

@@ -24,12 +24,7 @@ const TOPIC_SPEC = {
 
 async function consume() {
     try {
-        const fluvio = new Fluvio({
-            host: 'localhost',
-            port: 9003,
-            topic: TOPIC_NAME,
-            // All options for all actions
-        })
+        const fluvio = new Fluvio()
 
         // Explicitly call `.connect()` to connect to the cluster;
         // This allows for lazily-loading the connection, useful in

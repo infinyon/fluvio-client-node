@@ -47,15 +47,9 @@ export class FluvioClientTests {
     @TestCase('Setup fluvio connection and create admin client')
     async beforeAll() {
         // Set fluvio client for test suite;
-        this.fluvio = new Fluvio({
-            host: '127.0.0.1',
-            port: 9003,
-        })
+        this.fluvio = await Fluvio.connect()
 
         expect.toBeEqual(this.fluvio instanceof Fluvio, true)
-
-        // Connect to the fluvio cluster
-        await this.fluvio.connect()
 
         // // Set the admin for the test suite;
         this.admin = await this.fluvio.admin()
@@ -350,6 +344,7 @@ export class FluvioClientTests {
     @TestCase('Cleanup temporary test files')
     public async cleanup() {
         await removeTmpDir(this.tmpDir)
+        process.exit(0)
     }
 
     // Private utility function to wait for partition to be provisioned
