@@ -32,9 +32,9 @@ export default class StreamingApp {
     // Setup a topic consumer;
     consumer?: PartitionConsumer
 
-    constructor(options: { fluvio: Options }) {
+    constructor(options?: { fluvio: Options }) {
         // Create a new Fluvio Client;
-        this.fluvio = new Fluvio(options.fluvio)
+        this.fluvio = new Fluvio(options?.fluvio)
 
         // Setup readline
         this.rl = createInterface({

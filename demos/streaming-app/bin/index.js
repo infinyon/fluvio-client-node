@@ -1,11 +1,6 @@
 const StreamingApp = require('../dist').default
 
-const app = new StreamingApp({
-    fluvio: {
-        host: '127.0.0.1',
-        port: 9003,
-    },
-})
+const app = new StreamingApp()
 
 const TOPIC_NAME = 'test-42'
 
