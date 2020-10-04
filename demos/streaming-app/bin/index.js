@@ -2,7 +2,7 @@ const StreamingApp = require('../dist').default
 
 const app = new StreamingApp()
 
-const TOPIC_NAME = 'test-42'
+const TOPIC_NAME = 'my-topic'
 
 // Configure the application for topic;
 app.run(TOPIC_NAME).catch((error) => {

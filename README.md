@@ -65,7 +65,7 @@ producer.sendRecord("stringified data", PARTITION)
 const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
 // Listen for new topics sent by a topic producer;
-await consumer.listen(async (data: RecordSet) => {
+await consumer.stream(async (data: string) => {
   // handle data record
 })
 
