@@ -125,6 +125,7 @@ impl FluvioAdminJS {
         spec: TopicSpecWrapper,
     ) -> Result<String, FluvioError> {
         if let Some(client) = &mut self.inner {
+            debug!("Creating Topic with Spec: {:?}", spec.0);
             client.create(topic.clone(), false, spec.0).await?;
             Ok(topic)
         } else {
@@ -362,12 +363,10 @@ impl JSValue for TopicSpecWrapper {
                 debug!("assume computed, will extract as object");
 
                 // check replication
-                let replication_factor = must_property!("replicationFactor", i32, js_obj);
+                let replication_factor = optional_property!("replicationFactor", i32, 1, js_obj);
                 let partitions = optional_property!("partitions", i32, 1, js_obj);
                 let ignore_rack_assignment =
                     optional_property!("ignoreRackAssignment", bool, false, js_obj);
-
-                debug!("Ignore Rack Assignment Value: {:?}", ignore_rack_assignment);
 
                 Ok(Self(TopicSpec::Computed(TopicReplicaParam {
                     replication_factor,
