@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '12' ]
+        node: [ '14' ]
     steps:
       - uses: actions/checkout@v2
       - name: Install ${{ matrix.rust }}
@@ -38,7 +38,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '10', '12' ]
+        node: [ '12', '14' ]
     steps:
       - name: Install Fluvio Local Cluster
         uses: infinyon/fluvio@master
@@ -49,7 +49,7 @@ jobs:
           fluvio --help
       - name: Create Topic
         run: |
-          fluvio topic create -c 127.0.0.1:9003 -p 1 -r 1 my-topic
+          fluvio topic create -p 1 -r 1 my-topic
       - uses: actions/checkout@v2
       - name: Install ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1

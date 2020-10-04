@@ -15,8 +15,6 @@
 Fluvio client is native module.  It is written using Rust. The published NPM package
 exports a pre-built distributed native module `.node` binary.
 
-Currently, the Fluvio client is only supported in NodeJS. In the future, there will be support for a WebAssemby client module `.wasm` for compatibility with web browsers.
-
 The Fluvio client uses TypeScript for typed definitions.
 
 ## Documentation
@@ -42,13 +40,7 @@ const TOPIC_NAME = "my-topic"
 const PARTITION = 0
 
 // Instantiate a new fluvio client
-const fluvio = new Fluvio({
-  host: '127.0.0.1',
-  port: 9003
-});
-
-// Explicitly connect to the fluvio cluster;
-await fluvio.connect();
+const fluvio = await Fluvio.connect();
 
 //// Fluvio Admin Client
 
