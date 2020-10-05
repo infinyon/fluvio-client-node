@@ -19,7 +19,7 @@ The Fluvio client uses TypeScript for typed definitions.
 
 ## Documentation
 
-Fluvio client uses Typedoc to generate the client API [documentation]().
+Fluvio client uses Typedoc to generate the client API [documentation](https://infinyon.github.io/fluvio-client-node/).
 
 ## Pre-Requisites
 [Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client. 
@@ -71,16 +71,18 @@ await consumer.stream(async (data: string) => {
 
 ```
 
-Please look at [`./examples`](./examples) and [`./test`](./test) folder for more detailed examples.
+Please look at [`./examples`](https://github.com/infinyon/fluvio-client-node/tree/master/examples) and [`./test`](https://github.com/infinyon/fluvio-client-node/tree/master/test) folder for more detailed examples.
 
 ## Demo Applications
 
-Writing an application and considering using Fluvio? Check out the [`./demos`](./demos) folder for example
+Writing an application and considering using Fluvio? Check out the [`./demos`](https://github.com/infinyon/fluvio-client-node/tree/master/demos) folder for example
 applications using the fluvio node client. 
 
 __Apps:__
 
-- [Streaming App](./demos/streaming-app)
+- ["Hello, World!"](https://nightly.fluvio.io/tutorials/hello-world-node/)
+- [Streaming App](https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app)
+
 
 ## Developing
 
@@ -115,9 +117,9 @@ make run_test
 
 ## Contributing
 
-If you'd like to contribute to the project, please read our [Contributing guide](CONTRIBUTING.md).
+If you'd like to contribute to the project, please read our [Contributing guide](https://github.com/infinyon/fluvio-client-node/blob/master/CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the [Apache license](LICENSE-APACHE). Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Fluvio Client by you, shall be licensed as Apache, without any additional
+This project is licensed under the [Apache license](https://github.com/infinyon/fluvio-client-node/blob/master/LICENSE-APACHE). Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Fluvio Client by you, shall be licensed as Apache, without any additional
 terms or conditions.
