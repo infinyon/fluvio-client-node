@@ -112,7 +112,7 @@ producer.sendRecord(<span class="hljs-string">&quot;stringified data&quot;</span
 <span class="hljs-keyword">const</span> consumer = <span class="hljs-keyword">await</span> fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
 <span class="hljs-comment">// Listen for new topics sent by a topic producer;</span>
-<span class="hljs-keyword">await</span> consumer.stream(<span class="hljs-keyword">async</span> (data: <span class="hljs-built_in">string</span>) =&gt; {
+<span class="hljs-keyword">await</span> consumer.listen(<span class="hljs-keyword">async</span> (data: RecordSet) =&gt; {
   <span class="hljs-comment">// handle data record</span>
 })
 </code></pre>
