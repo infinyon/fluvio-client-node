@@ -29,7 +29,7 @@ Click the link for installation instructions on the Fluvio GitHub repository.
 
 ## Example usage
 
-```TypeScript
+```ts
 import Fluvio, { RecordSet } from '@fluvio/client';
 
 // define the name of the topic to use
