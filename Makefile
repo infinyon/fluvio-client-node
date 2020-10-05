@@ -14,7 +14,7 @@ pack:
 	mv fluvio-client* /tmp
 
 run_publish:
-	npm publish --access public
+	npm publish
 
 clean:
 	rm -rf dist
