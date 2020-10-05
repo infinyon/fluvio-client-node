@@ -84,37 +84,6 @@ __Apps:__
 - [Streaming App](https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app)
 
 
-## Developing
-
-For those who would like to build the native module, follow these instructions:
-
-### Install Rust tooling
-
-First, install rust tooling by following [rustup](https://rustup.rs).
-
-```
-<follow instruction on rustup>
-```
-
-Install build tool
-```
-cargo install nj-cli
-```
-
-# Development Build and Test
-
-To compile rust library:
-
-```
-make build
-```
-
-To test development module, refer to makefile under this repository. For example
-
-```
-make run_test
-```
-
 ## Contributing
 
 If you'd like to contribute to the project, please read our [Contributing guide](https://github.com/infinyon/fluvio-client-node/blob/master/CONTRIBUTING.md).
