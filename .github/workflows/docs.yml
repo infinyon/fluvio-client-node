@@ -22,16 +22,19 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+      - name: "Git Fetch & Checkout"
+        run: |
+          git fetch --all
+          git checkout -b docs --track origin/docs
       - name: Install Build Dependencies
         run: |
           npm install
       - name: Build docs
         run: |
           make run_docs
+          touch docs/.nojekyll
       - name: Commit files
         run: |
-          git fetch --all
-          git checkout -b docs --track origin/docs
           git add --force docs
           git config --local user.email "team@fluvio.io"
           git config --local user.name "Fluvio Authors"
