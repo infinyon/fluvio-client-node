@@ -23,5 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
         run: |
            make run_publish
