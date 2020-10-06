@@ -80,7 +80,7 @@ applications using the fluvio node client.
 
 __Apps:__
 
-- ["Hello, World!"](https://nightly.fluvio.io/tutorials/hello-world-node/)
+- ["Hello, World!"](https://nightly.fluvio.io/tutorials/node/hello-world/)
 - [Streaming App](https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app)
 
 
