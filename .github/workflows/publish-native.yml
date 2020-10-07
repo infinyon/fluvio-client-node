@@ -7,7 +7,7 @@ on:
       - 'v*'
 jobs:
   publish:
-    name: Publish Fluvio Client to NPM
+    name: Publish Cross Platform Native Fluvio Client Modules to NPM
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

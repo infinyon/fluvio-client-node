@@ -1,0 +1,33 @@
+{
+  "exclude": [
+    "./examples/**/*",
+    "./test/**/*",
+    "./demos/**/*",
+    "./dist/**/*",
+    "./build.js",
+    "./native/**/*",
+    "./docs/**/*",
+  ],
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "commonjs",
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "moduleResolution": "node",
+    "typeRoots": [
+      "src",
+      "node_modules/@types",
+      "types"
+    ],
+    "types": [ "node" ],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

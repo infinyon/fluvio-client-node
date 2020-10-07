@@ -1,6 +1,6 @@
 import { asyncExec } from './install';
 
-// Dynamically install native package;
+// Dynamically publish native package;
 (async () => {
     switch(process.platform) {
         case 'darwin':
