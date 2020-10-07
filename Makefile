@@ -2,6 +2,7 @@ all:	build
 
 build:	
 	npm run build
+	npm run build:platform
 
 run_test: 
 	npm run test

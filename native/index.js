@@ -1,4 +1,4 @@
-console.log('requiring module')
+console.log('requiring platform specific module')
 let fluvio
 
 if (process.platform === 'darwin') {

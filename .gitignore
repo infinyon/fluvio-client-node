@@ -5,3 +5,4 @@ node_modules
 docs
 logs
 **/.DS_Store
+native/src/*/index.node

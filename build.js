@@ -6,9 +6,8 @@ const asyncExec = async (cmd) => {
             throw error
         }
 
-        if (stderr) {
-            console.log('stderr: ', stderr)
-        }
+        console.log(stderr);
+        console.log(stdout);
 
         return true
     })
