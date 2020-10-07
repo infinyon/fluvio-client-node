@@ -490,7 +490,7 @@ export default class Fluvio implements FluvioClient {
      */
     constructor(options?: Options) {
         // Use the native module as the core library;
-        this.inner = require('@fluvio/native').default
+        this.inner = require('@fluvio/native')
         this.options = options || {}
     }
 
