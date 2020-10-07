@@ -20,7 +20,9 @@
     "homepage": "https://fluvio.io",
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
-    "dependencies": {},
+    "dependencies": {
+        "@fluvio/native": "file:native"
+    },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
         "prettier:check": "npx prettier --check '{src,examples,test,native,demos}/**/*.{ts,js}'",
