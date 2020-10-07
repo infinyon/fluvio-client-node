@@ -2,14 +2,14 @@
   "name": "@fluvio/native",
   "version": "0.1.0-alpha.1",
   "description": "pre-built Fluvio client native node modules for MacOS, Linux, and Windows",
-  "main": "./src/index.js",
+  "main": "./index.js",
   "scripts": {
-    "install": "node ./src/install.js",
-    "prepublishOnly": "node ./src/publish.js"
+    "install": "node ./install.js",
+    "prepublishOnly": "node ./publish.js"
   },
   "files": [
-    "./src/index.js",
-    "./src/install.js"
+    "./index.js",
+    "./install.js"
   ],
   "keywords": [
     "fluvio",
@@ -24,5 +24,8 @@
   },
   "homepage": "https://fluvio.io",
   "author": "team@fluvio.io",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@fluvio/native-darwin": "file:src/darwin"
+  }
 }
