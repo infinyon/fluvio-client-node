@@ -1,4 +1,4 @@
 {
     "tsconfig": "./tsconfig.json",
-    "include":["**/*.spec.ts"]
+    "include":["./src/**/*.spec.ts"]
 }

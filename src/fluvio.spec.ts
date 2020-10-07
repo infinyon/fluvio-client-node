@@ -46,58 +46,65 @@ export class FluvioClientTests {
     @BeforeAll()
     @TestCase('Setup fluvio connection and create admin client')
     async beforeAll() {
-        // Set fluvio client for test suite;
-        this.fluvio = await Fluvio.connect()
+        try {
+            // Set fluvio client for test suite;
+            this.fluvio = await Fluvio.connect()
 
-        expect.toBeEqual(this.fluvio instanceof Fluvio, true)
+            expect.toBeEqual(this.fluvio instanceof Fluvio, true)
 
-        // // Set the admin for the test suite;
-        this.admin = await this.fluvio.admin()
-        expect.toBeEqual(this.admin instanceof FluvioAdmin, true)
+            // // Set the admin for the test suite;
+            this.admin = await this.fluvio.admin()
+            expect.toBeEqual(this.admin instanceof FluvioAdmin, true)
 
-        // Test array buffer to string conversions
-        const testStringConversion = 'test'
-        const arrayBuffer = stringToArrayBuffer(testStringConversion)
-        expect.toBeEqual(arrayBufferToString(arrayBuffer), testStringConversion)
+            // Test array buffer to string conversions
+            const testStringConversion = 'test'
+            const arrayBuffer = stringToArrayBuffer(testStringConversion)
+            expect.toBeEqual(
+                arrayBufferToString(arrayBuffer),
+                testStringConversion
+            )
 
-        // Setup Default spu;
-        this.defaultSpuName = 'default-spu'
-        this.tmpDir = 'fluvio-test'
+            // Setup Default spu;
+            this.defaultSpuName = 'default-spu'
+            this.tmpDir = 'fluvio-test'
 
-        // // Deletion of the default spu
-        const spuList: any[] = JSON.parse(await this.admin.listSpu())
+            // // Deletion of the default spu
+            const spuList: any[] = JSON.parse(await this.admin.listSpu())
 
-        const existingSpu = spuList.find((spu: { name: string }) => {
-            return spu.name === this.defaultSpuName
-        })
-
-        if (!existingSpu || existingSpu.status.resolution === 'Offline') {
-            console.log('creating default spu')
-
-            if (existingSpu) {
-                // If the default spu is offline, re-create the default spu;
-                await this.admin.deleteCustomSpu(existingSpu.name)
-            }
-
-            await this.admin.createCustomSpu(this.defaultSpuName)
-
-            const data = await this.admin.listSpu()
-            const spus: any[] = JSON.parse(data)
-
-            const defaultSpu = spus.find((spu: { name: string }) => {
+            const existingSpu = spuList.find((spu: { name: string }) => {
                 return spu.name === this.defaultSpuName
             })
 
-            // Retrieve the default Spu id;
-            const id = defaultSpu.spec.spuId
-            expect.not.toBeEqual(id, undefined)
+            if (!existingSpu || existingSpu.status.resolution === 'Offline') {
+                console.log('creating default spu')
 
-            // Run the fluvio cli command to start the custom spu;
-            // This will start the spu in the background;
-            await launchSpu(id, this.tmpDir)
+                if (existingSpu) {
+                    // If the default spu is offline, re-create the default spu;
+                    await this.admin.deleteCustomSpu(existingSpu.name)
+                }
 
-            // Expect default SPU to exist;
-            expect.not.toBeEqual(defaultSpu, undefined)
+                await this.admin.createCustomSpu(this.defaultSpuName)
+
+                const data = await this.admin.listSpu()
+                const spus: any[] = JSON.parse(data)
+
+                const defaultSpu = spus.find((spu: { name: string }) => {
+                    return spu.name === this.defaultSpuName
+                })
+
+                // Retrieve the default Spu id;
+                const id = defaultSpu.spec.spuId
+                expect.not.toBeEqual(id, undefined)
+
+                // Run the fluvio cli command to start the custom spu;
+                // This will start the spu in the background;
+                await launchSpu(id, this.tmpDir)
+
+                // Expect default SPU to exist;
+                expect.not.toBeEqual(defaultSpu, undefined)
+            }
+        } catch (error) {
+            console.log('error', error)
         }
     }
 
@@ -324,7 +331,7 @@ export class FluvioClientTests {
                             expect.toBeTruthy(messages.includes(record))
                             counter -= 1
 
-                            if (counter == 0) {
+                            if (counter === 0) {
                                 return resolve(true)
                             }
                         }

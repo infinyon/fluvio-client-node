@@ -8,6 +8,9 @@
         "stream",
         "client"
     ],
+    "files": [
+        "./src/index.ts"
+    ],
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "repository": {
@@ -17,18 +20,23 @@
     "homepage": "https://fluvio.io",
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
-    "dependencies": {},
+    "dependencies": {
+        "@fluvio/native": "file:native"
+    },
     "scripts": {
-        "prettier": "npx prettier --write '{src,examples,test,demos}/**/*.{ts,js}'",
-        "prettier:check": "npx prettier --check '{src,examples,test,demos}/**/*.{ts,js}'",
+        "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
+        "prettier:check": "npx prettier --check '{src,examples,test,native,demos}/**/*.{ts,js}'",
         "lint": "npx tslint -c tslint.json '{src,examples,test}/**/*.ts'",
-        "nj": "nj-cli build -o ./native",
-        "tsc": "npx tsc ./src/index.ts --outDir ./dist -d",
-        "build:dev": "npm run nj && npm run build",
+        "tsc": "npx tsc -p .",
         "build": "rm -rf ./dist/ && npm run tsc",
+        "build:darwin": "nj-cli build -o ./native/src/darwin",
+        "build:linux": "nj-cli build -o ./native/src/linux",
+        "build:win": "nj-cli build -o ./native/src/win",
+        "build:native": "npm run build:darwin && npm run build",
+        "publish:native": "node ./build.js && npm publish ./native",
         "postinstall": "npm run build",
         "docs": "npx typedoc --out docs ./src/index.ts --theme minimal",
-        "test": "npm run build:dev && npx testyts"
+        "test": "npx testyts"
     },
     "devDependencies": {
         "@types/node": "^14.11.2",

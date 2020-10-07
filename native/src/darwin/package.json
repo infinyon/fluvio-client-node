@@ -1,0 +1,26 @@
+{
+  "name": "@fluvio/native-darwin",
+  "version": "0.1.0-alpha.1",
+  "description": "Pre-built MacOS Fluvio client for Node.js",
+  "main": "./index.node",
+  "files": [
+    "./index.node"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fluvio",
+    "client",
+    "native",
+    "rust",
+    "node-bindgen"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infinyon/fluvio-client-node.git"
+  },
+  "homepage": "https://fluvio.io",
+  "author": "team@fluvio.io",
+  "license": "Apache-2.0"
+}
