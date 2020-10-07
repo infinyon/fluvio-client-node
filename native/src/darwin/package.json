@@ -1,6 +1,6 @@
 {
   "name": "@fluvio/native-darwin",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.3",
   "description": "Pre-built MacOS Fluvio client for Node.js",
   "main": "./index.node",
   "files": [

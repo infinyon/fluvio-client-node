@@ -65,7 +65,6 @@ jobs:
       - name: Install and Build
         run: |
           npm install
-          npm run build:native
-          npm install ./native -S
+          npm install @fluvio/native -S
       - name: Test
         run: npm run test

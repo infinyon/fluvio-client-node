@@ -20,9 +20,7 @@
     "homepage": "https://fluvio.io",
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
-    "dependencies": {
-        "@fluvio/native": "file:native"
-    },
+    "dependencies": {},
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
         "prettier:check": "npx prettier --check '{src,examples,test,native,demos}/**/*.{ts,js}'",
@@ -32,8 +30,8 @@
         "build:darwin": "nj-cli build -o ./native/src/darwin",
         "build:linux": "nj-cli build -o ./native/src/linux",
         "build:win": "nj-cli build -o ./native/src/win",
-        "build:native": "npm run build:darwin && npm run build",
-        "publish:native": "node ./build.js && npm publish ./native",
+        "publish:platform": "node ./build.js && cd native && npm run publish:platform",
+        "publish:native": "npm publish ./native --access public",
         "postinstall": "npm run build",
         "docs": "npx typedoc --out docs ./src/index.ts --theme minimal",
         "test": "npx testyts"
