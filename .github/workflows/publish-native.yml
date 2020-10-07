@@ -1,4 +1,4 @@
-name: Publish Native Modules
+name: Publish @fluvio/native
 
 on:
   workflow_dispatch:
@@ -6,12 +6,12 @@ on:
     tags: 
       - 'v*'
 jobs:
-  publish:
-    name: Publish Cross Platform Native Fluvio Client Modules to NPM
+  native:
+    name: Publish Native Fluvio Client Modules to NPM
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         node: ['14']
     steps:
       - uses: actions/checkout@v2

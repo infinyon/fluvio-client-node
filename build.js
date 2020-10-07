@@ -1,4 +1,18 @@
-import { asyncExec } from './native/src/install';
+const exec = require('child_process').exec
+
+const asyncExec = async (cmd) => {
+    exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+            throw error
+        }
+
+        if (stderr) {
+            console.log('stderr: ', stderr)
+        }
+
+        return true
+    })
+}
 
 // Dynamically build native package;
 (async () => {

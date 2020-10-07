@@ -65,7 +65,5 @@ jobs:
       - name: Install and Build
         run: |
           npm install
-          npm run build:native
-          npm install ./native -S
       - name: Test
         run: npm run test
