@@ -37,6 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        rust: [stable]
         node: [ '14' ]
     steps:
       - name: Install Fluvio Local Cluster
@@ -50,12 +51,21 @@ jobs:
         run: |
           fluvio topic create -p 1 -r 1 my-topic
       - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true    
+      - name: Install nj-cli build
+        run:  cargo install nj-cli
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - name: Install
+      - name: Install and Build
         run: |
           npm install
       - name: Test
-        run: npm run test
+        run: |
+          export FLUVIO_DEV=linux
+          npm run test
