@@ -1,6 +1,6 @@
 {
     "name": "@fluvio/client",
-    "version": "5.0.0-alpha.1",
+    "version": "5.0.0-alpha.7",
     "description": "Node.js binding for Fluvio distributed stream",
     "keywords": [
         "fluvio",
@@ -9,7 +9,8 @@
         "client"
     ],
     "files": [
-        "./src/index.ts"
+        "src/index.ts",
+        "tsconfig.json"
     ],
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -21,7 +22,7 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@fluvio/native": "file:native"
+        "@fluvio/native": "0.1.0-alpha.9"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",

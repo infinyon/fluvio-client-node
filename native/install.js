@@ -10,6 +10,8 @@ const asyncExec = async (cmd) => {
             console.log('stderr: ', stderr)
         }
 
+        console.log(stdout)
+
         return true
     })
 }

@@ -21,4 +21,4 @@ if (process.platform === 'darwin') {
     throw new Error('Platform is not supported')
 }
 
-export default fluvio
+module.exports = fluvio

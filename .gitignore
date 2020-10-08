@@ -4,3 +4,4 @@ target
 node_modules
 docs
 logs
+**/.DS_Store
