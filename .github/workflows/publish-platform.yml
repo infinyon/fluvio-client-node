@@ -2,9 +2,6 @@ name: Publish @fluvio/native-<platform>
 
 on:
   workflow_dispatch:
-  push:
-    tags: 
-      - 'v*'
 jobs:
   platform:
     name: Publish Platform Specific Native Fluvio Client Modules to NPM
