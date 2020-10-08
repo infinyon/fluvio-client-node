@@ -22,7 +22,7 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@fluvio/native": "0.1.0-alpha.9"
+        "@fluvio/native": "0.1.0-alpha.10"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
