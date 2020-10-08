@@ -15,6 +15,17 @@ export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
 export const DEFAULT_OFFSET_FROM = 'beginning'
 
+// Set the path to the native module
+// to be used for the client; Set `FLUVIO_DEV`
+// for development mode
+const native =
+    !process.env.FLUVIO_DEV ||
+    !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
+        ? require('@fluvio/native')
+        : require(`${process.cwd()}/native/src/${
+              process.env.FLUVIO_DEV
+          }/index.node`)
+
 /**
  * Top-level Fluvio Client options;
  *
@@ -490,7 +501,7 @@ export default class Fluvio implements FluvioClient {
      */
     constructor(options?: Options) {
         // Use the native module as the core library;
-        this.inner = require('@fluvio/native')
+        this.inner = native
         this.options = options || {}
     }
 

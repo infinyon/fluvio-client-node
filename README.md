@@ -12,8 +12,7 @@
 
 `npm install @fluvio/client`
 
-Fluvio client is native module.  It is written using Rust. The published NPM package
-exports a pre-built distributed native module `.node` binary.
+Fluvio client is native module.  It is written using Rust. The client will install the platform specific native `.node` module.
 
 The Fluvio client uses TypeScript for typed definitions.
 
