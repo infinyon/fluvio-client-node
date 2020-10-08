@@ -29,16 +29,17 @@
         "prettier:check": "npx prettier --check '{src,examples,test,native,demos}/**/*.{ts,js}'",
         "lint": "npx tslint -c tslint.json '{src,examples,test}/**/*.ts'",
         "tsc": "npx tsc -p .",
-        "build": "rm -rf ./dist/ && npm run tsc && npm run build:platform",
+        "build:test": "npm run build:ts && npm run build:platform",
+        "build:ts": "rm -rf ./dist/ && npm run tsc",
         "build:platform": "node ./build.js",
         "build:darwin": "nj-cli build -o ./native/src/darwin",
         "build:linux": "nj-cli build -o ./native/src/linux",
         "build:win": "nj-cli build -o ./native/src/win",
         "publish:platform": "node ./build.js && cd native && npm run publish:platform",
         "publish:native": "npm publish ./native --access public",
-        "postinstall": "npm run build",
+        "postinstall": "npm run build:ts",
         "docs": "npx typedoc --out docs ./src/index.ts --theme minimal",
-        "test": "npm run build && npx testyts"
+        "test": "npm run build:test && npx testyts"
     },
     "devDependencies": {
         "@types/node": "^14.11.2",
