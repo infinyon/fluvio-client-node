@@ -15,11 +15,16 @@ export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
 export const DEFAULT_OFFSET_FROM = 'beginning'
 
-const native = !process.env.FLUVIO_DEV
-    ? require('@fluvio/native')
-    : require(`${process.cwd()}/native/src/${
-          process.env.FLUVIO_DEV
-      }/index.node`)
+// Set the path to the native module
+// to be used for the client; Set `FLUVIO_DEV`
+// for development mode
+const native =
+    !process.env.FLUVIO_DEV ||
+    !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
+        ? require('@fluvio/native')
+        : require(`${process.cwd()}/native/src/${
+              process.env.FLUVIO_DEV
+          }/index.node`)
 
 /**
  * Top-level Fluvio Client options;
