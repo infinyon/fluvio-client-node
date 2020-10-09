@@ -164,7 +164,7 @@ impl JSValue for OffsetWrapper {
 
             Ok(Self(offset))
         } else {
-            return Err(NjError::Other("must pass json param".to_owned()));
+            Err(NjError::Other("must pass json param".to_owned()))
         }
     }
 }
