@@ -57,18 +57,17 @@
 				</strong>
 			</div>
 			<br />
-			<p><a href="https://github.com/infinyon/flv-client-node/actions"><img src="https://github.com/infinyon/flv-client-node/workflows/Smoke%20Test/badge.svg" alt="Build Status"></a> <a href=""><img src="https://img.shields.io/npm/dm/@fluvio/client.svg" alt="Github All Releases"></a> <a href="https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></p>
+			<p><a href="https://github.com/infinyon/flv-client-node/actions"><img src="https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg" alt="Build Status"></a> <a href=""><img src="https://img.shields.io/npm/dm/@fluvio/client.svg" alt="Github All Releases"></a> <a href="https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></p>
 			<a href="#installation-on-npm" id="installation-on-npm" style="color: inherit; text-decoration: none;">
 				<h2>Installation on NPM</h2>
 			</a>
 			<p><code>npm install @fluvio/client</code></p>
-			<p>Fluvio client is native module.  It is written using Rust. The published NPM package
-			exports a pre-built distributed native module <code>.node</code> binary.</p>
+			<p>Fluvio client is native module.  It is written using Rust. The client will install the platform specific native <code>.node</code> module.</p>
 			<p>The Fluvio client uses TypeScript for typed definitions.</p>
 			<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
 				<h2>Documentation</h2>
 			</a>
-			<p>Fluvio client uses Typedoc to generate the client API <a href="">documentation</a>.</p>
+			<p>Fluvio client uses Typedoc to generate the client API <a href="https://infinyon.github.io/fluvio-client-node/">documentation</a>.</p>
 			<a href="#pre-requisites" id="pre-requisites" style="color: inherit; text-decoration: none;">
 				<h2>Pre-Requisites</h2>
 			</a>
@@ -77,7 +76,7 @@
 			<a href="#example-usage" id="example-usage" style="color: inherit; text-decoration: none;">
 				<h2>Example usage</h2>
 			</a>
-			<pre><code class="language-TypeScript"><span class="hljs-keyword">import</span> Fluvio, { RecordSet } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@fluvio/client&#x27;</span>;
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> Fluvio, { RecordSet } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@fluvio/client&#x27;</span>;
 
 <span class="hljs-comment">// define the name of the topic to use</span>
 <span class="hljs-keyword">const</span> TOPIC_NAME = <span class="hljs-string">&quot;my-topic&quot;</span>
@@ -112,46 +111,29 @@ producer.sendRecord(<span class="hljs-string">&quot;stringified data&quot;</span
 <span class="hljs-keyword">const</span> consumer = <span class="hljs-keyword">await</span> fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
 <span class="hljs-comment">// Listen for new topics sent by a topic producer;</span>
-<span class="hljs-keyword">await</span> consumer.listen(<span class="hljs-keyword">async</span> (data: RecordSet) =&gt; {
+<span class="hljs-keyword">await</span> consumer.stream(<span class="hljs-keyword">async</span> (data: <span class="hljs-built_in">string</span>) =&gt; {
   <span class="hljs-comment">// handle data record</span>
 })
 </code></pre>
-			<p>Please look at <a href="./examples"><code>./examples</code></a> and <a href="./test"><code>./test</code></a> folder for more detailed examples.</p>
+			<p>Please look at <a href="https://github.com/infinyon/fluvio-client-node/tree/master/examples"><code>./examples</code></a> and <a href="https://github.com/infinyon/fluvio-client-node/tree/master/test"><code>./test</code></a> folder for more detailed examples.</p>
 			<a href="#demo-applications" id="demo-applications" style="color: inherit; text-decoration: none;">
 				<h2>Demo Applications</h2>
 			</a>
-			<p>Writing an application and considering using Fluvio? Check out the <a href="./demos"><code>./demos</code></a> folder for example
+			<p>Writing an application and considering using Fluvio? Check out the <a href="https://github.com/infinyon/fluvio-client-node/tree/master/demos"><code>./demos</code></a> folder for example
 			applications using the fluvio node client. </p>
 			<p><strong>Apps:</strong></p>
 			<ul>
-				<li><a href="./demos/streaming-app">Streaming App</a></li>
+				<li><a href="https://nightly.fluvio.io/tutorials/node/hello-world/">&quot;Hello, World!&quot;</a></li>
+				<li><a href="https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app">Streaming App</a></li>
 			</ul>
-			<a href="#developing" id="developing" style="color: inherit; text-decoration: none;">
-				<h2>Developing</h2>
-			</a>
-			<p>For those who would like to build the native module, follow these instructions:</p>
-			<a href="#install-rust-tooling" id="install-rust-tooling" style="color: inherit; text-decoration: none;">
-				<h3>Install Rust tooling</h3>
-			</a>
-			<p>First, install rust tooling by following <a href="https://rustup.rs">rustup</a>.</p>
-			<pre><code>&lt;follow instruction <span class="hljs-keyword">on</span> rustup&gt;</code></pre>
-			<p>Install build tool</p>
-			<pre><code>cargo install nj-<span class="hljs-keyword">cli</span></code></pre>
-			<a href="#development-build-and-test" id="development-build-and-test" style="color: inherit; text-decoration: none;">
-				<h1>Development Build and Test</h1>
-			</a>
-			<p>To compile rust library:</p>
-			<pre><code><span class="hljs-attribute">make build</span></code></pre>
-			<p>To test development module, refer to makefile under this repository. For example</p>
-			<pre><code><span class="hljs-attribute">make run_test</span></code></pre>
 			<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
 				<h2>Contributing</h2>
 			</a>
-			<p>If you&#39;d like to contribute to the project, please read our <a href="CONTRIBUTING.md">Contributing guide</a>.</p>
+			<p>If you&#39;d like to contribute to the project, please read our <a href="https://github.com/infinyon/fluvio-client-node/blob/master/CONTRIBUTING.md">Contributing guide</a>.</p>
 			<a href="#license" id="license" style="color: inherit; text-decoration: none;">
 				<h2>License</h2>
 			</a>
-			<p>This project is licensed under the <a href="LICENSE-APACHE">Apache license</a>. Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Fluvio Client by you, shall be licensed as Apache, without any additional
+			<p>This project is licensed under the <a href="https://github.com/infinyon/fluvio-client-node/blob/master/LICENSE-APACHE">Apache license</a>. Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in Fluvio Client by you, shall be licensed as Apache, without any additional
 			terms or conditions.</p>
 		</div>
 		<section class="tsd-panel-group tsd-index-group">
