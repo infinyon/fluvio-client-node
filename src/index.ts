@@ -213,12 +213,8 @@ export class PartitionConsumer {
 
     async stream(offset: Offset, cb: (record: string) => void): Promise<void> {
         const event = new EventEmitter()
-        event.on('data', (record: { batches: Batch[] }) => {
-            // console.log('Found event: ', JSON.stringify(event, null, 2));
-            record.batches.forEach((batch) => {
-                const msg = batch.records[0].value
-                cb(msg)
-            })
+        event.on('data', (msg: string) => {
+            cb(msg)
         })
         await this.inner.stream(offset, event.emit.bind(event))
         return

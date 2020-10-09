@@ -3,6 +3,7 @@ use crate::{optional_property, must_property};
 
 use log::debug;
 use flv_future_aio::task::spawn;
+use flv_future_aio::io::StreamExt;
 use fluvio::PartitionConsumer;
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::FetchablePartitionResponse;
@@ -104,7 +105,7 @@ impl PartitionConsumerJS {
     }
 
     #[node_bindgen(mt)]
-    async fn stream<F: Fn(String, RecordSetWrapper) + 'static + Send + Sync>(
+    async fn stream<F: Fn(String, String) + 'static + Send + Sync>(
         &'static self,
         offset: OffsetWrapper,
         cb: F,
@@ -118,7 +119,7 @@ impl PartitionConsumerJS {
         }
     }
 
-    async fn stream_inner<F: Fn(String, RecordSetWrapper)>(
+    async fn stream_inner<F: Fn(String, String)>(
         client: &'static PartitionConsumer,
         offset: OffsetWrapper,
         cb: F,
@@ -126,11 +127,12 @@ impl PartitionConsumerJS {
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
-        while let Ok(event) = stream.next().await {
-            cb(
-                EVENT_EMITTER_NAME.to_owned(),
-                RecordSetWrapper(event.partition.records),
-            )
+        while let Some(Ok(record)) = stream.next().await {
+            if let Some(bytes) = record.try_into_bytes() {
+                if let Ok(msg) = String::from_utf8(bytes) {
+                    cb(EVENT_EMITTER_NAME.to_owned(), msg)
+                }
+            }
         }
 
         Ok(())
@@ -162,7 +164,7 @@ impl JSValue for OffsetWrapper {
 
             Ok(Self(offset))
         } else {
-            return Err(NjError::Other("must pass json param".to_owned()));
+            Err(NjError::Other("must pass json param".to_owned()))
         }
     }
 }
