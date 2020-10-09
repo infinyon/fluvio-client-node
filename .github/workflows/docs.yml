@@ -27,8 +27,8 @@ jobs:
           git config --local user.email "team@fluvio.io"
           git config --local user.name "Fluvio Authors"
           git fetch --all
-          git branch -D docs
           git checkout -b docs --track origin/docs
+          git merge origin/master
       - name: Install Build Dependencies
         run: |
           npm install
