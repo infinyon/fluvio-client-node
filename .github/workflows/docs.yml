@@ -26,6 +26,7 @@ jobs:
         run: |
           git fetch --all
           git checkout -b docs --track origin/docs
+          git merge master
       - name: Install Build Dependencies
         run: |
           npm install
