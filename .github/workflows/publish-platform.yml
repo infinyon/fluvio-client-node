@@ -1,0 +1,36 @@
+name: Publish @fluvio/native-<platform>
+
+on:
+  workflow_dispatch:
+jobs:
+  platform:
+    name: Publish Platform Specific Native Fluvio Client Modules to NPM
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        rust: [stable]
+        node: ['14']
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true    
+      - name: Install nj-cli build
+        run:  cargo install nj-cli
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install Package
+        run: npm install
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
+        run: npm run publish:platform

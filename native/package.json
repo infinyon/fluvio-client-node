@@ -1,0 +1,30 @@
+{
+  "name": "@fluvio/native",
+  "version": "0.1.0-alpha.10",
+  "description": "pre-built Fluvio client native node modules for MacOS, Linux, and Windows",
+  "main": "./index.js",
+  "scripts": {
+    "install": "node ./install.js",
+    "publish:platform": "node ./publish.js"
+  },
+  "files": [
+    "index.js",
+    "install.js",
+    "src"
+  ],
+  "keywords": [
+    "fluvio",
+    "client",
+    "native",
+    "rust",
+    "node-bindgen"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infinyon/fluvio-client-node.git"
+  },
+  "homepage": "https://fluvio.io",
+  "author": "team@fluvio.io",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

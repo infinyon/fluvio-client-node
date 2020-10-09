@@ -15,6 +15,17 @@ export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
 export const DEFAULT_OFFSET_FROM = 'beginning'
 
+// Set the path to the native module
+// to be used for the client; Set `FLUVIO_DEV`
+// for development mode
+const native =
+    !process.env.FLUVIO_DEV ||
+    !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
+        ? require('@fluvio/native')
+        : require(`${process.cwd()}/native/src/${
+              process.env.FLUVIO_DEV
+          }/index.node`)
+
 /**
  * Top-level Fluvio Client options;
  *
@@ -202,12 +213,8 @@ export class PartitionConsumer {
 
     async stream(offset: Offset, cb: (record: string) => void): Promise<void> {
         const event = new EventEmitter()
-        event.on('data', (record: { batches: Batch[] }) => {
-            // console.log('Found event: ', JSON.stringify(event, null, 2));
-            record.batches.forEach((batch) => {
-                const msg = batch.records[0].value
-                cb(msg)
-            })
+        event.on('data', (msg: string) => {
+            cb(msg)
         })
         await this.inner.stream(offset, event.emit.bind(event))
         return
@@ -490,7 +497,7 @@ export default class Fluvio implements FluvioClient {
      */
     constructor(options?: Options) {
         // Use the native module as the core library;
-        this.inner = require('../native/index.node')
+        this.inner = native
         this.options = options || {}
     }
 

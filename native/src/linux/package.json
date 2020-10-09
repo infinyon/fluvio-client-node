@@ -1,0 +1,26 @@
+{
+  "name": "@fluvio/native-linux",
+  "version": "0.1.0-alpha.6",
+  "description": "Pre-built Linux Fluvio client for Node.js",
+  "main": "./index.node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "index.node"
+  ],
+  "keywords": [
+    "fluvio",
+    "client",
+    "native",
+    "rust",
+    "node-bindgen"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infinyon/fluvio-client-node.git"
+  },
+  "homepage": "https://fluvio.io",
+  "author": "team@fluvio.io",
+  "license": "Apache-2.0"
+}

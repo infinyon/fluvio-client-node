@@ -163,7 +163,7 @@ impl FluvioAdminJS {
                     .try_into()
                     .expect("cannot parse partition");
 
-                return replica.topic == topic && replica.partition == 0;
+                replica.topic == topic && replica.partition == 0
             }) {
                 debug!("Found Partition: {:?}", partition);
                 Ok(PartitionMetadataWrapper(partition))
@@ -392,7 +392,7 @@ impl JSValue for PartitionWrap {
 
             Ok(Self(PartitionMap { id, replicas }))
         } else {
-            return Err(NjError::Other("partition map must be json".to_owned()));
+            Err(NjError::Other("partition map must be json".to_owned()))
         }
     }
 }
@@ -502,7 +502,7 @@ impl JSValue for CustomSpuSpecWrapper {
                 rack,
             }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -516,7 +516,7 @@ impl JSValue for DeleteCustomSpu {
         } else if let Ok(name) = env.convert_to_rust::<String>(n_value) {
             Ok(Self(CustomSpu::Name(name)))
         } else {
-            return Err(NjError::Other(format!("spu id must be number or string")));
+            Err(NjError::Other(format!("spu id must be number or string")))
         }
     }
 }
@@ -546,7 +546,7 @@ impl JSValue for StorageConfigWrapper {
 
             Ok(Self(StorageConfig { log_dir, size }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -561,7 +561,7 @@ impl JSValue for EnvVarWrapper {
 
             Ok(Self(EnvVar { name, value }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -598,7 +598,7 @@ impl JSValue for SpuConfigWrapper {
                 env: env.0,
             }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -619,7 +619,7 @@ impl JSValue for SpuGroupSpecWrapper {
                 spu_config: spu_config.0,
             }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -635,7 +635,7 @@ impl JSValue for CustomSpuKeyWrapper {
             };
             Ok(Self(key))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
