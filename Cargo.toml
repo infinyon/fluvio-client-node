@@ -19,7 +19,7 @@ futures = { version = "0.3.4", features = ['async-await'] }
 serde = { version = "1.0.110", features = ["derive"] }
 serde_json = "1.0.53"
 node-bindgen = { version = "2.1.1" }
-fluvio = { version = "0.1.0", features =  ["admin"] }
+fluvio = { version = "0.2.0", features =  ["admin"] }
 flv-util = "0.5.1"
 fluvio-types = { version = "0.1.0" }
 flv-future-aio = { version = "2.4.2", features = ["default", "tls"] }
