@@ -24,8 +24,11 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: "Git Fetch & Checkout"
         run: |
+          git config --local user.email "team@fluvio.io"
+          git config --local user.name "Fluvio Authors"
           git fetch --all
           git checkout -b docs --track origin/docs
+          git merge origin/master
       - name: Install Build Dependencies
         run: |
           npm install
@@ -36,8 +39,6 @@ jobs:
       - name: Commit files
         run: |
           git add --force docs
-          git config --local user.email "team@fluvio.io"
-          git config --local user.name "Fluvio Authors"
           git commit -m "Updated Fluvio Node.js client docs" -a
       - name: Push changes
         uses: ad-m/github-push-action@master
