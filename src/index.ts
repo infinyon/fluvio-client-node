@@ -520,21 +520,13 @@ export default class Fluvio implements FluvioClient {
     async connect(options?: Partial<Options>): Promise<FluvioClient> {
         // only set connection if client is undefined
         if (!this.client) {
-            const host = options?.host
-                ? options.host
-                : this.options.host
-                ? this.options.host
-                : DEFAULT_HOST
+            const host = options?.host ? options.host : this.options.host
+            const port = options?.port ? options.port : this.options.port
 
-            const port = options?.port
-                ? options.port
-                : this.options.port
-                ? this.options.port
-                : DEFAULT_PORT
-
-            const uri = `${host}:${port}`
-
-            this.client = await this.inner.connect(uri)
+            this.client =
+                host && port
+                    ? await this.inner.connect(`${host}:${port}`)
+                    : await this.inner.connect()
         }
 
         return this as FluvioClient
