@@ -20,9 +20,7 @@ const TOPIC_SPEC = {
     ignoreRackAssignment: false,
 } as TopicReplicaParam
 
-// const MESSAGE_COUNT = 100
-
-async function consume() {
+async function fetch() {
     try {
         const fluvio = new Fluvio()
 
@@ -77,4 +75,4 @@ async function consume() {
     }
 }
 
-consume()
+fetch()
