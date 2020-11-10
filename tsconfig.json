@@ -23,7 +23,9 @@
       "node_modules/@types",
       "types"
     ],
-    "types": [ "node" ],
+    "types": [
+      "node"
+    ],
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
