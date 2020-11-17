@@ -18,7 +18,7 @@ async function listTopics() {
 
         const topics = await admin.listTopic()
 
-        console.log('received topics ', topics)
+        console.log(`received topics ${topics}`)
     } catch (ex) {
         console.log('problem getting topic', ex)
     }

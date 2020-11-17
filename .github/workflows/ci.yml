@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: check prettier
-        run: npm run prettier:check
+        run: make npm_lint
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
@@ -55,7 +55,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
-          override: true    
+          override: true
       - name: Install nj-cli build
         run:  cargo install nj-cli
       - name: Use Node.js ${{ matrix.node }}

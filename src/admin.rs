@@ -312,7 +312,7 @@ impl TryIntoJs for PartitionMetadataWrapper {
     }
 }
 
-impl JSValue for PartitionSpecWrapper {
+impl JSValue<'_> for PartitionSpecWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let leader = must_property!(LEADER_KEY, i32, js_obj);
@@ -347,7 +347,7 @@ impl TryIntoJs for PartitionSpecWrapper {
 
 pub struct TopicSpecWrapper(TopicSpec);
 
-impl JSValue for TopicSpecWrapper {
+impl JSValue<'_> for TopicSpecWrapper {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         debug!("start conversion of replica param");
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
@@ -384,7 +384,7 @@ type Assigned = Vec<PartitionWrap>;
 
 struct PartitionWrap(PartitionMap);
 
-impl JSValue for PartitionWrap {
+impl JSValue<'_> for PartitionWrap {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
             let id = must_property!("id", i32, js_obj);
@@ -399,7 +399,7 @@ impl JSValue for PartitionWrap {
 
 pub struct IngressAddrWrapper(Vec<IngressAddr>);
 
-impl JSValue for IngressAddrWrapper {
+impl JSValue<'_> for IngressAddrWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let hostname = optional_property!("hostname", String, js_obj);
@@ -417,7 +417,7 @@ impl JSValue for IngressAddrWrapper {
 
 pub struct EncryptionEnumWrapper(EncryptionEnum);
 
-impl JSValue for EncryptionEnumWrapper {
+impl JSValue<'_> for EncryptionEnumWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(string) = env.convert_to_rust::<String>(js_value) {
             let encrption = match string.as_ref() {
@@ -435,7 +435,7 @@ impl JSValue for EncryptionEnumWrapper {
 
 pub struct IngressPortWrapper(IngressPort);
 
-impl JSValue for IngressPortWrapper {
+impl JSValue<'_> for IngressPortWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let port = must_property!("port", u32, js_obj) as u16;
@@ -456,7 +456,7 @@ impl JSValue for IngressPortWrapper {
 
 pub struct EndpointWrapper(Endpoint);
 
-impl JSValue for EndpointWrapper {
+impl JSValue<'_> for EndpointWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let port = must_property!("port", u32, js_obj) as u16;
@@ -480,7 +480,7 @@ impl JSValue for EndpointWrapper {
 
 pub struct CustomSpuSpecWrapper(CustomSpuSpec);
 
-impl JSValue for CustomSpuSpecWrapper {
+impl JSValue<'_> for CustomSpuSpecWrapper {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
             let id = must_property!("id", i32, js_obj);
@@ -509,7 +509,7 @@ impl JSValue for CustomSpuSpecWrapper {
 
 struct DeleteCustomSpu(CustomSpu);
 
-impl JSValue for DeleteCustomSpu {
+impl JSValue<'_> for DeleteCustomSpu {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(id) = env.convert_to_rust::<i32>(n_value) {
             Ok(Self(CustomSpu::Id(id)))
@@ -523,7 +523,7 @@ impl JSValue for DeleteCustomSpu {
 
 pub struct ReplicationConfigWrapper(ReplicationConfig);
 
-impl JSValue for ReplicationConfigWrapper {
+impl JSValue<'_> for ReplicationConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(value) = env.convert_to_rust::<u32>(js_value) {
             let in_sync_replica_min = Some(value as u16);
@@ -538,7 +538,7 @@ impl JSValue for ReplicationConfigWrapper {
 
 pub struct StorageConfigWrapper(StorageConfig);
 
-impl JSValue for StorageConfigWrapper {
+impl JSValue<'_> for StorageConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let log_dir = optional_property!("logDir", String, js_obj);
@@ -553,7 +553,7 @@ impl JSValue for StorageConfigWrapper {
 
 pub struct EnvVarWrapper(EnvVar);
 
-impl JSValue for EnvVarWrapper {
+impl JSValue<'_> for EnvVarWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let name = must_property!("name", String, js_obj);
@@ -568,7 +568,7 @@ impl JSValue for EnvVarWrapper {
 
 pub struct EnvVarVecWrapper(Vec<EnvVar>);
 
-impl JSValue for EnvVarVecWrapper {
+impl JSValue<'_> for EnvVarVecWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let envs: Vec<EnvVarWrapper> = js_obj.as_value()?;
@@ -581,7 +581,7 @@ impl JSValue for EnvVarVecWrapper {
 
 pub struct SpuConfigWrapper(SpuConfig);
 
-impl JSValue for SpuConfigWrapper {
+impl JSValue<'_> for SpuConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let replication = optional_property!("replication", ReplicationConfigWrapper, js_obj)
@@ -606,7 +606,7 @@ impl JSValue for SpuConfigWrapper {
 #[derive(Debug)]
 struct SpuGroupSpecWrapper(SpuGroupSpec);
 
-impl JSValue for SpuGroupSpecWrapper {
+impl JSValue<'_> for SpuGroupSpecWrapper {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
             let replicas = must_property!("replicas", i32, js_obj) as u16;
@@ -626,7 +626,7 @@ impl JSValue for SpuGroupSpecWrapper {
 
 pub struct CustomSpuKeyWrapper(CustomSpuKey);
 
-impl JSValue for CustomSpuKeyWrapper {
+impl JSValue<'_> for CustomSpuKeyWrapper {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(value) = env.convert_to_rust::<String>(n_value) {
             let key = match value.parse::<i32>() {
