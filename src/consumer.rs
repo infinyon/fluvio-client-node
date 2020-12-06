@@ -2,8 +2,8 @@ use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
 use log::debug;
-use flv_future_aio::task::spawn;
-use flv_future_aio::io::StreamExt;
+use fluvio_future::task::spawn;
+use fluvio_future::io::StreamExt;
 use fluvio::PartitionConsumer;
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::FetchablePartitionResponse;
@@ -141,7 +141,7 @@ impl PartitionConsumerJS {
 
 pub struct OffsetWrapper(Offset);
 
-impl JSValue for OffsetWrapper {
+impl JSValue<'_> for OffsetWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         debug!("convert fetch offset param");
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {

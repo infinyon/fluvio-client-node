@@ -9,7 +9,7 @@ export const DEFAULT_REPLICAS = 3
 export const DEFAULT_ID = 0
 export const DEFAULT_TOPIC = 'message'
 export const DEFAULT_PARTITIONS = 1
-export const DEFAULT_REPLICATION_FACTOR = 3
+export const DEFAULT_REPLICATION_FACTOR = 1
 export const DEFAULT_IGNORE_RACK_ASSIGNMENT = false
 export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
@@ -863,7 +863,7 @@ export function stringToArrayBuffer(data: string): ArrayBuffer {
 }
 
 export function arrayBufferToString(data: ArrayBuffer): string {
-    return String.fromCharCode.apply(null, new Uint8Array(data) as any)
+    return Buffer.from(data).toString('utf8')
 }
 
 export interface Topic {

@@ -21,11 +21,7 @@ async function createTopic() {
         const topicName = uuidV4()
 
         // create topic
-        await admin.createTopic(topicName, {
-            partitions: 1,
-            replicationFactor: 1,
-            ignoreRackAssignment: false,
-        } as TopicReplicaParam)
+        await admin.createTopic(topicName)
 
         console.log('topic created')
     } catch (ex) {

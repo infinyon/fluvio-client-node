@@ -1,10 +1,13 @@
 all:	build
 
-build:	
-	npm run build
+build:
+	npm run build:platform
 
-run_test: 
+run_test: npm_lint
 	npm run test
+
+npm_lint:
+	npm run prettier:check
 
 run_docs:
 	npm run docs
@@ -20,10 +23,10 @@ clean:
 	rm -rf dist
 
 test_produce:	build
-	ts-node ./examples/produce.ts
+	npx ts-node ./examples/produce.ts
 
 test_consume:	build
-	ts-node ./examples/consume.ts
+	npx ts-node ./examples/consume.ts
 
 test_list_topic:	build
 	npx ts-node ./examples/listTopic.ts
