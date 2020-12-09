@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         rust: [stable]
         node: [ '14' ]
     steps:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         rust: [stable]
         node: [ '12', '14' ]
     steps:
@@ -47,6 +47,11 @@ jobs:
       - name: Check Fluvio Installation
         run: |
           fluvio version
+          fluvio topic list
+          fluvio topic create "foobar"
+          sleep 3
+          echo foo | fluvio produce "foobar"
+          fluvio consume foobar -o 0 -d
       - name: Create Topic
         run: |
           fluvio topic create -p 1 -r 1 my-topic
@@ -56,8 +61,10 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           override: true
-      - name: Install nj-cli build
-        run:  cargo install nj-cli
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
@@ -67,8 +74,10 @@ jobs:
           npm install
       - name: Test
         run: |
-          export FLUVIO_DEV=linux
-          npm run test
+          make test_all
+      - name: Run Examples
+        run: |
+          FLUVIO_DEV=$(uname | tr '[:upper:]' '[:lower:]') make examples
   check_security:
     name: check security
     runs-on: ${{ matrix.os }}

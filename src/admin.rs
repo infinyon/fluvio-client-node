@@ -210,6 +210,7 @@ impl FluvioAdminJS {
         name: String,
         spec: SpuGroupSpecWrapper,
     ) -> Result<(), FluvioError> {
+        debug!("Creating a new managed spu: {:?}", spec.0);
         if let Some(client) = &mut self.inner {
             client.create::<SpuGroupSpec>(name, false, spec.0).await?;
             Ok(())

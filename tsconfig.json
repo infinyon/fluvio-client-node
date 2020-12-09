@@ -6,6 +6,7 @@
     "./build.js",
     "./native/**/*",
     "./docs/**/*",
+    "./jest.config.js"
   ],
   "compilerOptions": {
     "target": "es6",
@@ -24,7 +25,7 @@
       "types"
     ],
     "types": [
-      "node"
+      "node", "jest", "mocha"
     ],
     "esModuleInterop": true,
     "experimentalDecorators": true,

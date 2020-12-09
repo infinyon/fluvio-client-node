@@ -2,9 +2,10 @@ all:	build
 
 build:
 	npm run build:platform
+	npm run build:ts
 
-run_test: npm_lint
-	npm run test
+test_all: build
+	RUST_BACKTRACE=full RUST_LOG=fluvio_client_node=debug FLUVIO_DEV=$(shell uname | tr '[:upper:]' '[:lower:]') npx jest -w 1
 
 npm_lint:
 	npm run prettier:check
@@ -22,35 +23,41 @@ run_publish:
 clean:
 	rm -rf dist
 
-test_produce:	build
+examples: example_produce example_list_topic example_create_topic \
+	example_find_topic example_create_custom_spu \
+	example_delete_custom_spu example_create_managed_spu \
+	example_delete_managed_spu # TODO: example_consume example_delete_topic
+
+
+example_produce:	build
 	npx ts-node ./examples/produce.ts
 
-test_consume:	build
+example_consume:	build
 	npx ts-node ./examples/consume.ts
 
-test_list_topic:	build
+example_list_topic:	build
 	npx ts-node ./examples/listTopic.ts
 
-test_create_topic:	build
+example_create_topic:	build
 	npx ts-node ./examples/createTopic.ts
 
-test_delete_topic:	build
+example_delete_topic:	build
 	npx ts-node ./examples/deleteTopic.ts
 
-test_find_topic:	build
+example_find_topic:	build
 	npx ts-node ./examples/findTopic.ts
 
-test_list_spu:	build
+example_list_spu:	build
 	npx ts-node ./examples/listSpu.ts
 
-test_create_custom_spu:	build
+example_create_custom_spu:	build
 	npx ts-node ./examples/createCustomSpu.ts
 
-test_delete_custom_spu:	build
+example_delete_custom_spu:	build
 	npx ts-node ./examples/deleteCustomSpu.ts
 
-test_create_managed_spu:	build
+example_create_managed_spu:	build
 	npx ts-node ./examples/createManagedSpu.ts
 
-test_delete_managed_spu:	build
+example_delete_managed_spu:	build
 	npx ts-node ./examples/deleteManagedSpu.ts
