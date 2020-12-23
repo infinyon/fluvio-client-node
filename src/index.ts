@@ -18,13 +18,15 @@ export const DEFAULT_OFFSET_FROM = 'beginning'
 // Set the path to the native module
 // to be used for the client; Set `FLUVIO_DEV`
 // for development mode
-const native =
+
+const native_path =
     !process.env.FLUVIO_DEV ||
     !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
-        ? require('@fluvio/native')
-        : require(`${process.cwd()}/native/src/${
-              process.env.FLUVIO_DEV
-          }/index.node`)
+        ? '@fluvio/native'
+        : `${process.cwd()}/native/src/${process.env.FLUVIO_DEV}/index.node`
+
+const native = require(`${native_path}`)
+export const PartitionConsumerJS = native.PartitionConsumerJS
 
 /**
  * Top-level Fluvio Client options;
@@ -138,6 +140,7 @@ export class TopicProducer {
 export interface PartitionConsumer {
     fetch(offset: Offset): Promise<FetchablePartitionResponse>
     stream(offset: Offset, cb: (record: string) => void): Promise<void>
+    endStream(): Promise<void>
 }
 
 /**
@@ -178,7 +181,7 @@ export interface PartitionConsumer {
  *
  */
 export class PartitionConsumer {
-    private inner: PartitionConsumer
+    private inner: typeof PartitionConsumerJS // This is from the rust.
 
     /**
      * This method is not intended to be used directly. This is a helper
@@ -207,7 +210,7 @@ export class PartitionConsumer {
      *
      * @param {Offset} offset Describes the location of an event stored in a Fluvio partition
      */
-    async fetch(offset: Offset): Promise<FetchablePartitionResponse | void> {
+    async fetch(offset: Offset): Promise<FetchablePartitionResponse> {
         return await this.inner.fetch(offset)
     }
 

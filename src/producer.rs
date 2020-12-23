@@ -48,6 +48,7 @@ impl TopicProducerJS {
 
     #[node_bindgen]
     async fn send_record(&self, data: String, partition: i32) -> Result<(), FluvioError> {
+        debug!("Sending record: {} to partition: {}", data, partition);
         if let Some(client) = &self.inner {
             client.send_record(data.into_bytes(), partition).await?;
             Ok(())

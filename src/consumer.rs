@@ -111,8 +111,7 @@ impl PartitionConsumerJS {
         cb: F,
     ) -> Result<(), FluvioError> {
         if let Some(client) = &self.inner {
-            spawn(PartitionConsumerJS::stream_inner(client, offset, cb));
-
+            spawn(Self::stream_inner(client, offset, cb));
             Ok(())
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -127,11 +126,16 @@ impl PartitionConsumerJS {
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
-        while let Some(Ok(record)) = stream.next().await {
-            if let Some(bytes) = record.try_into_bytes() {
-                if let Ok(msg) = String::from_utf8(bytes) {
-                    cb(EVENT_EMITTER_NAME.to_owned(), msg)
+        while let Some(next) = stream.next().await {
+            match next {
+                Ok(record) => {
+                    if let Some(bytes) = record.try_into_bytes() {
+                        if let Ok(msg) = String::from_utf8(bytes) {
+                            cb(EVENT_EMITTER_NAME.to_owned(), msg)
+                        }
+                    }
                 }
+                Err(e) => cb("error".to_owned(), format!("{}", e)),
             }
         }
 
