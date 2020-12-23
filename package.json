@@ -1,6 +1,6 @@
 {
     "name": "@fluvio/client",
-    "version": "5.0.0-alpha.10",
+    "version": "0.6.0-beta.1",
     "description": "Node.js binding for Fluvio distributed stream",
     "keywords": [
         "fluvio",
@@ -22,7 +22,7 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@fluvio/native": "0.1.0-alpha.10"
+        "@fluvio/native": "0.6.0-beta.1"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
@@ -32,11 +32,8 @@
         "build:test": "npm run build:ts && npm run build:platform",
         "build:ts": "rm -rf ./dist/ && npm run tsc",
         "build:platform": "node ./build.js",
-        "build:darwin": "nj-cli build -o ./native/src/darwin",
-        "build:linux": "nj-cli build -o ./native/src/linux",
-        "build:win": "nj-cli build -o ./native/src/win",
-        "publish:platform": "node ./build.js && cd native && npm run publish:platform",
-        "publish:native": "npm publish ./native --access public",
+        "publish:platform": "node ./build.js --release && cd native && npm run publish:platform",
+        "publish:native": "cd ./native && npm publish --access public",
         "postinstall": "npm run build:ts",
         "docs": "npx typedoc --out docs ./src/index.ts --theme minimal",
         "test": "npm run build:test && npx jest"

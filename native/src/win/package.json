@@ -1,6 +1,6 @@
 {
   "name": "@fluvio/native-win",
-  "version": "0.1.0-alpha.1",
+  "version": "0.6.0-beta.1",
   "description": "Pre-built Windows Fluvio client for Node.js",
   "main": "./index.node",
   "scripts": {
