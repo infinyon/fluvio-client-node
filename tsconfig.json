@@ -6,6 +6,7 @@
     "./build.js",
     "./native/**/*",
     "./docs/**/*",
+    "src/fluvio.test.ts",
     "./jest.config.js"
   ],
   "compilerOptions": {

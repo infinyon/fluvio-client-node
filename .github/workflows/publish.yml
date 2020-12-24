@@ -3,7 +3,7 @@ name: Publish
 on:
   workflow_dispatch:
   push:
-    tags: 
+    tags:
       - 'v*'
 jobs:
   publish:
@@ -23,9 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           registry-url: 'https://registry.npmjs.org'
-      - name: Install Package
-        run: npm install
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
-        run: npm publish
+        run: npm publish --access public

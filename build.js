@@ -1,15 +1,23 @@
 const exec = require('child_process').exec
+const spawn = require('child_process').spawn
+const args = process.argv
+let release = ''
+if(args[args.length - 1] === '--release') {
+    release = '--release'
+}
 
 const asyncExec = async (cmd) => {
-    exec(cmd, (error, stdout, stderr) => {
+    const events = exec(cmd, (error, stdout, stderr) => {
         if (error) {
             throw error
         }
-
-        console.log(stderr);
-        console.log(stdout);
-
         return true
+    })
+    events.stdout.on('data', (stdout) => {
+        process.stdout.write(stdout);
+    })
+    events.stderr.on('data', (stderr) => {
+        process.stderr.write(stderr);
     })
 }
 
@@ -17,21 +25,17 @@ const asyncExec = async (cmd) => {
 (async () => {
     switch(process.platform) {
         case 'darwin':
-            return await asyncExec("npm run build:darwin");
+            return await asyncExec(`nj-cli build -o ./native/src/darwin ${release}`);
         case 'freebsd':
-            return await asyncExec("npm run build:linux");
-        case 'linux':
-            return await asyncExec("npm run build:linux");
-        case 'openbsd':
-            return await asyncExec("npm run build:linux");
-        case 'sunos':
-            return await asyncExec("npm run build:linux");
-        case 'win32':
-            return await asyncExec("npm run build:win");
-        case 'cygwin':
-            return await asyncExec("npm run build:win");
         case 'netbsd':
-            return await asyncExec("npm run build:linux");
+        case 'linux':
+        case 'openbsd':
+        case 'sunos':
+            return await asyncExec(`nj-cli build -o ./native/src/linux ${release}`);
+        case 'win32':
+        case 'cygwin':
+            return await asyncExec(`nj-cli build -o ./native/src/win ${release}`);
+            return await asyncExec(`nj-cli build -o ./native/src/win ${release}`);
         default:
             console.log("Platform is not supported");
     }
