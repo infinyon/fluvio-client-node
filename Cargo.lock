@@ -382,9 +382,9 @@ dependencies = [
 
 [[package]]
 name = "ctor"
-version = "0.1.16"
+version = "0.1.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fbaabec2c953050352311293be5c6aba8e141ba19d6811862b232d6fd020484"
+checksum = "373c88d9506e2e9230f6107701b7d8425f4cb3f6df108ec3042a26e936666da5"
 dependencies = [
  "quote",
  "syn",
@@ -427,9 +427,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48a9748d763a06b729c30f0a1bb3f2ee4a06ee22e50e49b1313db172f48dfd83"
+checksum = "0cb9b07c583f2daab342f9f7932d982b15bdfe0fe31df96824efeaa089efdb1b"
 dependencies = [
  "async-channel",
  "async-mutex",
@@ -477,17 +477,16 @@ dependencies = [
  "fluvio",
  "fluvio-future",
  "log",
- "node-bindgen 2.1.1",
- "node-bindgen 4.0.0",
+ "node-bindgen",
  "serde",
  "serde_json",
 ]
 
 [[package]]
 name = "fluvio-controlplane-metadata"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5870b4cefcbcceb58040ed9b1c6313297c33a85040d45bf5b3f4eb360d485bd0"
+checksum = "1b8ef9c09da32290fb3a02334129349f31827f97f18a1833d59ec23ccfd7b568"
 dependencies = [
  "async-trait",
  "fluvio-dataplane-protocol",
@@ -503,9 +502,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-dataplane-protocol"
-version = "0.1.2"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5b0c40e3129600926782dd4a3954957e1b846900b20deec9edd4433db9369f5"
+checksum = "64eb7c1fe99a8d2c7720a8a55cadda7e4971852b1de89ed0b163b664edb7f9e8"
 dependencies = [
  "bytes",
  "content_inspector",
@@ -623,9 +622,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-socket"
-version = "0.4.2"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eed04dfe27097f986012b503abe86a03825e38fc3da97b6cdf4c9194aa850f07"
+checksum = "88551bfb7e13fc90da5d297650fa52b1ddc17acc94b3a67fbc9b0a961b671139"
 dependencies = [
  "async-channel",
  "async-mutex",
@@ -664,9 +663,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-stream-model"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c06d4fdb25f09fbc083a93fac4f9f1517978536c171d66457ef737af12e7fb8"
+checksum = "19a3b3c7872b46a27ee6c159157116dd92a75c7112173e459f20faafebac2106"
 dependencies = [
  "async-rwlock",
  "event-listener",
@@ -676,9 +675,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-types"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "482b985a98f0d1383e82332d5738302f4ec4156b04ec9f85455bd8bb2ae84887"
+checksum = "62f47151b9b7faec3345e87bc209b512fe22a301a08f55abd4e2f2edcd65d293"
 dependencies = [
  "tracing",
 ]
@@ -843,11 +842,11 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.1.15"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc587bc0ec293155d5bfa6b9891ec18a1e330c234f896ea47fbada4cadbe47e6"
+checksum = "8fc3cb4d91f53b50155bdcfd23f6a4c39ae1969c2ae85982b135750cccaf5fce"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "libc",
  "wasi 0.9.0+wasi-snapshot-preview1",
 ]
@@ -1050,9 +1049,9 @@ checksum = "47be2f14c678be2fdcab04ab1171db51b2762ce6f0a8ee87c8dd4a04ed216135"
 
 [[package]]
 name = "itoa"
-version = "0.4.6"
+version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc6f3ad7b9d11a0c00842ff8de1b60ee58661048eb8049ed33c73594f359d7e6"
+checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
 
 [[package]]
 name = "js-sys"
@@ -1192,9 +1191,9 @@ dependencies = [
 
 [[package]]
 name = "native-tls"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6fcc7939b5edc4e4f86b1b4a04bb1498afaaf871b1a6691838ed06fcb48d3a3f"
+checksum = "b8d96b2e1c8da3957d58100b09f102c6d9cfdfced01b7ec5a8974044bb09dbd4"
 dependencies = [
  "lazy_static",
  "libc",
@@ -1254,9 +1253,9 @@ dependencies = [
 
 [[package]]
 name = "nj-core"
-version = "2.1.3"
+version = "4.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34883c292f51167554e667d0432067db9e2f28cac43f6572a27716d7b3060a76"
+checksum = "483264204aa168d5dfc56f76f33f3164cbb575565469affe7eef54c75e89c4f3"
 dependencies = [
  "async-trait",
  "ctor",
@@ -1265,33 +1264,16 @@ dependencies = [
  "inventory",
  "libc",
  "log",
- "nj-sys 1.0.0",
- "pin-utils",
-]
-
-[[package]]
-name = "nj-core"
-version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5e65d2daecb585f5888cff21b3f8dbef823e5809cbdeea76d507660377850ab"
-dependencies = [
- "async-trait",
- "ctor",
- "fluvio-future",
- "futures-lite",
- "inventory",
- "libc",
- "log",
- "nj-sys 3.0.0",
+ "nj-sys",
  "num-bigint",
  "pin-utils",
 ]
 
 [[package]]
 name = "nj-derive"
-version = "2.1.1"
+version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b087de4c9209a8a6f00e51354df424e6ca10871940e7a38f305f01a2e10aa600"
+checksum = "26f02d9570a2e5508f10ee33c7b6828a5d8bb49c9bb5779c906fae9087840123"
 dependencies = [
  "Inflector",
  "proc-macro2",
@@ -1301,37 +1283,20 @@ dependencies = [
 
 [[package]]
 name = "nj-sys"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "265486f44e56487f1fceb7f8637344f0a0c7764940ab0e8b52eb12f53a16b3d4"
-
-[[package]]
-name = "nj-sys"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8de78f0e9f8a2a4f224273e282f9b61bfe8d598b22fe9d00a57b09e1f6b1cd51"
 
 [[package]]
 name = "node-bindgen"
-version = "2.1.1"
+version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f913a905854570d8cd1f3c6d76992b7a11cdf06b2bd01dc4cd4853ef3156fc6"
+checksum = "dc09e359efa80ab5ecf2f68e1f0041408b6341a22351ebaacf41bb67694eb4d6"
 dependencies = [
  "nj-build",
- "nj-core 2.1.3",
+ "nj-core",
  "nj-derive",
- "nj-sys 1.0.0",
-]
-
-[[package]]
-name = "node-bindgen"
-version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a06858504ad7d2dd74fc7407b972261e74dedd5ebba82921bfb44a261d4d846"
-dependencies = [
- "nj-core 4.0.0",
- "nj-derive",
- "nj-sys 3.0.0",
+ "nj-sys",
 ]
 
 [[package]]
@@ -1382,9 +1347,9 @@ checksum = "13bd41f508810a131401606d54ac32a467c97172d74ba7662562ebba5ad07fa0"
 
 [[package]]
 name = "openssl"
-version = "0.10.31"
+version = "0.10.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d008f51b1acffa0d3450a68606e6a51c123012edaacb0f4e1426bd978869187"
+checksum = "038d43985d1ddca7a9900630d8cd031b56e4794eecc2e9ea39dd17aa04399a70"
 dependencies = [
  "bitflags",
  "cfg-if 1.0.0",
@@ -1402,9 +1367,9 @@ checksum = "77af24da69f9d9341038eba93a073b1fdaaa1b788221b00a69bce9e762cb32de"
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.59"
+version = "0.9.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de52d8eabd217311538a39bba130d7dea1f1e118010fee7a033d966845e7d5fe"
+checksum = "921fc71883267538946025deffb622905ecad223c28efbfdef9bb59a0175f3e6"
 dependencies = [
  "autocfg",
  "cc",
@@ -1904,9 +1869,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.60"
+version = "1.0.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1500e84d27fe482ed1dc791a56eddc2f230046a040fa908c08bda1d9fb615779"
+checksum = "4fceb2595057b6891a4ee808f70054bd2d12f0e97f1cbb78689b59f676df325a"
 dependencies = [
  "itoa",
  "ryu",
@@ -1937,9 +1902,9 @@ dependencies = [
 
 [[package]]
 name = "signal-hook"
-version = "0.1.16"
+version = "0.1.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "604508c1418b99dfe1925ca9224829bb2a8a9a04dda655cc01fcad46f4ab05ed"
+checksum = "7e31d442c16f047a671b5a71e2161d6e68814012b7f5379d269ebd915fac2729"
 dependencies = [
  "libc",
  "signal-hook-registry",
@@ -1947,9 +1912,9 @@ dependencies = [
 
 [[package]]
 name = "signal-hook-registry"
-version = "1.2.2"
+version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce32ea0c6c56d5eacaeb814fbed9960547021d3edd010ded1425f180536b20ab"
+checksum = "16f1d0fef1604ba8f7a073c7e701f213e056707210e9020af4528e0101ce11a6"
 dependencies = [
  "libc",
 ]
@@ -2006,9 +1971,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "syn"
-version = "1.0.55"
+version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a571a711dddd09019ccc628e1b17fe87c59b09d513c06c026877aa708334f37a"
+checksum = "a9802ddde94170d186eeee5005b798d9c159fa970403f1be19976d0cfb939b72"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2031,18 +1996,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.22"
+version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e9ae34b84616eedaaf1e9dd6026dbe00dcafa92aa0c8077cb69df1fcfe5e53e"
+checksum = "76cc616c6abf8c8928e2fdcc0dbfab37175edd8fb49a4641066ad1364fdab146"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.22"
+version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ba20f23e85b10754cd195504aebf6a27e2e6cbe28c17778a0c930724628dd56"
+checksum = "9be73a2caec27583d0046ef3796c3794f868a5bc813db689eed00c7631275cd1"
 dependencies = [
  "proc-macro2",
  "quote",

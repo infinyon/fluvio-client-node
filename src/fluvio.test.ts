@@ -181,6 +181,7 @@ describe('Fluvio Consumer and Producer', () => {
                     response
                 )}`
             )
+            console.log(`records: ${response.records}`)
 
             let batches = response.records.batches
             expect(batches.length).toBeGreaterThan(0)
@@ -189,6 +190,10 @@ describe('Fluvio Consumer and Producer', () => {
             let record = records[0]
             let msg = record.value
             console.log(`Received ${msg}`)
+            expect(msg).toEqual(`Message: ${i}`)
+
+            let record_strings = response.toRecords()
+            msg = record_strings[0]
             expect(msg).toEqual(`Message: ${i}`)
         }
     })

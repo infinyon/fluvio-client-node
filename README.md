@@ -5,8 +5,8 @@
  </strong>
 </div>
 <br />
-  
-[![Build Status](https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg)](https://github.com/infinyon/flv-client-node/actions) [![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)]() [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE)
+
+[![Build Status](https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg)](https://github.com/infinyon/flv-client-node/actions) [![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)](https://www.npmjs.com/package/@fluvio/client) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE)
 
 ## Installation on NPM
 
@@ -21,7 +21,7 @@ The Fluvio client uses TypeScript for typed definitions.
 Fluvio client uses Typedoc to generate the client API [documentation](https://infinyon.github.io/fluvio-client-node/).
 
 ## Pre-Requisites
-[Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client. 
+[Fluvio](https://github.com/infinyon/fluvio) should be up and running to use the Node fluvio client.
 
 Click the link for installation instructions on the Fluvio GitHub repository.
 
@@ -75,7 +75,7 @@ Please look at [`./examples`](https://github.com/infinyon/fluvio-client-node/tre
 ## Demo Applications
 
 Writing an application and considering using Fluvio? Check out the [`./demos`](https://github.com/infinyon/fluvio-client-node/tree/master/demos) folder for example
-applications using the fluvio node client. 
+applications using the fluvio node client.
 
 __Apps:__
 
