@@ -13,7 +13,7 @@ export const DEFAULT_REPLICATION_FACTOR = 1
 export const DEFAULT_IGNORE_RACK_ASSIGNMENT = false
 export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
-export const DEFAULT_OFFSET_FROM = 'beginning'
+export const DEFAULT_OFFSET_FROM = 'end'
 
 // Set the path to the native module
 // to be used for the client; Set `FLUVIO_DEV`
@@ -138,7 +138,7 @@ export class TopicProducer {
 }
 
 export interface PartitionConsumer {
-    fetch(offset: Offset): Promise<FetchablePartitionResponse>
+    fetch(offset?: Offset): Promise<FetchablePartitionResponse>
     stream(offset: Offset, cb: (record: string) => void): Promise<void>
     endStream(): Promise<void>
 }
@@ -210,7 +210,10 @@ export class PartitionConsumer {
      *
      * @param {Offset} offset Describes the location of an event stored in a Fluvio partition
      */
-    async fetch(offset: Offset): Promise<FetchablePartitionResponse> {
+    async fetch(offset?: Offset): Promise<FetchablePartitionResponse> {
+        if (!offset) {
+            offset = new Offset()
+        }
         return await this.inner.fetch(offset)
     }
 
@@ -787,6 +790,13 @@ export class Offset {
     constructor(options?: Offset) {
         this.index = options?.index || DEFAULT_OFFSET
         this.from = options?.from || DEFAULT_OFFSET_FROM
+    }
+    public static FromBeginning(): Offset {
+        return new Offset({ index: 0, from: OffsetFrom.Beginning })
+    }
+
+    public static FromEnd(): Offset {
+        return new Offset({ index: 0, from: OffsetFrom.End })
     }
 }
 
