@@ -856,6 +856,7 @@ export interface FetchablePartitionResponse {
     lastStableOffset: number
     logStartOffset: number
     records: RecordSet
+    toRecords(): Array<string>
     aborted?: ArrayBuffer
 }
 
