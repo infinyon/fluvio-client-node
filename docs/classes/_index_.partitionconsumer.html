@@ -55,6 +55,9 @@
 					<a href="_index_.partitionconsumer.html#inner" class="tsd-kind-icon">inner</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="_index_.partitionconsumer.html#endstream" class="tsd-kind-icon">end<wbr>Stream</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="_index_.partitionconsumer.html#fetch" class="tsd-kind-icon">fetch</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -129,6 +132,7 @@
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_index_.partitionconsumer.html#endstream" class="tsd-kind-icon">end<wbr>Stream</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_index_.partitionconsumer.html#fetch" class="tsd-kind-icon">fetch</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="_index_.partitionconsumer.html#stream" class="tsd-kind-icon">stream</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_index_.partitionconsumer.html#create" class="tsd-kind-icon">create</a></li>
@@ -149,7 +153,7 @@
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/b48a946/src/index.ts#L181">index.ts:181</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L184">index.ts:184</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -180,10 +184,10 @@
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 				<a name="inner" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagPrivate">Private</span> inner</h3>
-				<div class="tsd-signature tsd-kind-icon">inner<span class="tsd-signature-symbol">:</span> <a href="_index_.partitionconsumer.html" class="tsd-signature-type">PartitionConsumer</a></div>
+				<div class="tsd-signature tsd-kind-icon">inner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="../modules/_index_.html#partitionconsumerjs" class="tsd-signature-type">PartitionConsumerJS</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/b48a946/src/index.ts#L181">index.ts:181</a></li>
+						<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L184">index.ts:184</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -191,16 +195,33 @@
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="fetch" class="tsd-anchor"></a>
-				<h3>fetch</h3>
+				<a name="endstream" class="tsd-anchor"></a>
+				<h3>end<wbr>Stream</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">fetch<span class="tsd-signature-symbol">(</span>offset<span class="tsd-signature-symbol">: </span><a href="_index_.offset.html" class="tsd-signature-type">Offset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_index_.fetchablepartitionresponse.html" class="tsd-signature-type">FetchablePartitionResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">end<wbr>Stream<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/b48a946/src/index.ts#L139">index.ts:139</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L143">index.ts:143</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="fetch" class="tsd-anchor"></a>
+				<h3>fetch</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">fetch<span class="tsd-signature-symbol">(</span>offset<span class="tsd-signature-symbol">?: </span><a href="_index_.offset.html" class="tsd-signature-type">Offset</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_index_.fetchablepartitionresponse.html" class="tsd-signature-type">FetchablePartitionResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L141">index.ts:141</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -215,7 +236,7 @@
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>offset: <a href="_index_.offset.html" class="tsd-signature-type">Offset</a></h5>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> offset: <a href="_index_.offset.html" class="tsd-signature-type">Offset</a></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
 										<p>Describes the location of an event stored in a Fluvio partition</p>
@@ -237,7 +258,7 @@
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/b48a946/src/index.ts#L140">index.ts:140</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L142">index.ts:142</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -281,7 +302,7 @@
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/b48a946/src/index.ts#L195">index.ts:195</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/856fc71/src/index.ts#L198">index.ts:198</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
