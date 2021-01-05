@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         rust: [stable]
         node: [ '14' ]
     steps:
@@ -30,13 +30,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: check prettier
-        run: npm run prettier:check
+        run: make npm_lint
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         rust: [stable]
         node: [ '12', '14' ]
     steps:
@@ -46,7 +46,12 @@ jobs:
           cluster-type: local
       - name: Check Fluvio Installation
         run: |
-          fluvio --help
+          fluvio version
+          fluvio topic list
+          fluvio topic create "foobar"
+          sleep 3
+          echo foo | fluvio produce "foobar"
+          fluvio consume foobar -o 0 -d
       - name: Create Topic
         run: |
           fluvio topic create -p 1 -r 1 my-topic
@@ -55,9 +60,11 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
-          override: true    
-      - name: Install nj-cli build
-        run:  cargo install nj-cli
+          override: true
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
@@ -67,5 +74,28 @@ jobs:
           npm install
       - name: Test
         run: |
-          export FLUVIO_DEV=linux
-          npm run test
+          make test_all
+      - name: Run Examples
+        run: |
+          FLUVIO_DEV=$(uname | tr '[:upper:]' '[:lower:]') make examples
+  check_security:
+    name: check security
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [stable]
+        node: [ '14' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: npm audit
+        run: npm audit
+      - name: Security audit
+        uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

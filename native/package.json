@@ -1,6 +1,6 @@
 {
   "name": "@fluvio/native",
-  "version": "0.1.0-alpha.10",
+  "version": "0.6.0-beta.4",
   "description": "pre-built Fluvio client native node modules for MacOS, Linux, and Windows",
   "main": "./index.js",
   "scripts": {

@@ -13,18 +13,12 @@ crate-type = ["cdylib"]
 test = false
 
 [dependencies]
-anyhow = "1.0.32"
 log = "0.4.8"
-futures = { version = "0.3.4", features = ['async-await'] }
 serde = { version = "1.0.110", features = ["derive"] }
 serde_json = "1.0.53"
-node-bindgen = { version = "2.1.1" }
-fluvio = { version = "0.2.0", features =  ["admin"] }
-flv-util = "0.5.1"
-fluvio-types = { version = "0.1.0" }
-flv-future-aio = { version = "2.4.2", features = ["default", "tls"] }
-fluvio-socket = "0.1.1"
-fluvio-protocol = { version = "0.2.1" }
+node-bindgen = "4.1.0"
+fluvio = { version = "0.3.1", features =  ["admin"] }
+fluvio-future = { version = "0.1.13", features = ["tls", "task", "io"] }
 
 [build-dependencies]
-node-bindgen = { version = "2.1.1", features = ["build"] }
+node-bindgen = { version = "4.1.0", features = ["build"] }

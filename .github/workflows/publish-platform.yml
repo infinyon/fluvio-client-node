@@ -20,7 +20,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
-          override: true    
+          override: true
       - name: Install nj-cli build
         run:  cargo install nj-cli
       - name: Use Node.js ${{ matrix.node }}
@@ -28,8 +28,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           registry-url: 'https://registry.npmjs.org'
-      - name: Install Package
-        run: npm install
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}

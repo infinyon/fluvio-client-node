@@ -9,22 +9,24 @@ export const DEFAULT_REPLICAS = 3
 export const DEFAULT_ID = 0
 export const DEFAULT_TOPIC = 'message'
 export const DEFAULT_PARTITIONS = 1
-export const DEFAULT_REPLICATION_FACTOR = 3
+export const DEFAULT_REPLICATION_FACTOR = 1
 export const DEFAULT_IGNORE_RACK_ASSIGNMENT = false
 export const DEFAULT_MIN_ID = 0
 export const DEFAULT_OFFSET = 0
-export const DEFAULT_OFFSET_FROM = 'beginning'
+export const DEFAULT_OFFSET_FROM = 'end'
 
 // Set the path to the native module
 // to be used for the client; Set `FLUVIO_DEV`
 // for development mode
-const native =
+
+const native_path =
     !process.env.FLUVIO_DEV ||
     !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
-        ? require('@fluvio/native')
-        : require(`${process.cwd()}/native/src/${
-              process.env.FLUVIO_DEV
-          }/index.node`)
+        ? '@fluvio/native'
+        : `${process.cwd()}/native/src/${process.env.FLUVIO_DEV}/index.node`
+
+const native = require(`${native_path}`)
+export const PartitionConsumerJS = native.PartitionConsumerJS
 
 /**
  * Top-level Fluvio Client options;
@@ -136,8 +138,9 @@ export class TopicProducer {
 }
 
 export interface PartitionConsumer {
-    fetch(offset: Offset): Promise<FetchablePartitionResponse>
+    fetch(offset?: Offset): Promise<FetchablePartitionResponse>
     stream(offset: Offset, cb: (record: string) => void): Promise<void>
+    endStream(): Promise<void>
 }
 
 /**
@@ -178,7 +181,7 @@ export interface PartitionConsumer {
  *
  */
 export class PartitionConsumer {
-    private inner: PartitionConsumer
+    private inner: typeof PartitionConsumerJS // This is from the rust.
 
     /**
      * This method is not intended to be used directly. This is a helper
@@ -207,7 +210,10 @@ export class PartitionConsumer {
      *
      * @param {Offset} offset Describes the location of an event stored in a Fluvio partition
      */
-    async fetch(offset: Offset): Promise<FetchablePartitionResponse | void> {
+    async fetch(offset?: Offset): Promise<FetchablePartitionResponse> {
+        if (!offset) {
+            offset = new Offset()
+        }
         return await this.inner.fetch(offset)
     }
 
@@ -520,21 +526,13 @@ export default class Fluvio implements FluvioClient {
     async connect(options?: Partial<Options>): Promise<FluvioClient> {
         // only set connection if client is undefined
         if (!this.client) {
-            const host = options?.host
-                ? options.host
-                : this.options.host
-                ? this.options.host
-                : DEFAULT_HOST
+            const host = options?.host ? options.host : this.options.host
+            const port = options?.port ? options.port : this.options.port
 
-            const port = options?.port
-                ? options.port
-                : this.options.port
-                ? this.options.port
-                : DEFAULT_PORT
-
-            const uri = `${host}:${port}`
-
-            this.client = await this.inner.connect(uri)
+            this.client =
+                host && port
+                    ? await this.inner.connect(`${host}:${port}`)
+                    : await this.inner.connect()
         }
 
         return this as FluvioClient
@@ -793,6 +791,13 @@ export class Offset {
         this.index = options?.index || DEFAULT_OFFSET
         this.from = options?.from || DEFAULT_OFFSET_FROM
     }
+    public static FromBeginning(): Offset {
+        return new Offset({ index: 0, from: OffsetFrom.Beginning })
+    }
+
+    public static FromEnd(): Offset {
+        return new Offset({ index: 0, from: OffsetFrom.End })
+    }
 }
 
 export interface BatchHeader {
@@ -851,6 +856,7 @@ export interface FetchablePartitionResponse {
     lastStableOffset: number
     logStartOffset: number
     records: RecordSet
+    toRecords(): Array<string>
     aborted?: ArrayBuffer
 }
 
@@ -871,7 +877,7 @@ export function stringToArrayBuffer(data: string): ArrayBuffer {
 }
 
 export function arrayBufferToString(data: ArrayBuffer): string {
-    return String.fromCharCode.apply(null, new Uint8Array(data) as any)
+    return Buffer.from(data).toString('utf8')
 }
 
 export interface Topic {

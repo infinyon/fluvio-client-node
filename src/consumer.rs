@@ -2,11 +2,11 @@ use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
 use log::debug;
-use flv_future_aio::task::spawn;
-use flv_future_aio::io::StreamExt;
+use fluvio_future::task::spawn;
+use fluvio_future::io::StreamExt;
 use fluvio::PartitionConsumer;
 use fluvio::{Offset, FluvioError};
-use fluvio::dataplane::fetch::FetchablePartitionResponse;
+use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
 
 use node_bindgen::derive::node_bindgen;
@@ -24,16 +24,8 @@ use node_bindgen::core::buffer::ArrayBuffer;
 // index.ts file; There should be no need to change this value;
 const EVENT_EMITTER_NAME: &str = "data";
 
-const PARTITION_INDEX_KEY: &str = "partitionIndex";
-const ERROR_CODE_KEY: &str = "errorCode";
-const HIGH_WATERMARK_KEY: &str = "highWatermark";
-const LAST_STABLE_OFFSET_KEY: &str = "lastStableOffset";
-const LOG_START_OFFSET_KEY: &str = "logStartOffset";
-
 const PRODUCER_ID_KEY: &str = "producerId";
-const FIRST_OFFSET_KEY: &str = "firstOffset";
 
-const ABORTED_KEY: &str = "aborted";
 const RECORDS_KEY: &str = "records";
 
 const PARTITION_LEADER_EPOCH_KEY: &str = "partitionLeaderEpoch";
@@ -49,6 +41,8 @@ const FIRST_SEQUENCE_KEY: &str = "firstSequence";
 const BATCH_OFFSET_KEY: &str = "baseOffset";
 const BATCH_LENGTH_KEY: &str = "batchLength";
 const HEADER_KEY: &str = "header";
+
+const FIRST_OFFSET_KEY: &str = "firstOffset";
 
 const HEADERS_KEY: &str = "headers";
 const KEY_KEY: &str = "key";
@@ -98,7 +92,7 @@ impl PartitionConsumerJS {
     ) -> Result<FetchablePartitionResponseWrapper, FluvioError> {
         if let Some(client) = &self.inner {
             let response = client.fetch(offset.0).await?;
-            Ok(FetchablePartitionResponseWrapper(response))
+            Ok(FetchablePartitionResponseWrapper(Some(response)))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
@@ -111,8 +105,7 @@ impl PartitionConsumerJS {
         cb: F,
     ) -> Result<(), FluvioError> {
         if let Some(client) = &self.inner {
-            spawn(PartitionConsumerJS::stream_inner(client, offset, cb));
-
+            spawn(Self::stream_inner(client, offset, cb));
             Ok(())
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -127,11 +120,16 @@ impl PartitionConsumerJS {
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
-        while let Some(Ok(record)) = stream.next().await {
-            if let Some(bytes) = record.try_into_bytes() {
-                if let Ok(msg) = String::from_utf8(bytes) {
-                    cb(EVENT_EMITTER_NAME.to_owned(), msg)
+        while let Some(next) = stream.next().await {
+            match next {
+                Ok(record) => {
+                    if let Some(bytes) = record.try_into_bytes() {
+                        if let Ok(msg) = String::from_utf8(bytes) {
+                            cb(EVENT_EMITTER_NAME.to_owned(), msg)
+                        }
+                    }
                 }
+                Err(e) => cb("error".to_owned(), format!("{}", e)),
             }
         }
 
@@ -141,7 +139,7 @@ impl PartitionConsumerJS {
 
 pub struct OffsetWrapper(Offset);
 
-impl JSValue for OffsetWrapper {
+impl JSValue<'_> for OffsetWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         debug!("convert fetch offset param");
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
@@ -169,63 +167,120 @@ impl JSValue for OffsetWrapper {
     }
 }
 
-pub struct FetchablePartitionResponseWrapper(FetchablePartitionResponse<RecordSet>);
+pub struct FetchablePartitionResponseWrapper(Option<FetchablePartitionResponse<RecordSet>>);
+
+#[node_bindgen]
+impl<'a> FetchablePartitionResponseWrapper {
+    #[node_bindgen(constructor)]
+    fn new() -> Self {
+        Self(None)
+    }
+    fn set_inner(&mut self, inner: Option<FetchablePartitionResponse<RecordSet>>) {
+        self.0 = inner;
+    }
+    #[node_bindgen(getter)]
+    fn error_code(&self) -> Option<i32> {
+        Some(self.0.as_ref()?.error_code as i32)
+    }
+
+    #[node_bindgen(getter)]
+    fn partition_index(&self) -> Option<i32> {
+        Some(self.0.as_ref()?.partition_index)
+    }
+
+    #[node_bindgen(getter)]
+    fn high_watermark(&self) -> Option<i64> {
+        Some(self.0.as_ref()?.high_watermark)
+    }
+
+    #[node_bindgen(getter)]
+    fn last_stable_offset(&self) -> Option<i64> {
+        Some(self.0.as_ref()?.last_stable_offset)
+    }
+
+    #[node_bindgen(getter)]
+    fn log_start_offset(&self) -> Option<i64> {
+        Some(self.0.as_ref()?.log_start_offset)
+    }
+    #[node_bindgen(getter)]
+    fn aborted(&'a self) -> Vec<AbortedTransactionWrapper> {
+        let mut aborted_transactions: Vec<AbortedTransactionWrapper> = Vec::new();
+
+        let inner = if let Some(inner) = self.0.as_ref() {
+            inner
+        } else {
+            return Vec::new();
+        };
+
+        if let Some(ref transactions) = inner.aborted {
+            for i in transactions {
+                aborted_transactions.push(AbortedTransactionWrapper(&i));
+            }
+        }
+        aborted_transactions
+    }
+
+    #[node_bindgen(getter)]
+    fn records(&'a self) -> Option<RecordSetWrapper> {
+        Some(RecordSetWrapper(&self.0.as_ref()?.records))
+    }
+    #[node_bindgen]
+    fn to_records(&'a self) -> Vec<String> {
+        let mut records = Vec::new();
+        let inner = if let Some(inner) = self.0.as_ref() {
+            inner
+        } else {
+            return Vec::new();
+        };
+        for batch in &inner.records.batches {
+            for record in &batch.records {
+                let value = record.get_value().inner_value_ref().clone();
+                let value = if let Some(value) = value {
+                    value
+                } else {
+                    continue;
+                };
+                if let Ok(value) = String::from_utf8(value) {
+                    records.push(value);
+                }
+            }
+        }
+        records
+    }
+}
+pub struct AbortedTransactionWrapper<'a>(&'a AbortedTransaction);
+impl TryIntoJs for AbortedTransactionWrapper<'_> {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        let mut tx = JsObject::create(js_env)?;
+        let producer_id = js_env.create_int64(self.0.producer_id)?;
+        let first_offset = js_env.create_int64(self.0.first_offset)?;
+        tx.set_property(PRODUCER_ID_KEY, producer_id)?;
+        tx.set_property(FIRST_OFFSET_KEY, first_offset)?;
+        tx.try_to_js(js_env)
+    }
+}
 
 impl TryIntoJs for FetchablePartitionResponseWrapper {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
-        // Create JS Variables
-        let partition_index = js_env.create_int32(self.0.partition_index)?;
-        let error_code = js_env.create_int32(self.0.error_code as i32)?;
-        let high_watermark = js_env.create_int64(self.0.high_watermark)?;
-        let last_stable_offset = js_env.create_int64(self.0.last_stable_offset)?;
-        let log_start_offset = js_env.create_int64(self.0.log_start_offset)?;
-
-        let mut response = JsObject::create(js_env)?;
-
-        // Set response object values;
-        response.set_property(PARTITION_INDEX_KEY, partition_index)?;
-        response.set_property(ERROR_CODE_KEY, error_code)?;
-        response.set_property(HIGH_WATERMARK_KEY, high_watermark)?;
-        response.set_property(LAST_STABLE_OFFSET_KEY, last_stable_offset)?;
-        response.set_property(LOG_START_OFFSET_KEY, log_start_offset)?;
-
-        if let Some(transactions) = self.0.aborted {
-            let aborted = js_env.create_array_with_len(transactions.len())?;
-            for (index, transaction) in transactions.into_iter().enumerate() {
-                let mut tx = JsObject::create(js_env)?;
-                let producer_id = js_env.create_int64(transaction.producer_id)?;
-                let first_offset = js_env.create_int64(transaction.first_offset)?;
-                tx.set_property(PRODUCER_ID_KEY, producer_id)?;
-                tx.set_property(FIRST_OFFSET_KEY, first_offset)?;
-                let element = tx.try_to_js(js_env)?;
-
-                // Update the array of aborted transactions;
-                js_env.set_element(aborted, element, index)?;
-            }
-
-            // set the aborted transactions;
-            response.set_property(ABORTED_KEY, aborted)?;
-        }
-
-        let record_set = RecordSetWrapper(self.0.records).try_to_js(js_env)?;
-
-        response.set_property(RECORDS_KEY, record_set)?;
-
-        response.try_to_js(js_env)
+        debug!("converting FluvioWrapper to js");
+        let new_instance = FetchablePartitionResponseWrapper::new_instance(js_env, vec![])?;
+        FetchablePartitionResponseWrapper::unwrap_mut(js_env, new_instance)?.set_inner(self.0);
+        debug!("instance created");
+        Ok(new_instance)
     }
 }
 
 #[derive(Debug)]
-pub struct RecordSetWrapper(RecordSet);
+pub struct RecordSetWrapper<'a>(&'a RecordSet);
 
-impl TryIntoJs for RecordSetWrapper {
+impl TryIntoJs for RecordSetWrapper<'_> {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
         debug!("Converting record to JS: {:#?}", self.0);
         let mut record_set = JsObject::create(js_env)?;
 
         let batches = js_env.create_array_with_len(self.0.batches.len())?;
 
-        for (index, batch) in self.0.batches.into_iter().enumerate() {
+        for (index, batch) in self.0.batches.iter().enumerate() {
             let mut new_batch = JsObject::create(js_env)?;
 
             let base_offset = js_env.create_int64(batch.base_offset)?;
@@ -262,7 +317,7 @@ impl TryIntoJs for RecordSetWrapper {
             new_batch.set_property(HEADER_KEY, batch_header.try_to_js(js_env)?)?;
 
             let records = js_env.create_array_with_len(batch.records.len())?;
-            for (index, record) in batch.records.into_iter().enumerate() {
+            for (index, record) in batch.records.iter().enumerate() {
                 // debug!("Converting Record to JS value, {:#?}", record);
 
                 debug!("Record Value: {:#?}", record.get_value());
@@ -271,9 +326,8 @@ impl TryIntoJs for RecordSetWrapper {
                 let headers = js_env.create_int64(record.headers)?;
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
-                let value = record
-                    .value()
-                    .inner_value()
+                let value = record.get_value().inner_value_ref().clone();
+                let value = value
                     .and_then(|value| {
                         if let Ok(v) = std::str::from_utf8(&value) {
                             Some(v.to_owned())
