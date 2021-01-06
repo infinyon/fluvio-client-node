@@ -3,7 +3,7 @@ name: Docs
 on:
   workflow_dispatch:
   push:
-    tags: 
+    tags:
       - 'v*'
 jobs:
   docs:
@@ -28,7 +28,7 @@ jobs:
           git config --local user.name "Fluvio Authors"
           git fetch --all
           git checkout -b docs --track origin/docs
-          git merge origin/master
+          git merge -X theirs origin/master -m "Merge remote-tracking branch 'origin/master' into docs"
       - name: Install Build Dependencies
         run: |
           npm install
