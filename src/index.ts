@@ -856,6 +856,14 @@ export interface FetchablePartitionResponse {
     lastStableOffset: number
     logStartOffset: number
     records: RecordSet
+    /**
+     * ```typescript
+     * let response = await this.fluvioConsumer.fetch(Offset.FromStart())
+     * response.toRecords().forEach(msg => {
+     *    console.log(msg)
+     * })
+     * ```
+     */
     toRecords(): Array<string>
     aborted?: ArrayBuffer
 }

@@ -224,6 +224,7 @@ impl<'a> FetchablePartitionResponseWrapper {
     fn records(&'a self) -> Option<RecordSetWrapper> {
         Some(RecordSetWrapper(&self.0.as_ref()?.records))
     }
+
     #[node_bindgen]
     fn to_records(&'a self) -> Vec<String> {
         let mut records = Vec::new();
