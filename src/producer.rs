@@ -11,28 +11,26 @@ use node_bindgen::core::TryIntoJs;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
 
-pub struct TopicProducerWrapper {
-    client: TopicProducer,
-}
-
-impl TopicProducerWrapper {
-    pub fn new(client: TopicProducer) -> Self {
-        Self { client }
-    }
-}
-
-impl TryIntoJs for TopicProducerWrapper {
+impl TryIntoJs for TopicProducerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
         debug!("converting FluvioWrapper to js");
         let new_instance = TopicProducerJS::new_instance(js_env, vec![])?;
         debug!("instance created");
-        TopicProducerJS::unwrap_mut(js_env, new_instance)?.set_client(self.client);
+        if let Some(inner) = self.inner {
+            TopicProducerJS::unwrap_mut(js_env, new_instance)?.set_client(inner);
+        }
         Ok(new_instance)
     }
 }
 
 pub struct TopicProducerJS {
     inner: Option<TopicProducer>,
+}
+
+impl From<TopicProducer> for TopicProducerJS {
+    fn from(inner: TopicProducer) -> Self {
+        Self { inner: Some(inner) }
+    }
 }
 
 #[node_bindgen]

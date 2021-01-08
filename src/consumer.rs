@@ -50,28 +50,26 @@ const VALUE_KEY: &str = "value";
 
 const BATCHES_KEY: &str = "batches";
 
-pub struct PartitionConsumerWrapper {
-    client: PartitionConsumer,
-}
-
-impl PartitionConsumerWrapper {
-    pub fn new(client: PartitionConsumer) -> Self {
-        Self { client }
-    }
-}
-
-impl TryIntoJs for PartitionConsumerWrapper {
+impl TryIntoJs for PartitionConsumerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
-        debug!("converting FluvioWrapper to js");
+        debug!("converting PartitionConsumerJS to js");
         let new_instance = PartitionConsumerJS::new_instance(js_env, vec![])?;
         debug!("instance created");
-        PartitionConsumerJS::unwrap_mut(js_env, new_instance)?.set_client(self.client);
+        if let Some(inner) = self.inner {
+            PartitionConsumerJS::unwrap_mut(js_env, new_instance)?.set_client(inner);
+        }
         Ok(new_instance)
     }
 }
 
 pub struct PartitionConsumerJS {
     inner: Option<PartitionConsumer>,
+}
+
+impl From<PartitionConsumer> for PartitionConsumerJS {
+    fn from(inner: PartitionConsumer) -> Self {
+        Self { inner: Some(inner) }
+    }
 }
 
 #[node_bindgen]
@@ -132,6 +130,7 @@ impl PartitionConsumerJS {
                 Err(e) => cb("error".to_owned(), format!("{}", e)),
             }
         }
+        debug!("Stream ended!");
 
         Ok(())
     }

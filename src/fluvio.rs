@@ -1,7 +1,7 @@
 use crate::CLIENT_NOT_FOUND_ERROR_MSG;
-use crate::admin::FluvioAdminWrapper;
-use crate::consumer::PartitionConsumerWrapper;
-use crate::producer::TopicProducerWrapper;
+use crate::admin::FluvioAdminJS;
+use crate::consumer::PartitionConsumerJS;
+use crate::producer::TopicProducerJS;
 
 use log::debug;
 
@@ -14,21 +14,20 @@ use node_bindgen::core::val::JsEnv;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
 
-// simple wrapper to facilitate conversion to JS Class
-pub struct FluvioWrapper(Fluvio);
-
-impl From<Fluvio> for FluvioWrapper {
-    fn from(client: Fluvio) -> Self {
-        Self(client)
+impl From<Fluvio> for FluvioJS {
+    fn from(inner: Fluvio) -> Self {
+        Self { inner: Some(inner) }
     }
 }
 
-impl TryIntoJs for FluvioWrapper {
+impl TryIntoJs for FluvioJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
-        debug!("converting FluvioWrapper to js");
+        debug!("converting FluvioJS to js");
         let new_instance = FluvioJS::new_instance(js_env, vec![])?;
         debug!("instance created");
-        FluvioJS::unwrap_mut(js_env, new_instance)?.set_client(self.0);
+        if let Some(inner) = self.inner {
+            FluvioJS::unwrap_mut(js_env, new_instance)?.set_client(inner);
+        }
         Ok(new_instance)
     }
 }
@@ -49,10 +48,10 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    async fn admin(&mut self) -> Result<FluvioAdminWrapper, FluvioError> {
+    async fn admin(&mut self) -> Result<FluvioAdminJS, FluvioError> {
         if let Some(client) = &mut self.inner {
             let admin_client = client.admin().await;
-            Ok(FluvioAdminWrapper::new(admin_client))
+            Ok(FluvioAdminJS::from(admin_client))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
@@ -63,9 +62,9 @@ impl FluvioJS {
         &mut self,
         topic: String,
         partition: i32,
-    ) -> Result<PartitionConsumerWrapper, FluvioError> {
+    ) -> Result<PartitionConsumerJS, FluvioError> {
         if let Some(client) = &mut self.inner {
-            Ok(PartitionConsumerWrapper::new(
+            Ok(PartitionConsumerJS::from(
                 client.partition_consumer(topic, partition).await?,
             ))
         } else {
@@ -74,11 +73,9 @@ impl FluvioJS {
     }
 
     #[node_bindgen]
-    async fn topic_producer(&mut self, topic: String) -> Result<TopicProducerWrapper, FluvioError> {
+    async fn topic_producer(&mut self, topic: String) -> Result<TopicProducerJS, FluvioError> {
         if let Some(client) = &mut self.inner {
-            Ok(TopicProducerWrapper::new(
-                client.topic_producer(topic).await?,
-            ))
+            Ok(TopicProducerJS::from(client.topic_producer(topic).await?))
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }

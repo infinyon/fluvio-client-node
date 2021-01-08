@@ -43,20 +43,20 @@ const RESOLUTION_KEY: &str = "resolution";
 const LSR_KEY: &str = "lsr";
 const REPLICAS_KEY: &str = "replicas";
 
-pub struct FluvioAdminWrapper(FluvioAdmin);
-
-impl FluvioAdminWrapper {
-    pub fn new(client: FluvioAdmin) -> Self {
-        Self(client)
+impl From<FluvioAdmin> for FluvioAdminJS {
+    fn from(inner: FluvioAdmin) -> Self {
+        Self { inner: Some(inner) }
     }
 }
 
-impl TryIntoJs for FluvioAdminWrapper {
+impl TryIntoJs for FluvioAdminJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
         debug!("converting FluvioWrapper to js");
         let new_instance = FluvioAdminJS::new_instance(js_env, vec![])?;
         debug!("instance created");
-        FluvioAdminJS::unwrap_mut(js_env, new_instance)?.set_client(self.0);
+        if let Some(inner) = self.inner {
+            FluvioAdminJS::unwrap_mut(js_env, new_instance)?.set_client(inner);
+        }
         Ok(new_instance)
     }
 }
