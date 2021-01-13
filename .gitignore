@@ -6,3 +6,4 @@ docs
 logs
 **/.DS_Store
 native/**/*/index.node
+.idea/
