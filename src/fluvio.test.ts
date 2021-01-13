@@ -243,6 +243,71 @@ describe('Fluvio Consumer and Producer', () => {
     })
     */
 })
+describe('Fluvio Producer and Consume using AsyncIterator', () => {
+    jest.setTimeout(100000) // 100 seconds
+    let admin: FluvioAdmin
+    let fluvio: Fluvio
+    let topic: string
+
+    beforeAll(async () => {
+        topic = uuidV4()
+        fluvio = await Fluvio.connect()
+        admin = await fluvio.admin()
+        console.log(`Creating topic ${topic}`)
+        const new_topic = await admin.createTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    afterAll(async () => {
+        console.log(`Deleting topic ${topic}`)
+        await admin.deleteTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    test('Send and Consume using iterator!', async () => {
+        const producer = await fluvio.topicProducer(topic)
+        const messages: string[] = []
+
+        const MAX_COUNT = 10
+        const partition = 0
+        console.log('send records')
+        for (let i = 0; i < MAX_COUNT; i++) {
+            const msg = `Message: ${i}`
+            console.log(`sending message ${msg}`)
+            let error
+            for (let j = 0; j < 10; j++) {
+                try {
+                    await producer.sendRecord(msg, partition)
+                    error = undefined
+                    break
+                } catch (e) {
+                    console.log(`ERROR error: ${e}`)
+                    error = e
+                }
+            }
+            if (error !== undefined) {
+                throw error
+            }
+            expect(error).toBeUndefined()
+            messages.push(msg)
+            console.log(`sent message ${msg}`)
+        }
+        console.log(`Getting a consumer for ${topic}`)
+
+        const offsetIndex = 0
+        const consumer = await fluvio.partitionConsumer(topic, partition)
+        let counter = 0
+        for await (const next of await consumer.createStream(
+            Offset.FromBeginning()
+        )) {
+            expect(next).toEqual(`Message: ${counter}`)
+            counter++
+            if (counter >= MAX_COUNT) {
+                break
+            }
+        }
+    })
+})
 
 /*
 describe('Multiple Fluvio Instances', () => {

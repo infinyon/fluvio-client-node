@@ -20,6 +20,10 @@ use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
 use std::sync::Arc;
 
+use fluvio_future::io::Stream;
+use fluvio::consumer::Record;
+use std::pin::Pin;
+
 // data corresponds to the JS event emitter `event.on('data', cb)`;
 // If this variable is changed, also need to update emitter method in TypeScript
 // index.ts file; There should be no need to change this value;
@@ -136,6 +140,126 @@ impl PartitionConsumerJS {
         debug!("Stream ended!");
 
         Ok(())
+    }
+
+    #[node_bindgen]
+    async fn create_stream(
+        &self,
+        offset: OffsetWrapper,
+    ) -> Result<PartitionConsumerIterator, FluvioError> {
+        if let Some(client) = &self.inner {
+            let stream = client.stream(offset.0).await?;
+            let mut iterator = PartitionConsumerIterator::new();
+            iterator.set_inner(Box::pin(stream));
+            Ok(iterator)
+        } else {
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+        }
+    }
+}
+
+type PartitionConsumerIteratorInner =
+    Pin<Box<dyn Stream<Item = Result<Record, FluvioError>> + Send>>;
+
+pub struct PartitionConsumerIterator {
+    inner: Option<PartitionConsumerIteratorInner>,
+}
+
+#[node_bindgen]
+impl PartitionConsumerIterator {
+    #[node_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self { inner: None }
+    }
+    pub fn set_inner(&mut self, client: PartitionConsumerIteratorInner) {
+        self.inner.replace(client);
+    }
+
+    #[node_bindgen]
+    async fn next(&mut self) -> Result<IterItem, FluvioError> {
+        if let Some(ref mut inner) = self.inner {
+            let next = inner.next().await;
+            let next: IterItem = if let Some(next) = next {
+                Some(next?).into()
+            } else {
+                None.into()
+            };
+            Ok(next)
+        } else {
+            Ok(None.into())
+        }
+    }
+}
+
+impl TryIntoJs for PartitionConsumerIterator {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        debug!("converting PartitionConsumerJS to js");
+        let new_instance = PartitionConsumerIterator::new_instance(js_env, vec![])?;
+        debug!("instance created");
+        if let Some(inner) = self.inner {
+            PartitionConsumerIterator::unwrap_mut(js_env, new_instance)?.set_inner(inner);
+        }
+        Ok(new_instance)
+    }
+}
+
+impl From<Option<Record>> for IterItem {
+    fn from(value: Option<Record>) -> Self {
+        let value = if let Some(value) = value {
+            if let Some(value) = value.try_into_bytes() {
+                if let Ok(value) = String::from_utf8(value) {
+                    Some(value)
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+        let done = value.is_none();
+        Self { value, done }
+    }
+}
+
+struct IterItem {
+    pub value: Option<String>,
+    pub done: bool,
+}
+
+#[node_bindgen]
+impl IterItem {
+    #[node_bindgen(constructor)]
+    fn new() -> Self {
+        Self {
+            value: None,
+            done: true,
+        }
+    }
+    fn set_inner(&mut self, (value, done): (Option<String>, bool)) {
+        self.value = value;
+        self.done = done;
+    }
+
+    #[node_bindgen(getter)]
+    fn value(&self) -> Option<String> {
+        self.value.clone()
+    }
+
+    #[node_bindgen(getter)]
+    fn done(&self) -> bool {
+        self.done
+    }
+}
+
+impl TryIntoJs for IterItem {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        debug!("converting NextIter to js");
+        let new_instance = IterItem::new_instance(js_env, vec![])?;
+        debug!("instance created");
+        IterItem::unwrap_mut(js_env, new_instance)?.set_inner((self.value, self.done));
+        Ok(new_instance)
     }
 }
 
