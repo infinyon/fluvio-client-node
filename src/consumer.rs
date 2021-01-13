@@ -18,6 +18,7 @@ use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
 use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
+use std::sync::Arc;
 
 // data corresponds to the JS event emitter `event.on('data', cb)`;
 // If this variable is changed, also need to update emitter method in TypeScript
@@ -63,12 +64,14 @@ impl TryIntoJs for PartitionConsumerJS {
 }
 
 pub struct PartitionConsumerJS {
-    inner: Option<PartitionConsumer>,
+    inner: Option<Arc<PartitionConsumer>>,
 }
 
 impl From<PartitionConsumer> for PartitionConsumerJS {
     fn from(inner: PartitionConsumer) -> Self {
-        Self { inner: Some(inner) }
+        Self {
+            inner: Some(Arc::new(inner)),
+        }
     }
 }
 
@@ -79,7 +82,7 @@ impl PartitionConsumerJS {
         Self { inner: None }
     }
 
-    pub fn set_client(&mut self, client: PartitionConsumer) {
+    pub fn set_client(&mut self, client: Arc<PartitionConsumer>) {
         self.inner.replace(client);
     }
 
@@ -98,12 +101,12 @@ impl PartitionConsumerJS {
 
     #[node_bindgen(mt)]
     async fn stream<F: Fn(String, String) + 'static + Send + Sync>(
-        &'static self,
+        &self,
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<(), FluvioError> {
         if let Some(client) = &self.inner {
-            spawn(Self::stream_inner(client, offset, cb));
+            spawn(Self::stream_inner(client.clone(), offset, cb));
             Ok(())
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -111,7 +114,7 @@ impl PartitionConsumerJS {
     }
 
     async fn stream_inner<F: Fn(String, String)>(
-        client: &'static PartitionConsumer,
+        client: Arc<PartitionConsumer>,
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<(), FluvioError> {
