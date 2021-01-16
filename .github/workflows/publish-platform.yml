@@ -2,6 +2,8 @@ name: Publish @fluvio/native-<platform>
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [publish_platform]
 jobs:
   platform:
     name: Publish Platform Specific Native Fluvio Client Modules to NPM
@@ -22,7 +24,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           override: true
       - name: Install nj-cli build
-        run:  cargo install nj-cli
+        run: cargo install nj-cli
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:

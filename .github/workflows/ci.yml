@@ -99,3 +99,22 @@ jobs:
         uses: actions-rs/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  trigger-publishes:
+    needs: [check_security, smoke_test, check_fmt]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish docs
+        run: |
+          curl -v -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/infinyon/fluvio-client-node/dispatches -d '{"event_type":"publish_docs"}'
+      - name: Check and publish for @fluvio/client
+        run: |
+          [ $(jq .version package.json -r) != $(npm view @fluvio/client version) ] && curl -v -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/infinyon/fluvio-client-node/dispatches -d '{"event_type":"publish_client"}'
+      - name: Check and publish for @fluvio/native
+        run: |
+          [ $(jq .version native/package.json -r) != $(npm view @fluvio/native version) ] && curl -v -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/infinyon/fluvio-client-node/dispatches -d '{"event_type":"publish_native"}'
+      - name: Check and publish for @fluvio/native-linux
+        run: |
+          [ $(jq .version native/src/linux/package.json -r) != $(npm view @fluvio/native-linux version) ] && curl -v -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/infinyon/fluvio-client-node/dispatches -d '{"event_type":"publish_platform"}'

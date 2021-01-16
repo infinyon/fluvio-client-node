@@ -1,6 +1,6 @@
 {
   "name": "@fluvio/native-linux",
-  "version": "0.6.0-beta.4",
+  "version": "0.6.0-beta.5",
   "description": "Pre-built Linux Fluvio client for Node.js",
   "main": "./index.node",
   "scripts": {
