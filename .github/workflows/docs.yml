@@ -2,8 +2,8 @@ name: Docs
 
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: [publish_docs]
+  push:
+    branches: [ master ]
   push:
     tags:
       - 'v*'
