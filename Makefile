@@ -35,6 +35,9 @@ example_produce:	build
 example_consume:	build
 	npx ts-node ./examples/consume.ts
 
+example_iterator:	build
+	npx ts-node ./examples/iterator.ts
+
 example_list_topic:	build
 	npx ts-node ./examples/listTopic.ts
 

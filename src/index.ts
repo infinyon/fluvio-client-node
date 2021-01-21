@@ -225,6 +225,24 @@ export class PartitionConsumer {
         await this.inner.stream(offset, event.emit.bind(event))
         return
     }
+
+    /**
+     * This returns an [`AsyncIterable`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator).
+     * Usage:
+     * ```typescript
+     * const stream = await consumer.getIterator(Offset.FromBeginning())
+     * for await (const next of stream) {
+     *     console.log(next)
+     * }
+     * ```
+     */
+    async createStream(offset: Offset): Promise<AsyncIterable<string>> {
+        let stream = await this.inner.createStream(offset)
+        stream[Symbol.asyncIterator] = () => {
+            return stream
+        }
+        return stream
+    }
 }
 
 export interface FluvioAdmin {
