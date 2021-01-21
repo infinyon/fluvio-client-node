@@ -23,8 +23,11 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           override: true
+          components: clippy
       - name: check fmt
         run: cargo fmt -- --check
+      - name: check clippy
+        run: cargo clippy -- -D warnings
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:

@@ -1,7 +1,7 @@
 use crate::{CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
-use std::convert::{TryFrom, TryInto};
+use std::convert::{TryInto};
 use std::fmt::Display;
 use log::debug;
 
@@ -321,7 +321,7 @@ impl JSValue<'_> for PartitionSpecWrapper {
 
             Ok(Self(PartitionSpec { leader, replicas }))
         } else {
-            return Err(NjError::Other("must pass json param".to_owned()));
+            Err(NjError::Other("must pass json param".to_owned()))
         }
     }
 }
@@ -376,7 +376,7 @@ impl JSValue<'_> for TopicSpecWrapper {
                 })))
             }
         } else {
-            return Err(NjError::Other("must pass json param".to_owned()));
+            Err(NjError::Other("must pass json param".to_owned()))
         }
     }
 }
@@ -404,7 +404,7 @@ impl JSValue<'_> for IngressAddrWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
             let hostname = optional_property!("hostname", String, js_obj);
-            let hostname = Some(hostname.unwrap_or("localhost".to_string()));
+            let hostname = Some(hostname.unwrap_or_else(|| "localhost".to_string()));
             let ip = optional_property!("ip", String, js_obj);
 
             debug!("Hostname: {:?}", hostname);
@@ -487,12 +487,10 @@ impl JSValue<'_> for CustomSpuSpecWrapper {
             let id = must_property!("id", i32, js_obj);
 
             let public_endpoint: IngressPortWrapper =
-                TryFrom::try_from(must_property!("publicEndpoint", IngressPortWrapper, js_obj))
-                    .map_err(|err: std::convert::Infallible| NjError::Other(err.to_string()))?;
+                must_property!("publicEndpoint", IngressPortWrapper, js_obj);
 
             let private_endpoint: EndpointWrapper =
-                TryFrom::try_from(must_property!("privateEndpoint", EndpointWrapper, js_obj))
-                    .map_err(|err: std::convert::Infallible| NjError::Other(err.to_string()))?;
+                must_property!("privateEndpoint", EndpointWrapper, js_obj);
 
             let rack = optional_property!("rack", String, js_obj);
 
@@ -517,7 +515,9 @@ impl JSValue<'_> for DeleteCustomSpu {
         } else if let Ok(name) = env.convert_to_rust::<String>(n_value) {
             Ok(Self(CustomSpu::Name(name)))
         } else {
-            Err(NjError::Other(format!("spu id must be number or string")))
+            Err(NjError::Other(
+                "spu id must be number or string".to_string(),
+            ))
         }
     }
 }
@@ -532,7 +532,7 @@ impl JSValue<'_> for ReplicationConfigWrapper {
                 in_sync_replica_min,
             }))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
@@ -575,7 +575,7 @@ impl JSValue<'_> for EnvVarVecWrapper {
             let envs: Vec<EnvVarWrapper> = js_obj.as_value()?;
             Ok(Self(envs.into_iter().map(|env| env.0).collect()))
         } else {
-            return Err(NjError::Other("parameter must be json".to_owned()));
+            Err(NjError::Other("parameter must be json".to_owned()))
         }
     }
 }
