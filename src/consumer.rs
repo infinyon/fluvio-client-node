@@ -444,12 +444,11 @@ impl TryIntoJs for RecordSetWrapper<'_> {
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
                 let value = record.get_value().as_ref();
-                let value =
-                    if let Ok(v) = std::str::from_utf8(&value) {
-                        Some(v.to_owned())
-                    } else {
-                        None
-                    };
+                let value = if let Ok(v) = std::str::from_utf8(&value) {
+                    Some(v.to_owned())
+                } else {
+                    None
+                };
 
                 new_record.set_property(HEADERS_KEY, headers)?;
                 new_record.set_property(KEY_KEY, key)?;
