@@ -102,7 +102,7 @@ describe('Fluvio Topics', () => {
 /**/
 
 describe('Fluvio Consumer and Producer', () => {
-    jest.setTimeout(100000) // 100 seconds
+    jest.setTimeout(10000) // 100 seconds
     let admin: FluvioAdmin
     let fluvio: Fluvio
     let topic: string
@@ -143,10 +143,10 @@ describe('Fluvio Consumer and Producer', () => {
                     error = e
                 }
             }
+            expect(error).toBeUndefined()
             if (error !== undefined) {
                 throw error
             }
-            expect(error).toBeUndefined()
             messages.push(msg)
             console.log(`sent message ${msg}`)
         }
@@ -306,6 +306,7 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
                 break
             }
         }
+        expect(counter).toEqual(MAX_COUNT)
     })
 })
 

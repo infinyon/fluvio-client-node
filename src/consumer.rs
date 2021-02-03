@@ -19,6 +19,7 @@ use node_bindgen::core::JSClass;
 use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
 use std::sync::Arc;
+use std::convert::TryFrom;
 
 use fluvio_future::io::Stream;
 use fluvio::consumer::Record;
@@ -128,10 +129,8 @@ impl PartitionConsumerJS {
         while let Some(next) = stream.next().await {
             match next {
                 Ok(record) => {
-                    if let Some(bytes) = record.try_into_bytes() {
-                        if let Ok(msg) = String::from_utf8(bytes) {
-                            cb(EVENT_EMITTER_NAME.to_owned(), msg)
-                        }
+                    if let Ok(msg) = String::try_from(record) {
+                        cb(EVENT_EMITTER_NAME.to_owned(), msg)
                     }
                 }
                 Err(e) => cb("error".to_owned(), format!("{}", e)),
@@ -206,12 +205,8 @@ impl TryIntoJs for PartitionConsumerIterator {
 impl From<Option<Record>> for IterItem {
     fn from(value: Option<Record>) -> Self {
         let value = if let Some(value) = value {
-            if let Some(value) = value.try_into_bytes() {
-                if let Ok(value) = String::from_utf8(value) {
-                    Some(value)
-                } else {
-                    None
-                }
+            if let Ok(value) = String::try_from(value) {
+                Some(value)
             } else {
                 None
             }
@@ -361,13 +356,8 @@ impl<'a> FetchablePartitionResponseWrapper {
         };
         for batch in &inner.records.batches {
             for record in &batch.records {
-                let value = record.get_value().inner_value_ref().clone();
-                let value = if let Some(value) = value {
-                    value
-                } else {
-                    continue;
-                };
-                if let Ok(value) = String::from_utf8(value) {
+                let value = record.get_value().as_ref();
+                if let Ok(value) = String::from_utf8(value.to_vec()) {
                     records.push(value);
                 }
             }
@@ -453,16 +443,12 @@ impl TryIntoJs for RecordSetWrapper<'_> {
                 let headers = js_env.create_int64(record.headers)?;
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
-                let value = record.get_value().inner_value_ref().clone();
-                let value = value
-                    .and_then(|value| {
-                        if let Ok(v) = std::str::from_utf8(&value) {
-                            Some(v.to_owned())
-                        } else {
-                            None
-                        }
-                    })
-                    .unwrap_or_default();
+                let value = record.get_value().as_ref();
+                let value = if let Ok(v) = std::str::from_utf8(&value) {
+                    Some(v.to_owned())
+                } else {
+                    None
+                };
 
                 new_record.set_property(HEADERS_KEY, headers)?;
                 new_record.set_property(KEY_KEY, key)?;
