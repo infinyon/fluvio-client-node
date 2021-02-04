@@ -1,6 +1,6 @@
 {
     "name": "@fluvio/client",
-    "version": "0.6.0-beta.4",
+    "version": "0.6.0-beta.5",
     "description": "Node.js binding for Fluvio distributed stream",
     "keywords": [
         "fluvio",
@@ -10,7 +10,9 @@
     ],
     "files": [
         "src/index.ts",
-        "tsconfig.json"
+        "tsconfig.json",
+        "dist/linux/index.node",
+        "dist/darwin/index.node"
     ],
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -22,7 +24,6 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@fluvio/native": "0.6.0",
         "@types/node": "^14.14.22",
         "typescript": "^4.1.3"
     },
@@ -32,7 +33,7 @@
         "lint": "npx tslint -c tslint.json '{src,examples,test}/**/*.ts'",
         "tsc": "npx tsc -p .",
         "build:test": "npm run build:ts && npm run build:platform",
-        "build:ts": "rm -rf ./dist/ && npm run tsc",
+        "build:ts": "npm run tsc",
         "build:platform": "node ./build.js",
         "publish:platform": "node ./build.js --release && cd native && npm run publish:platform",
         "publish:native": "cd ./native && npm publish --access public",

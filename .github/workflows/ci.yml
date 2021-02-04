@@ -80,7 +80,7 @@ jobs:
           make test_all
       - name: Run Examples
         run: |
-          FLUVIO_DEV=$(uname | tr '[:upper:]' '[:lower:]') make examples
+          FLUVIO_DEV=1 make examples
   check_security:
     name: check security
     runs-on: ${{ matrix.os }}
@@ -102,57 +102,3 @@ jobs:
         uses: actions-rs/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  trigger-publish:
-    needs: [check_security, smoke_test, check_fmt]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-          registry-url: 'https://registry.npmjs.org'
-      - name: Check and publish for @fluvio/client
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
-        run: |
-          [ $(jq .version package.json -r) = $(npm view @fluvio/client version) ] || npm publish --access public
-      - name: Check and publish for @fluvio/native
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
-        run: |
-          [ $(jq .version native/package.json -r) = $(npm view @fluvio/native version) ] || npm run publish:native
-
-  trigger-publish-platform:
-    needs: [check_security, smoke_test, check_fmt]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        rust: [stable]
-        node: [ '14' ]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - uses: actions-rs/install@v0.1
-        with:
-          crate: nj-cli
-          version: latest
-      - name: Check and publish for @fluvio/native-linux
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
-        run: |
-          #TODO: Change this when windows support is added.
-          [ $(jq .version native/src/$(uname | tr 'A-Z' 'a-z')/package.json -r) = $(npm view @fluvio/native-$(uname | tr 'A-Z' 'a-z') version) ] || npm run publish:platform

@@ -17,7 +17,7 @@
 - [`Rust`](https://rustup.rs)
 - [`Node-Bindgen`](https://github.com/infinyon/node-bindgen)
 
-Building the `@fluvio/native-<platform>` native modules requires the `Rust` and `Node-Bindgen`. 
+Building the `@fluvio/native-<platform>` native modules requires the `Rust` and `Node-Bindgen`.
 
 Follow the instructions in the links above to install the development tools.
 
@@ -25,18 +25,16 @@ Follow the instructions in the links above to install the development tools.
 
 ### Developing the Native Module
 
-Running `make build` will build the `./src/**/*.{ts,rs}` files, generating a `dist/` folder for the JavaScript files and a native module at the location `./native/src/<platform>/index.node`.
+Running `make build` will build the `./src/**/*.{ts,rs}` files, generating a `dist/` folder for the JavaScript files and a native module at the location `./dist/<platform>/index.node`.
 
 ```
 make build
 ```
 
-When developing, you need to set the environment variable, `FLUVIO_DEV`, to the _platform_ you're developing on; i.e. `darwin`, `linux`, or `win`.
-
-For example, if you are developing on MacOS, then you would set the following environment variable in your terminal session:
+When developing, you need to set the environment variable, `FLUVIO_DEV` to a non zero value.
 
 ```bash
-export FLUVIO_DEV=darwin
+export FLUVIO_DEV=1
 ```
 
 This will bypass the use of `@fluvio/native` published module and use the locally built module at `./native/src/<platform>/index.node`.
@@ -63,7 +61,7 @@ name: Publish
 on:
   workflow_dispatch:
   push:
-    tags: 
+    tags:
       - 'v*'
 ```
 
@@ -71,7 +69,7 @@ Manually publishing the module can be accomplished using Github Actions and usin
 
 ### Publishing `@fluvio/native`
 
-Currently, this module can only be published using a manually run `workflow_dispatch` event using to [`Run workflow](https://github.com/infinyon/fluvio-client-node/actions?query=workflow%3A%22Publish+%40fluvio%2Fnative%22) button. 
+Currently, this module can only be published using a manually run `workflow_dispatch` event using to [`Run workflow](https://github.com/infinyon/fluvio-client-node/actions?query=workflow%3A%22Publish+%40fluvio%2Fnative%22) button.
 
 In most cases, this module will not need to be updated unless there are new platforms added.
 
