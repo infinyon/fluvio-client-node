@@ -19,13 +19,29 @@ export const DEFAULT_OFFSET_FROM = 'end'
 // to be used for the client; Set `FLUVIO_DEV`
 // for development mode
 
-const native_path =
-    !process.env.FLUVIO_DEV ||
-    !['darwin', 'linux', 'win'].includes(process.env.FLUVIO_DEV)
-        ? '@fluvio/native'
-        : `${process.cwd()}/native/src/${process.env.FLUVIO_DEV}/index.node`
+function getDistPath() {
+    switch (process.platform) {
+        case 'darwin':
+            return './darwin'
+        case 'freebsd':
+        case 'netbsd':
+        case 'linux':
+        case 'openbsd':
+        case 'sunos':
+            return './linux'
+        case 'win32':
+        case 'cygwin':
+            return './win'
+        default:
+            console.log('Platform is not supported')
+    }
+}
+const native_path = !process.env.FLUVIO_DEV
+    ? `${getDistPath()}/index.node`
+    : `${process.cwd()}/dist/${getDistPath()}/index.node`
 
 const native = require(`${native_path}`)
+
 export const PartitionConsumerJS = native.PartitionConsumerJS
 
 /**
