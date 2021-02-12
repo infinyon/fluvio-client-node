@@ -7,8 +7,6 @@ import { EventEmitter } from 'events'
 const TOPIC_NAME = uuidV4()
 const PARTITION = 0
 
-// const MESSAGE_COUNT = 100
-
 async function iterate() {
     // Explicitly call `.connect()` to connect to the cluster;
     // This allows for lazily-loading the connection, useful in

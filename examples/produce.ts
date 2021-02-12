@@ -1,5 +1,6 @@
 /* tslint:disable:no-console */
 import Fluvio, { TopicReplicaParam } from '../src/index'
+import { v4 as uuidV4 } from 'uuid'
 
 // Set delay for creating a topic;
 async function sleep(ms: number) {
@@ -9,16 +10,7 @@ async function sleep(ms: number) {
 }
 
 // Set unique topic name
-const TOPIC_NAME = 'topic-22' // uuidV4()
-
-// Define a topic spec;
-const TOPIC_SPEC = {
-    partitions: 1,
-    replicationFactor: 3,
-    ignoreRackAssignment: true,
-} as TopicReplicaParam
-
-// const MESSAGE_COUNT = 100
+const TOPIC_NAME = uuidV4()
 
 async function produce() {
     try {
@@ -34,21 +26,21 @@ async function produce() {
         const admin = await fluvio.admin()
 
         // Create the topic
-        await admin.createTopic(TOPIC_NAME, TOPIC_SPEC)
-
-        // Wait for topic to finalize creation
-        await sleep(2000)
+        await admin.createTopic(TOPIC_NAME)
+        console.log(`Producing on ${TOPIC_NAME} in 10 seconds`)
+        await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
+        for (var counter: number = 1; counter < 10; counter++) {
+            // Stringify message
+            const message = JSON.stringify({
+                counter,
+                message: 'Stringified JSON',
+            })
 
-        // Stringify message
-        const message = JSON.stringify({
-            data: {},
-            message: 'Stringified JSON',
-        })
-
-        // Send a record using the default producer set above
-        await producer.sendRecord(message, 0)
+            // Send a record using the default producer set above
+            await producer.sendRecord(message, 0)
+        }
     } catch (ex) {
         console.log('error', ex)
     }

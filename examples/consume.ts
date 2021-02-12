@@ -3,18 +3,9 @@ import Fluvio, { TopicReplicaParam, Offset } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
 import { EventEmitter } from 'events'
 
-// Set delay for creating a topic;
-async function sleep(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms)
-    })
-}
-
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
 const PARTITION = 0
-
-// const MESSAGE_COUNT = 100
 
 async function consume() {
     const fluvio = new Fluvio()
@@ -31,25 +22,7 @@ async function consume() {
     // Create the topic
     await admin.createTopic(TOPIC_NAME)
 
-    // Wait for topic to finalize creation
-    //await sleep(2000)
-
-    // Stringify message
-    const message = JSON.stringify({
-        data: {},
-        message: 'Stringified JSON',
-    })
-
     console.log('TOPIC_NAME', TOPIC_NAME)
-
-    const producer = await fluvio.topicProducer(TOPIC_NAME)
-
-    // Send a record using the default producer set above
-    await producer.sendRecord(message, PARTITION)
-
-    // Consume the newly created topic;
-    // Wait for topic to finalize creation
-    // await sleep(2000)
 
     const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
