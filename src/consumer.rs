@@ -355,7 +355,7 @@ impl<'a> FetchablePartitionResponseWrapper {
             return Vec::new();
         };
         for batch in &inner.records.batches {
-            for record in &batch.records {
+            for record in batch.records() {
                 let value = record.get_value().as_ref();
                 if let Ok(value) = String::from_utf8(value.to_vec()) {
                     records.push(value);
@@ -433,8 +433,8 @@ impl TryIntoJs for RecordSetWrapper<'_> {
             new_batch.set_property(BATCH_LENGTH_KEY, batch_len)?;
             new_batch.set_property(HEADER_KEY, batch_header.try_to_js(js_env)?)?;
 
-            let records = js_env.create_array_with_len(batch.records.len())?;
-            for (index, record) in batch.records.iter().enumerate() {
+            let records = js_env.create_array_with_len(batch.records().len())?;
+            for (index, record) in batch.records().iter().enumerate() {
                 // debug!("Converting Record to JS value, {:#?}", record);
 
                 debug!("Record Value: {:#?}", record.get_value());
