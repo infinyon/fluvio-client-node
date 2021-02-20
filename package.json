@@ -1,6 +1,6 @@
 {
     "name": "@fluvio/client",
-    "version": "0.6.0-beta.5",
+    "version": "0.6.0-beta.6",
     "description": "Node.js binding for Fluvio distributed stream",
     "keywords": [
         "fluvio",
@@ -24,8 +24,8 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@types/node": "^14.14.22",
-        "typescript": "^4.1.3"
+        "@types/node": "^14.14.31",
+        "typescript": "^4.1.5"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
@@ -43,14 +43,14 @@
     },
     "devDependencies": {
         "@types/jest": "^26.0.20",
-        "@types/mocha": "^8.2.0",
+        "@types/mocha": "^8.2.1",
         "@types/uuid": "^8.3.0",
         "jest": "^26.6.3",
         "prettier": "^2.2.1",
-        "ts-jest": "^26.5.0",
+        "ts-jest": "^26.5.1",
         "ts-node": "^9.1.1",
         "tslint": "^6.1.3",
-        "typedoc": "^0.20.20",
+        "typedoc": "^0.20.25",
         "uuid": "^8.3.2"
     }
 }
