@@ -45,13 +45,30 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send_record(&self, data: String, partition: i32) -> Result<(), FluvioError> {
-        debug!("Sending record: {} to partition: {}", data, partition);
-        if let Some(client) = &self.inner {
-            client.send_record(data.into_bytes(), partition).await?;
-            Ok(())
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
-        }
+    async fn send_record(&self, value: String, partition: i32) -> Result<(), FluvioError> {
+        debug!("Sending record: {} to partition: {}", value, partition);
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        client.send_record(value.into_bytes(), partition).await?;
+        Ok(())
+    }
+
+    #[node_bindgen]
+    async fn send_key_value_record(
+        &self,
+        key: String,
+        value: String,
+        partition: i32,
+    ) -> Result<(), FluvioError> {
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        client
+            .send_key_value_record(key.into_bytes(), value.into_bytes(), partition)
+            .await?;
+        Ok(())
     }
 }

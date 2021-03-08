@@ -19,7 +19,6 @@ use node_bindgen::core::JSClass;
 use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
 use std::sync::Arc;
-use std::convert::TryFrom;
 
 use fluvio_future::io::Stream;
 use fluvio::consumer::Record;
@@ -129,8 +128,8 @@ impl PartitionConsumerJS {
         while let Some(next) = stream.next().await {
             match next {
                 Ok(record) => {
-                    if let Ok(msg) = String::try_from(record) {
-                        cb(EVENT_EMITTER_NAME.to_owned(), msg)
+                    if let Ok(msg) = std::str::from_utf8(record.value()) {
+                        cb(EVENT_EMITTER_NAME.to_owned(), msg.to_string())
                     }
                 }
                 Err(e) => cb("error".to_owned(), format!("{}", e)),
@@ -203,16 +202,13 @@ impl TryIntoJs for PartitionConsumerIterator {
 }
 
 impl From<Option<Record>> for IterItem {
-    fn from(value: Option<Record>) -> Self {
-        let value = if let Some(value) = value {
-            if let Ok(value) = String::try_from(value) {
-                Some(value)
-            } else {
-                None
-            }
-        } else {
-            None
-        };
+    fn from(maybe_record: Option<Record>) -> Self {
+        let value = maybe_record.and_then(|record| {
+            std::str::from_utf8(record.value())
+                .ok()
+                .map(|s| s.to_string())
+        });
+
         let done = value.is_none();
         Self { value, done }
     }

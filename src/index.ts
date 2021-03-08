@@ -77,6 +77,28 @@ export interface Options {
     offsetFrom?: string
 }
 
+export interface Record {
+    key: Uint8Array
+    value: Uint8Array
+    keyString(): string | undefined,
+    valueString(): string | undefined,
+}
+
+const utf8Decoder = new TextDecoder("utf-8");
+
+export class Record {
+    key: Uint8Array;
+    value: Uint8Array;
+
+    keyString(): string | undefined {
+        return utf8Decoder.decode(this.key)
+    }
+
+    valueString(): string | undefined {
+        return utf8Decoder.decode(this.value)
+    }
+}
+
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
 }
@@ -141,14 +163,30 @@ export class TopicProducer {
 
     /**
      * Sends an event to a specific partition within this producer's topic
-     * @param record Buffered data to send to the Fluvio partition
+     * @param value Buffered data to send to the Fluvio partition
+     * @param partition The partition that this record will be sent to
      */
-    async sendRecord(data: string, partition: number): Promise<void> {
+    async sendRecord(value: string, partition: number): Promise<void> {
         try {
-            await this.inner.sendRecord(data, partition)
+            await this.inner.sendRecord(value, partition)
             return
         } catch (error) {
             throw new Error(`failed to send record due to: ${error}`)
+        }
+    }
+
+    /**
+     * Sends a key-value event to a specific partition within this producer's topic
+     * @param key The Key data of the record to send
+     * @param value The Value data of the record to send
+     * @param partition The partition that this record will be sent to
+     */
+    async sendKeyValueRecord(key: string, value: string, partition: number): Promise<void> {
+        try {
+            await this.inner.sendKeyValueRecord(key, value, partition);
+            return;
+        } catch (error) {
+            throw new Error(`failed to send key-value record due to: ${error}`)
         }
     }
 }
