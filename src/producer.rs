@@ -5,12 +5,12 @@ use fluvio::TopicProducer;
 use fluvio::FluvioError;
 
 use node_bindgen::derive::node_bindgen;
-use node_bindgen::core::NjError;
+use node_bindgen::core::{NjError, JSValue};
 use node_bindgen::core::val::JsEnv;
 use node_bindgen::core::TryIntoJs;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
-use node_bindgen::core::buffer::ArrayBuffer;
+use node_bindgen::core::buffer::JSArrayBuffer;
 
 impl TryIntoJs for TopicProducerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -57,13 +57,47 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send(&self, key: String, value: String) -> Result<(), FluvioError> {
-        debug!("Sending record: key={}, value={}", key, value);
+    async fn send(&self, key: ProduceArg, value: ProduceArg) -> Result<(), FluvioError> {
         let client = self
             .inner
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        client.send(key.as_bytes(), value.as_bytes()).await?;
+
+        let key = match &key {
+            ProduceArg::String(string) => string.as_bytes(),
+            ProduceArg::ArrayBuffer(buffer) => buffer.as_bytes(),
+        };
+
+        let value = match &value {
+            ProduceArg::String(string) => string.as_bytes(),
+            ProduceArg::ArrayBuffer(buffer) => buffer.as_bytes(),
+        };
+
+        client.send(key, value).await?;
         Ok(())
+    }
+}
+
+/// Callers may give 'string' or 'ArrayBuffer' values to `producer.send`
+pub enum ProduceArg {
+    String(String),
+    ArrayBuffer(JSArrayBuffer),
+}
+
+impl JSValue<'_> for ProduceArg {
+    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
+        // Try to convert value to string
+        if let Ok(string) = env.convert_to_rust::<String>(js_value) {
+            return Ok(Self::String(string));
+        }
+
+        // Try to convert value to ArrayBuffer
+        if let Ok(buffer) = env.convert_to_rust::<JSArrayBuffer>(js_value) {
+            return Ok(Self::ArrayBuffer(buffer));
+        }
+
+        Err(NjError::Other(
+            "Producer args must be string or ArrayBuffer".to_string(),
+        ))
     }
 }

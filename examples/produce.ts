@@ -31,16 +31,20 @@ async function produce(keyValue: boolean = true) {
         await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
-        for (var counter: number = 1; counter < 10; counter++) {
-            // Stringify message
+        for (let i: number = 1; i < 10; i++) {
+            // Create a JSON message as our value
             const message = JSON.stringify({
-                counter,
-                message: 'Stringified JSON',
+                key: i,
+                message: `This is message ${i}`,
             })
 
+            // Send a key/value record
             if (keyValue) {
-                // Send a key/value record
-                const key = counter.toString();
+                // Here, we convert the key into an ArrayBuffer
+                const encoder = new TextEncoder();
+                const key: ArrayBuffer = encoder.encode(`KEY ${i}`);
+
+                // Notice that 'key' is an ArrayBuffer and 'message' is a string. Both work!
                 await producer.send(key, message);
             } else {
                 // Send a simple record with no key

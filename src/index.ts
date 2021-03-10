@@ -110,6 +110,7 @@ export interface Record {
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
     send(key: string, value: string): Promise<void>
+    send(key: ArrayBuffer, value: ArrayBuffer): Promise<void>
 }
 
 /**
@@ -188,7 +189,7 @@ export class TopicProducer {
      * @param key The Key data of the record to send
      * @param value The Value data of the record to send
      */
-    async send(key: string, value: string): Promise<void> {
+    async send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void> {
         try {
             await this.inner.send(key, value);
             return;
