@@ -10,7 +10,6 @@ use node_bindgen::core::val::JsEnv;
 use node_bindgen::core::TryIntoJs;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
-use node_bindgen::core::buffer::ArrayBuffer;
 
 impl TryIntoJs for TopicProducerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
