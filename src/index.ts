@@ -109,6 +109,7 @@ export interface Record {
 
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
+    send(key: string, value: string): Promise<void>
 }
 
 /**
@@ -153,7 +154,6 @@ export class TopicProducer {
      * along with top-level Fluvio client options, if any.
      *
      * @param inner The native node module created by `await (new Fluvio().connect()).topicProducer()`
-     * @param options Top-level Fluvio client options
      */
     private constructor(inner: TopicProducer) {
         this.inner = inner
@@ -187,11 +187,10 @@ export class TopicProducer {
      * Sends a key-value event to a specific partition within this producer's topic
      * @param key The Key data of the record to send
      * @param value The Value data of the record to send
-     * @param partition The partition that this record will be sent to
      */
-    async sendKeyValueRecord(key: string, value: string, partition: number): Promise<void> {
+    async send(key: string, value: string): Promise<void> {
         try {
-            await this.inner.sendKeyValueRecord(key, value, partition);
+            await this.inner.send(key, value);
             return;
         } catch (error) {
             throw new Error(`failed to send key-value record due to: ${error}`)
@@ -280,11 +279,7 @@ export class PartitionConsumer {
     }
 
     async stream(offset: Offset, cb: (record: Record) => void): Promise<void> {
-        const event = new EventEmitter()
-        event.on('data', (msg: Record) => {
-            cb(msg)
-        })
-        await this.inner.stream(offset, event.emit.bind(event))
+        await this.inner.stream(offset, cb)
         return
     }
 

@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam } from '../src/index'
+import Fluvio from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
 
 // Set delay for creating a topic;
@@ -12,7 +12,7 @@ async function sleep(ms: number) {
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
 
-async function produce() {
+async function produce(keyValue: boolean = true) {
     try {
         const fluvio = new Fluvio()
 
@@ -38,8 +38,14 @@ async function produce() {
                 message: 'Stringified JSON',
             })
 
-            // Send a record using the default producer set above
-            await producer.sendRecord(message, 0)
+            if (keyValue) {
+                // Send a key/value record
+                const key = counter.toString();
+                await producer.send(key, message);
+            } else {
+                // Send a simple record with no key
+                await producer.sendRecord(message, 0)
+            }
         }
     } catch (ex) {
         console.log('error', ex)

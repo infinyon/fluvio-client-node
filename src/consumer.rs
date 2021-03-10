@@ -1,13 +1,17 @@
 use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
+use std::fmt;
+use std::pin::Pin;
+use std::sync::Arc;
 use log::{debug, error};
-use fluvio_future::task::spawn;
-use fluvio_future::io::StreamExt;
 use fluvio::PartitionConsumer;
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
+use fluvio::consumer::Record;
+use fluvio_future::task::spawn;
+use fluvio_future::io::{Stream, StreamExt};
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::NjError;
@@ -18,17 +22,6 @@ use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
 use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
-use std::sync::Arc;
-
-use fluvio_future::io::Stream;
-use fluvio::consumer::Record;
-use std::pin::Pin;
-use std::fmt;
-
-// data corresponds to the JS event emitter `event.on('data', cb)`;
-// If this variable is changed, also need to update emitter method in TypeScript
-// index.ts file; There should be no need to change this value;
-const EVENT_EMITTER_NAME: &str = "data";
 
 const PRODUCER_ID_KEY: &str = "producerId";
 
@@ -106,7 +99,7 @@ impl PartitionConsumerJS {
     }
 
     #[node_bindgen(mt)]
-    async fn stream<F: Fn(String, RecordJS) + 'static + Send + Sync>(
+    async fn stream<F: Fn(RecordJS) + 'static + Send + Sync>(
         &self,
         offset: OffsetWrapper,
         cb: F,
@@ -119,7 +112,7 @@ impl PartitionConsumerJS {
         Ok(())
     }
 
-    async fn stream_inner<F: Fn(String, RecordJS)>(
+    async fn stream_inner<F: Fn(RecordJS)>(
         client: Arc<PartitionConsumer>,
         offset: OffsetWrapper,
         cb: F,
@@ -129,10 +122,7 @@ impl PartitionConsumerJS {
         debug!("Waiting for stream");
         while let Some(next) = stream.next().await {
             match next {
-                Ok(record) => {
-                    let record = RecordJS::from(record);
-                    cb(EVENT_EMITTER_NAME.to_owned(), record);
-                }
+                Ok(record) => cb(RecordJS::from(record)),
                 Err(e) => error!("Error consuming record: {:?}", e),
             }
         }

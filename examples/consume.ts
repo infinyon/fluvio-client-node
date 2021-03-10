@@ -23,18 +23,14 @@ async function consume() {
 
     console.log('TOPIC_NAME', TOPIC_NAME)
 
-    const consumer = await fluvio.partitionConsumer("node", PARTITION)
+    const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
     const offset: Offset = new Offset()
 
     console.log('listening for events')
     await consumer.stream(offset, async (record: Record) => {
         // handle record;
-        console.log('record', record)
-        console.log("key", record.key())
-        console.log("value", record.value())
-        console.log("key buffer", record.keyBuffer())
-        console.log("value buffer", record.valueBuffer())
+        console.log(`Key=${record.key()}, Value=${record.value}`)
     })
 }
 
