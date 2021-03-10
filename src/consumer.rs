@@ -164,12 +164,9 @@ impl RecordJS {
     }
 
     #[node_bindgen]
-    pub fn key(&self) -> Option<String> {
-        self.inner
-            .as_ref()
-            .unwrap()
-            .key()
-            .map(|key| String::from_utf8_lossy(key).to_string())
+    pub fn key(&self) -> Option<ArrayBuffer> {
+        let key = self.inner.as_ref()?.key()?;
+        Some(ArrayBuffer::new(key.to_owned()))
     }
 
     #[node_bindgen]
@@ -178,23 +175,20 @@ impl RecordJS {
     }
 
     #[node_bindgen]
-    pub fn value(&self) -> String {
+    pub fn value(&self) -> ArrayBuffer {
+        ArrayBuffer::new(self.inner.as_ref().unwrap().value().to_owned())
+    }
+
+    #[node_bindgen]
+    pub fn key_string(&self) -> Option<String> {
+        let key = self.inner.as_ref()?.key()?;
+        Some(String::from_utf8_lossy(key).to_string())
+    }
+
+    #[node_bindgen]
+    pub fn value_string(&self) -> String {
         let value = self.inner.as_ref().unwrap().value();
         String::from_utf8_lossy(value).to_string()
-    }
-
-    #[node_bindgen]
-    pub fn key_buffer(&self) -> Option<ArrayBuffer> {
-        self.inner
-            .as_ref()
-            .unwrap()
-            .key()
-            .map(|it| ArrayBuffer::new(it.to_owned()))
-    }
-
-    #[node_bindgen]
-    pub fn value_buffer(&self) -> ArrayBuffer {
-        ArrayBuffer::new(self.inner.as_ref().unwrap().value().to_owned())
     }
 }
 

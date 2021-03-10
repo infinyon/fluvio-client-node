@@ -300,7 +300,7 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
         for await (const next of await consumer.createStream(
             Offset.FromBeginning()
         )) {
-            expect(next).toEqual(`Message: ${counter}`)
+            expect(next.valueString()).toEqual(`Message: ${counter}`)
             counter++
             if (counter >= MAX_COUNT) {
                 break

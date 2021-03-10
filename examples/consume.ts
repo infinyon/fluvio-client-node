@@ -30,7 +30,7 @@ async function consume() {
     console.log('listening for events')
     await consumer.stream(offset, async (record: Record) => {
         // handle record;
-        console.log(`Key=${record.key()}, Value=${record.value}`)
+        console.log(`Key=${record.keyString()}, Value=${record.valueString()}`)
     })
 }
 

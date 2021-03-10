@@ -10,6 +10,7 @@ use node_bindgen::core::val::JsEnv;
 use node_bindgen::core::TryIntoJs;
 use node_bindgen::sys::napi_value;
 use node_bindgen::core::JSClass;
+use node_bindgen::core::buffer::ArrayBuffer;
 
 impl TryIntoJs for TopicProducerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -57,11 +58,12 @@ impl TopicProducerJS {
 
     #[node_bindgen]
     async fn send(&self, key: String, value: String) -> Result<(), FluvioError> {
+        debug!("Sending record: key={}, value={}", key, value);
         let client = self
             .inner
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        client.send(key.into_bytes(), value.into_bytes()).await?;
+        client.send(key.as_bytes(), value.as_bytes()).await?;
         Ok(())
     }
 }

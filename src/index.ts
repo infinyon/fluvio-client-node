@@ -82,9 +82,9 @@ export interface Options {
  */
 export interface Record {
     /**
-     * Returns the Key of this Record as a string, or null if there is no key
+     * Returns the Key of this Record as a byte buffer, or null if there is no key
      */
-    key(): string | null
+    key(): ArrayBuffer | null
 
     /**
      * Returns true if this Record has a key, or false otherwise
@@ -92,19 +92,19 @@ export interface Record {
     hasKey(): boolean
 
     /**
-     * Returns the Value of this Record as a string
-     */
-    value(): string
-
-    /**
-     * Returns the Key of this Record as a byte buffer, or null if there is no key
-     */
-    keyBuffer(): ArrayBuffer | null
-
-    /**
      * Returns the Value of this Record as a byte buffer
      */
-    valueBuffer(): ArrayBuffer
+    value(): ArrayBuffer
+
+    /**
+     * Returns the Key of this Record as a string, or null if there is no key
+     */
+    keyString(): string | null
+
+    /**
+     * Returns the Value of this Record as a string
+     */
+    valueString(): string
 }
 
 export interface TopicProducer {
