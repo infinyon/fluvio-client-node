@@ -56,19 +56,12 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send_key_value_record(
-        &self,
-        key: String,
-        value: String,
-        partition: i32,
-    ) -> Result<(), FluvioError> {
+    async fn send(&self, key: String, value: String) -> Result<(), FluvioError> {
         let client = self
             .inner
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        client
-            .send_key_value_record(key.into_bytes(), value.into_bytes(), partition)
-            .await?;
+        client.send(key.into_bytes(), value.into_bytes()).await?;
         Ok(())
     }
 }

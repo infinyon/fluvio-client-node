@@ -1,7 +1,7 @@
 use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 
-use log::debug;
+use log::{debug, error};
 use fluvio_future::task::spawn;
 use fluvio_future::io::StreamExt;
 use fluvio::PartitionConsumer;
@@ -23,6 +23,7 @@ use std::sync::Arc;
 use fluvio_future::io::Stream;
 use fluvio::consumer::Record;
 use std::pin::Pin;
+use std::fmt;
 
 // data corresponds to the JS event emitter `event.on('data', cb)`;
 // If this variable is changed, also need to update emitter method in TypeScript
@@ -95,29 +96,30 @@ impl PartitionConsumerJS {
         &self,
         offset: OffsetWrapper,
     ) -> Result<FetchablePartitionResponseWrapper, FluvioError> {
-        if let Some(client) = &self.inner {
-            let response = client.fetch(offset.0).await?;
-            Ok(FetchablePartitionResponseWrapper(Some(response)))
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
-        }
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+
+        let response = client.fetch(offset.0).await?;
+        Ok(FetchablePartitionResponseWrapper(Some(response)))
     }
 
     #[node_bindgen(mt)]
-    async fn stream<F: Fn(String, String) + 'static + Send + Sync>(
+    async fn stream<F: Fn(String, RecordJS) + 'static + Send + Sync>(
         &self,
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<(), FluvioError> {
-        if let Some(client) = &self.inner {
-            spawn(Self::stream_inner(client.clone(), offset, cb));
-            Ok(())
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
-        }
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        spawn(Self::stream_inner(client.clone(), offset, cb));
+        Ok(())
     }
 
-    async fn stream_inner<F: Fn(String, String)>(
+    async fn stream_inner<F: Fn(String, RecordJS)>(
         client: Arc<PartitionConsumer>,
         offset: OffsetWrapper,
         cb: F,
@@ -128,11 +130,10 @@ impl PartitionConsumerJS {
         while let Some(next) = stream.next().await {
             match next {
                 Ok(record) => {
-                    if let Ok(msg) = std::str::from_utf8(record.value()) {
-                        cb(EVENT_EMITTER_NAME.to_owned(), msg.to_string())
-                    }
+                    let record = RecordJS::from(record);
+                    cb(EVENT_EMITTER_NAME.to_owned(), record);
                 }
-                Err(e) => cb("error".to_owned(), format!("{}", e)),
+                Err(e) => error!("Error consuming record: {:?}", e),
             }
         }
         debug!("Stream ended!");
@@ -145,14 +146,102 @@ impl PartitionConsumerJS {
         &self,
         offset: OffsetWrapper,
     ) -> Result<PartitionConsumerIterator, FluvioError> {
-        if let Some(client) = &self.inner {
-            let stream = client.stream(offset.0).await?;
-            let mut iterator = PartitionConsumerIterator::new();
-            iterator.set_inner(Box::pin(stream));
-            Ok(iterator)
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+
+        let stream = client.stream(offset.0).await?;
+        let mut iterator = PartitionConsumerIterator::new();
+        iterator.set_inner(Box::pin(stream));
+        Ok(iterator)
+    }
+}
+
+pub struct RecordJS {
+    inner: Option<Record>,
+}
+
+#[node_bindgen]
+impl RecordJS {
+    #[node_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self { inner: None }
+    }
+
+    fn set_inner(&mut self, inner: Record) {
+        self.inner = Some(inner);
+    }
+
+    #[node_bindgen]
+    pub fn key(&self) -> Option<String> {
+        self.inner
+            .as_ref()
+            .unwrap()
+            .key()
+            .map(|key| String::from_utf8_lossy(key).to_string())
+    }
+
+    #[node_bindgen]
+    pub fn has_key(&self) -> bool {
+        self.inner.as_ref().unwrap().key().is_some()
+    }
+
+    #[node_bindgen]
+    pub fn value(&self) -> String {
+        let value = self.inner.as_ref().unwrap().value();
+        String::from_utf8_lossy(value).to_string()
+    }
+
+    #[node_bindgen]
+    pub fn key_buffer(&self) -> Option<ArrayBuffer> {
+        self.inner
+            .as_ref()
+            .unwrap()
+            .key()
+            .map(|it| ArrayBuffer::new(it.to_owned()))
+    }
+
+    #[node_bindgen]
+    pub fn value_buffer(&self) -> ArrayBuffer {
+        ArrayBuffer::new(self.inner.as_ref().unwrap().value().to_owned())
+    }
+}
+
+impl TryIntoJs for RecordJS {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        let new_instance = RecordJS::new_instance(js_env, vec![])?;
+
+        if let Some(inner) = self.inner {
+            RecordJS::unwrap_mut(js_env, new_instance)?.set_inner(inner);
         }
+        Ok(new_instance)
+    }
+}
+
+impl From<Record> for RecordJS {
+    fn from(record: Record) -> Self {
+        Self {
+            inner: Some(record),
+        }
+    }
+}
+
+impl fmt::Debug for RecordJS {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let key = self
+            .inner
+            .as_ref()
+            .unwrap()
+            .key()
+            .is_some()
+            .then(|| "Some(<Key>)")
+            .unwrap_or("None");
+
+        f.debug_struct("RecordJS")
+            .field("key", &key)
+            .field("value", &"<Value>")
+            .finish()
     }
 }
 
@@ -352,7 +441,7 @@ impl<'a> FetchablePartitionResponseWrapper {
         };
         for batch in &inner.records.batches {
             for record in batch.records() {
-                let value = record.get_value().as_ref();
+                let value = record.value().as_ref();
                 if let Ok(value) = String::from_utf8(value.to_vec()) {
                     records.push(value);
                 }
@@ -433,13 +522,13 @@ impl TryIntoJs for RecordSetWrapper<'_> {
             for (index, record) in batch.records().iter().enumerate() {
                 // debug!("Converting Record to JS value, {:#?}", record);
 
-                debug!("Record Value: {:#?}", record.get_value());
+                debug!("Record Value: {:#?}", record.value());
                 let mut new_record = JsObject::create(js_env)?;
 
                 let headers = js_env.create_int64(record.headers)?;
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
-                let value = record.get_value().as_ref();
+                let value = record.value().as_ref();
                 let value = if let Ok(v) = std::str::from_utf8(&value) {
                     Some(v.to_owned())
                 } else {

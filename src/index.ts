@@ -77,26 +77,34 @@ export interface Options {
     offsetFrom?: string
 }
 
+/**
+ * Provides access to the data within a Record that was consumed
+ */
 export interface Record {
-    key: Uint8Array
-    value: Uint8Array
-    keyString(): string | undefined,
-    valueString(): string | undefined,
-}
+    /**
+     * Returns the Key of this Record as a string, or null if there is no key
+     */
+    key(): string | null
 
-const utf8Decoder = new TextDecoder("utf-8");
+    /**
+     * Returns true if this Record has a key, or false otherwise
+     */
+    hasKey(): boolean
 
-export class Record {
-    key: Uint8Array;
-    value: Uint8Array;
+    /**
+     * Returns the Value of this Record as a string
+     */
+    value(): string
 
-    keyString(): string | undefined {
-        return utf8Decoder.decode(this.key)
-    }
+    /**
+     * Returns the Key of this Record as a byte buffer, or null if there is no key
+     */
+    keyBuffer(): ArrayBuffer | null
 
-    valueString(): string | undefined {
-        return utf8Decoder.decode(this.value)
-    }
+    /**
+     * Returns the Value of this Record as a byte buffer
+     */
+    valueBuffer(): ArrayBuffer
 }
 
 export interface TopicProducer {
@@ -193,7 +201,7 @@ export class TopicProducer {
 
 export interface PartitionConsumer {
     fetch(offset?: Offset): Promise<FetchablePartitionResponse>
-    stream(offset: Offset, cb: (record: string) => void): Promise<void>
+    stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
 }
 
@@ -271,9 +279,9 @@ export class PartitionConsumer {
         return await this.inner.fetch(offset)
     }
 
-    async stream(offset: Offset, cb: (record: string) => void): Promise<void> {
+    async stream(offset: Offset, cb: (record: Record) => void): Promise<void> {
         const event = new EventEmitter()
-        event.on('data', (msg: string) => {
+        event.on('data', (msg: Record) => {
             cb(msg)
         })
         await this.inner.stream(offset, event.emit.bind(event))
@@ -290,7 +298,7 @@ export class PartitionConsumer {
      * }
      * ```
      */
-    async createStream(offset: Offset): Promise<AsyncIterable<string>> {
+    async createStream(offset: Offset): Promise<AsyncIterable<Record>> {
         let stream = await this.inner.createStream(offset)
         stream[Symbol.asyncIterator] = () => {
             return stream
@@ -885,7 +893,7 @@ export interface BatchHeader {
     firstSequence: number
 }
 
-export interface Record {
+export interface DefaultRecord {
     key: string
     value: string
     headers: number
@@ -895,7 +903,7 @@ export interface Batch {
     baseOffset: number
     batchLength: number
     header: BatchHeader
-    records: Record[]
+    records: DefaultRecord[]
 }
 export interface RecordSet {
     batches: Batch[]
