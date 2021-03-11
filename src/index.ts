@@ -189,10 +189,13 @@ export class TopicProducer {
      * @param key The Key data of the record to send
      * @param value The Value data of the record to send
      */
-    async send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void> {
+    async send(
+        key: string | ArrayBuffer,
+        value: string | ArrayBuffer
+    ): Promise<void> {
         try {
-            await this.inner.send(key, value);
-            return;
+            await this.inner.send(key, value)
+            return
         } catch (error) {
             throw new Error(`failed to send key-value record due to: ${error}`)
         }
