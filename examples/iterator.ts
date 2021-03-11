@@ -1,7 +1,6 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam, Offset } from '../src/index'
+import Fluvio, { Offset } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
-import { EventEmitter } from 'events'
 
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
@@ -27,11 +26,11 @@ async function iterate() {
     let count = 1
     let stream = await consumer.createStream(Offset.FromBeginning())
 
-    for await (const next of stream) {
-        console.log(next)
-        if (count >= 10) {
-            break
-        }
+    for await (const record of stream) {
+        const key = record.keyString();
+        const value = record.valueString();
+        console.log(`Consumed record: Key=${key}, value=${value}`);
+        if (count >= 10) break;
         count++
     }
 }
