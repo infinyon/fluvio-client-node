@@ -41,11 +41,11 @@ async function produce(keyValue: boolean = true) {
             // Send a key/value record
             if (keyValue) {
                 // Here, we convert the key into an ArrayBuffer
-                const encoder = new TextEncoder();
-                const key: ArrayBuffer = encoder.encode(`KEY ${i}`);
+                const encoder = new TextEncoder()
+                const key: ArrayBuffer = encoder.encode(`KEY ${i}`)
 
                 // Notice that 'key' is an ArrayBuffer and 'message' is a string. Both work!
-                await producer.send(key, message);
+                await producer.send(key, message)
             } else {
                 // Send a simple record with no key
                 await producer.sendRecord(message, 0)

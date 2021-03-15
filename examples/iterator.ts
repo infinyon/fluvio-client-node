@@ -27,10 +27,10 @@ async function iterate() {
     let stream = await consumer.createStream(Offset.FromBeginning())
 
     for await (const record of stream) {
-        const key = record.keyString();
-        const value = record.valueString();
-        console.log(`Consumed record: Key=${key}, value=${value}`);
-        if (count >= 10) break;
+        const key = record.keyString()
+        const value = record.valueString()
+        console.log(`Consumed record: Key=${key}, value=${value}`)
+        if (count >= 10) break
         count++
     }
 }
