@@ -21,7 +21,4 @@ fluvio = { git = "https://github.com/infinyon/fluvio", rev = "b7b3d2c16880ea21f1
 fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]
-node-bindgen = { version = "4.2.3", features = ["build"] }
-
-[patch.crates-io]
-node-bindgen = { path = "../node-bindgen" }
+node-bindgen = { version = "4.3.0", features = ["build"] }
