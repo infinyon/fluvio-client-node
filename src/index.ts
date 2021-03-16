@@ -109,8 +109,7 @@ export interface Record {
 
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
-    send(key: string, value: string): Promise<void>
-    send(key: ArrayBuffer, value: ArrayBuffer): Promise<void>
+    send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void>
 }
 
 /**

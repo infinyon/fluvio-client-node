@@ -17,7 +17,7 @@ log = "0.4.13"
 serde = { version = "1.0.119", features = ["derive"] }
 serde_json = "1.0.61"
 node-bindgen = "4.1.0"
-fluvio = { git = "https://github.com/infinyon/fluvio", rev = "b7b3d2c16880ea21f1c67246ce9765368c991ebe", features = ["admin"] }
+fluvio = { version = "0.6.0", features = ["admin"] }
 fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]

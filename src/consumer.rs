@@ -148,8 +148,9 @@ impl PartitionConsumerJS {
     }
 }
 
+#[derive(Clone)]
 pub struct RecordJS {
-    inner: Option<Record>,
+    inner: Option<Arc<Record>>,
 }
 
 #[node_bindgen]
@@ -159,7 +160,7 @@ impl RecordJS {
         Self { inner: None }
     }
 
-    fn set_inner(&mut self, inner: Record) {
+    fn set_inner(&mut self, inner: Arc<Record>) {
         self.inner = Some(inner);
     }
 
@@ -206,7 +207,7 @@ impl TryIntoJs for RecordJS {
 impl From<Record> for RecordJS {
     fn from(record: Record) -> Self {
         Self {
-            inner: Some(record),
+            inner: Some(Arc::new(record)),
         }
     }
 }
@@ -249,12 +250,9 @@ impl PartitionConsumerIterator {
     #[node_bindgen]
     async fn next(&mut self) -> Result<IterItem, FluvioError> {
         if let Some(ref mut inner) = self.inner {
-            let next = inner.next().await;
-            let next: IterItem = if let Some(next) = next {
-                Some(next?).into()
-            } else {
-                None.into()
-            };
+            let next: Option<Result<Record, _>> = inner.next().await;
+            let next: Option<Record> = next.transpose()?;
+            let next: IterItem = IterItem::from(next);
             Ok(next)
         } else {
             Ok(None.into())
@@ -276,19 +274,14 @@ impl TryIntoJs for PartitionConsumerIterator {
 
 impl From<Option<Record>> for IterItem {
     fn from(maybe_record: Option<Record>) -> Self {
-        let value = maybe_record.and_then(|record| {
-            std::str::from_utf8(record.value())
-                .ok()
-                .map(|s| s.to_string())
-        });
-
+        let value = maybe_record.map(RecordJS::from);
         let done = value.is_none();
         Self { value, done }
     }
 }
 
 struct IterItem {
-    pub value: Option<String>,
+    pub value: Option<RecordJS>,
     pub done: bool,
 }
 
@@ -301,13 +294,13 @@ impl IterItem {
             done: true,
         }
     }
-    fn set_inner(&mut self, (value, done): (Option<String>, bool)) {
+    fn set_inner(&mut self, (value, done): (Option<RecordJS>, bool)) {
         self.value = value;
         self.done = done;
     }
 
     #[node_bindgen(getter)]
-    fn value(&self) -> Option<String> {
+    fn value(&self) -> Option<RecordJS> {
         self.value.clone()
     }
 
