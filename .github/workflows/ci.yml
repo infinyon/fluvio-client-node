@@ -8,6 +8,13 @@ on:
     branches: [ master ]
 
 jobs:
+  cancel_previous_runs:
+    name: Cancel Previous Runs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
   check_fmt:
     name: check formatting
     runs-on: ${{ matrix.os }}
@@ -23,8 +30,11 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           override: true
+          components: clippy
       - name: check fmt
         run: cargo fmt -- --check
+      - name: check clippy
+        run: cargo clippy -- -D warnings
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
@@ -44,6 +54,7 @@ jobs:
         uses: infinyon/fluvio@master
         with:
           cluster-type: local
+          version: 'latest'
       - name: Check Fluvio Installation
         run: |
           fluvio version
@@ -77,7 +88,7 @@ jobs:
           make test_all
       - name: Run Examples
         run: |
-          FLUVIO_DEV=$(uname | tr '[:upper:]' '[:lower:]') make examples
+          FLUVIO_DEV=1 make examples
   check_security:
     name: check security
     runs-on: ${{ matrix.os }}

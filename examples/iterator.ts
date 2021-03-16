@@ -1,19 +1,17 @@
 /* tslint:disable:no-console */
-import Fluvio, { Offset, Record } from '../src/index'
+import Fluvio, { Offset } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
 
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
 const PARTITION = 0
 
-async function consume() {
-    const fluvio = new Fluvio()
-
+async function iterate() {
     // Explicitly call `.connect()` to connect to the cluster;
     // This allows for lazily-loading the connection, useful in
     // situations where the fluvio client does not need to immediately
     // connect.
-    await fluvio.connect()
+    const fluvio = await Fluvio.connect()
 
     // Set the admin client to create and find topics;
     const admin = await fluvio.admin()
@@ -21,17 +19,20 @@ async function consume() {
     // Create the topic
     await admin.createTopic(TOPIC_NAME)
 
-    console.log('TOPIC_NAME', TOPIC_NAME)
-
     const consumer = await fluvio.partitionConsumer(TOPIC_NAME, PARTITION)
 
-    const offset: Offset = new Offset()
+    console.log(`Listening for events for topic ${TOPIC_NAME}`)
 
-    console.log('listening for events')
-    await consumer.stream(offset, async (record: Record) => {
-        // handle record;
-        console.log(`Key=${record.keyString()}, Value=${record.valueString()}`)
-    })
+    let count = 1
+    let stream = await consumer.createStream(Offset.FromBeginning())
+
+    for await (const record of stream) {
+        const key = record.keyString()
+        const value = record.valueString()
+        console.log(`Consumed record: Key=${key}, value=${value}`)
+        if (count >= 10) break
+        count++
+    }
 }
 
-consume()
+iterate()

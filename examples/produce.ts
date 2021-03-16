@@ -1,5 +1,6 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam } from '../src/index'
+import Fluvio from '../src/index'
+import { v4 as uuidV4 } from 'uuid'
 
 // Set delay for creating a topic;
 async function sleep(ms: number) {
@@ -9,18 +10,9 @@ async function sleep(ms: number) {
 }
 
 // Set unique topic name
-const TOPIC_NAME = 'topic-22' // uuidV4()
+const TOPIC_NAME = uuidV4()
 
-// Define a topic spec;
-const TOPIC_SPEC = {
-    partitions: 1,
-    replicationFactor: 3,
-    ignoreRackAssignment: true,
-} as TopicReplicaParam
-
-// const MESSAGE_COUNT = 100
-
-async function produce() {
+async function produce(keyValue: boolean = true) {
     try {
         const fluvio = new Fluvio()
 
@@ -34,21 +26,31 @@ async function produce() {
         const admin = await fluvio.admin()
 
         // Create the topic
-        await admin.createTopic(TOPIC_NAME, TOPIC_SPEC)
-
-        // Wait for topic to finalize creation
-        await sleep(2000)
+        await admin.createTopic(TOPIC_NAME)
+        console.log(`Producing on ${TOPIC_NAME} in 10 seconds`)
+        await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
+        for (let i: number = 1; i < 10; i++) {
+            // Create a JSON message as our value
+            const message = JSON.stringify({
+                key: i,
+                message: `This is message ${i}`,
+            })
 
-        // Stringify message
-        const message = JSON.stringify({
-            data: {},
-            message: 'Stringified JSON',
-        })
+            // Send a key/value record
+            if (keyValue) {
+                // Here, we convert the key into an ArrayBuffer
+                const encoder = new TextEncoder()
+                const key: ArrayBuffer = encoder.encode(`KEY ${i}`)
 
-        // Send a record using the default producer set above
-        await producer.sendRecord(message, 0)
+                // Notice that 'key' is an ArrayBuffer and 'message' is a string. Both work!
+                await producer.send(key, message)
+            } else {
+                // Send a simple record with no key
+                await producer.sendRecord(message, 0)
+            }
+        }
     } catch (ex) {
         console.log('error', ex)
     }

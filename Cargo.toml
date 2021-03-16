@@ -13,12 +13,12 @@ crate-type = ["cdylib"]
 test = false
 
 [dependencies]
-log = "0.4.8"
-serde = { version = "1.0.110", features = ["derive"] }
-serde_json = "1.0.53"
+log = "0.4.13"
+serde = { version = "1.0.119", features = ["derive"] }
+serde_json = "1.0.61"
 node-bindgen = "4.1.0"
-fluvio = { version = "0.3.1", features =  ["admin"] }
-fluvio-future = { version = "0.1.13", features = ["tls", "task", "io"] }
+fluvio = { version = "0.6.0", features = ["admin"] }
+fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]
-node-bindgen = { version = "4.1.0", features = ["build"] }
+node-bindgen = { version = "4.3.0", features = ["build"] }

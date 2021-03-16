@@ -21,22 +21,25 @@ const asyncExec = async (cmd) => {
     })
 }
 
-// Dynamically build native package;
-(async () => {
+function getDistPath() {
     switch(process.platform) {
         case 'darwin':
-            return await asyncExec(`nj-cli build -o ./native/src/darwin ${release}`);
+            return './dist/darwin'
         case 'freebsd':
         case 'netbsd':
         case 'linux':
         case 'openbsd':
         case 'sunos':
-            return await asyncExec(`nj-cli build -o ./native/src/linux ${release}`);
+            return './dist/linux'
         case 'win32':
         case 'cygwin':
-            return await asyncExec(`nj-cli build -o ./native/src/win ${release}`);
-            return await asyncExec(`nj-cli build -o ./native/src/win ${release}`);
+            return './dist/win'
         default:
             console.log("Platform is not supported");
     }
+}
+
+// Dynamically build native package;
+(async () => {
+  return await asyncExec(`nj-cli build -o ${getDistPath()} ${release}`);
 })()
