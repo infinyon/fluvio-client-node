@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam } from '../src/index'
+import Fluvio from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
 
 // Set delay for creating a topic;
@@ -12,7 +12,7 @@ async function sleep(ms: number) {
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
 
-async function produce() {
+async function produce(keyValue: boolean = true) {
     try {
         const fluvio = new Fluvio()
 
@@ -31,15 +31,25 @@ async function produce() {
         await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
-        for (var counter: number = 1; counter < 10; counter++) {
-            // Stringify message
+        for (let i: number = 1; i < 10; i++) {
+            // Create a JSON message as our value
             const message = JSON.stringify({
-                counter,
-                message: 'Stringified JSON',
+                key: i,
+                message: `This is message ${i}`,
             })
 
-            // Send a record using the default producer set above
-            await producer.sendRecord(message, 0)
+            // Send a key/value record
+            if (keyValue) {
+                // Here, we convert the key into an ArrayBuffer
+                const encoder = new TextEncoder()
+                const key: ArrayBuffer = encoder.encode(`KEY ${i}`)
+
+                // Notice that 'key' is an ArrayBuffer and 'message' is a string. Both work!
+                await producer.send(key, message)
+            } else {
+                // Send a simple record with no key
+                await producer.sendRecord(message, 0)
+            }
         }
     } catch (ex) {
         console.log('error', ex)

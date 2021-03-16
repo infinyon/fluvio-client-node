@@ -1,7 +1,6 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam, Offset } from '../src/index'
+import Fluvio, { Offset, Record } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
-import { EventEmitter } from 'events'
 
 // Set unique topic name
 const TOPIC_NAME = uuidV4()
@@ -29,9 +28,9 @@ async function consume() {
     const offset: Offset = new Offset()
 
     console.log('listening for events')
-    await consumer.stream(offset, async (record: string) => {
+    await consumer.stream(offset, async (record: Record) => {
         // handle record;
-        console.log('record', record)
+        console.log(`Key=${record.keyString()}, Value=${record.valueString()}`)
     })
 }
 

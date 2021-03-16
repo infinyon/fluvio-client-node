@@ -269,7 +269,6 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
         const messages: string[] = []
 
         const MAX_COUNT = 10
-        const partition = 0
         console.log('send records')
         for (let i = 0; i < MAX_COUNT; i++) {
             const msg = `Message: ${i}`
@@ -277,7 +276,7 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
             let error
             for (let j = 0; j < 10; j++) {
                 try {
-                    await producer.sendRecord(msg, partition)
+                    await producer.send(i.toString(), msg)
                     error = undefined
                     break
                 } catch (e) {
@@ -294,17 +293,13 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
         }
         console.log(`Getting a consumer for ${topic}`)
 
-        const offsetIndex = 0
-        const consumer = await fluvio.partitionConsumer(topic, partition)
+        const consumer = await fluvio.partitionConsumer(topic, 0)
         let counter = 0
-        for await (const next of await consumer.createStream(
-            Offset.FromBeginning()
-        )) {
-            expect(next).toEqual(`Message: ${counter}`)
+        const stream = await consumer.createStream(Offset.FromBeginning())
+        for await (const record of stream) {
+            expect(record.valueString()).toEqual(`Message: ${counter}`)
             counter++
-            if (counter >= MAX_COUNT) {
-                break
-            }
+            if (counter >= MAX_COUNT) break
         }
         expect(counter).toEqual(MAX_COUNT)
     })

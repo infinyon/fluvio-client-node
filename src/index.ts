@@ -77,8 +77,39 @@ export interface Options {
     offsetFrom?: string
 }
 
+/**
+ * Provides access to the data within a Record that was consumed
+ */
+export interface Record {
+    /**
+     * Returns the Key of this Record as a byte buffer, or null if there is no key
+     */
+    key(): ArrayBuffer | null
+
+    /**
+     * Returns true if this Record has a key, or false otherwise
+     */
+    hasKey(): boolean
+
+    /**
+     * Returns the Value of this Record as a byte buffer
+     */
+    value(): ArrayBuffer
+
+    /**
+     * Returns the Key of this Record as a string, or null if there is no key
+     */
+    keyString(): string | null
+
+    /**
+     * Returns the Value of this Record as a string
+     */
+    valueString(): string
+}
+
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
+    send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void>
 }
 
 /**
@@ -123,7 +154,6 @@ export class TopicProducer {
      * along with top-level Fluvio client options, if any.
      *
      * @param inner The native node module created by `await (new Fluvio().connect()).topicProducer()`
-     * @param options Top-level Fluvio client options
      */
     private constructor(inner: TopicProducer) {
         this.inner = inner
@@ -141,21 +171,39 @@ export class TopicProducer {
 
     /**
      * Sends an event to a specific partition within this producer's topic
-     * @param record Buffered data to send to the Fluvio partition
+     * @param value Buffered data to send to the Fluvio partition
+     * @param partition The partition that this record will be sent to
      */
-    async sendRecord(data: string, partition: number): Promise<void> {
+    async sendRecord(value: string, partition: number): Promise<void> {
         try {
-            await this.inner.sendRecord(data, partition)
+            await this.inner.sendRecord(value, partition)
             return
         } catch (error) {
             throw new Error(`failed to send record due to: ${error}`)
+        }
+    }
+
+    /**
+     * Sends a key-value event to a specific partition within this producer's topic
+     * @param key The Key data of the record to send
+     * @param value The Value data of the record to send
+     */
+    async send(
+        key: string | ArrayBuffer,
+        value: string | ArrayBuffer
+    ): Promise<void> {
+        try {
+            await this.inner.send(key, value)
+            return
+        } catch (error) {
+            throw new Error(`failed to send key-value record due to: ${error}`)
         }
     }
 }
 
 export interface PartitionConsumer {
     fetch(offset?: Offset): Promise<FetchablePartitionResponse>
-    stream(offset: Offset, cb: (record: string) => void): Promise<void>
+    stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
 }
 
@@ -233,12 +281,8 @@ export class PartitionConsumer {
         return await this.inner.fetch(offset)
     }
 
-    async stream(offset: Offset, cb: (record: string) => void): Promise<void> {
-        const event = new EventEmitter()
-        event.on('data', (msg: string) => {
-            cb(msg)
-        })
-        await this.inner.stream(offset, event.emit.bind(event))
+    async stream(offset: Offset, cb: (record: Record) => void): Promise<void> {
+        await this.inner.stream(offset, cb)
         return
     }
 
@@ -252,7 +296,7 @@ export class PartitionConsumer {
      * }
      * ```
      */
-    async createStream(offset: Offset): Promise<AsyncIterable<string>> {
+    async createStream(offset: Offset): Promise<AsyncIterable<Record>> {
         let stream = await this.inner.createStream(offset)
         stream[Symbol.asyncIterator] = () => {
             return stream
@@ -847,7 +891,7 @@ export interface BatchHeader {
     firstSequence: number
 }
 
-export interface Record {
+export interface DefaultRecord {
     key: string
     value: string
     headers: number
@@ -857,7 +901,7 @@ export interface Batch {
     baseOffset: number
     batchLength: number
     header: BatchHeader
-    records: Record[]
+    records: DefaultRecord[]
 }
 export interface RecordSet {
     batches: Batch[]
