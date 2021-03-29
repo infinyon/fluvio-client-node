@@ -184,7 +184,7 @@ export class TopicProducer {
     }
 
     /**
-     * Sends a key-value event to a specific partition within this producer's topic
+     * Sends a key-value event to this producer's topic
      * @param key The Key data of the record to send
      * @param value The Value data of the record to send
      */
@@ -199,7 +199,19 @@ export class TopicProducer {
             throw new Error(`failed to send key-value record due to: ${error}`)
         }
     }
+
+    /**
+     * Sends a list of key-value events to this producer's topic
+     * @param elements
+     */
+    async sendAll(
+        elements: element[],
+    ): Promise<void> {
+        return
+    }
 }
+
+type element = [string | ArrayBuffer | null, string | ArrayBuffer];
 
 export interface PartitionConsumer {
     fetch(offset?: Offset): Promise<FetchablePartitionResponse>

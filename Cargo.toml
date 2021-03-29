@@ -22,3 +22,7 @@ fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]
 node-bindgen = { version = "4.3.0", features = ["build"] }
+
+[patch.crates-io]
+fluvio = { path = "../fluvio/src/client" }
+node-bindgen = { path = "../node-bindgen" }
