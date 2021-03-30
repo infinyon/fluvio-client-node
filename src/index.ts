@@ -107,9 +107,20 @@ export interface Record {
     valueString(): string
 }
 
+/**
+ * An item that may be sent via the Producer.
+ */
+export type Item = string | ArrayBuffer;
+
+/**
+ * A key/value element that may be sent via the Producer.
+ */
+export type KeyValue = [Item, Item];
+
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
-    send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void>
+    send(key: Item, value: Item): Promise<void>
+    sendAll(records: KeyValue[]): Promise<void>
 }
 
 /**
@@ -201,17 +212,18 @@ export class TopicProducer {
     }
 
     /**
-     * Sends a list of key-value events to this producer's topic
+     * Sends a list of key-value elements to this producer's topic
      * @param elements
      */
-    async sendAll(
-        elements: element[],
-    ): Promise<void> {
-        return
+    async sendAll(elements: KeyValue[]): Promise<void> {
+        try {
+            await this.inner.sendAll(elements)
+            return
+        } catch (error) {
+            throw new Error(`failed to send batch of key-value records due to: ${error}`)
+        }
     }
 }
-
-type element = [string | ArrayBuffer | null, string | ArrayBuffer];
 
 export interface PartitionConsumer {
     fetch(offset?: Offset): Promise<FetchablePartitionResponse>
