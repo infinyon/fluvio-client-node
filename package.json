@@ -1,6 +1,6 @@
 {
     "name": "@fluvio/client",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "description": "Node.js binding for Fluvio distributed stream",
     "keywords": [
         "fluvio",

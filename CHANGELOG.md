@@ -3,6 +3,12 @@
 ### Improvements
 ### Fixed
 
+## 0.7.2
+
+### Improvements
+
+- Add `sendAll` method for producing batches of records at once
+
 ## 0.6
 
 ### Improvements
