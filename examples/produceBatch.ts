@@ -31,7 +31,7 @@ async function produce() {
         await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
-        const records: KeyValue[] = [];
+        const records: KeyValue[] = []
         for (let i: number = 1; i < 10; i++) {
             // Create a JSON message as our value
             const message = JSON.stringify({
@@ -41,9 +41,9 @@ async function produce() {
 
             const encoder = new TextEncoder()
             const key: ArrayBuffer = encoder.encode(`KEY ${i}`)
-            records.push([key, message]);
+            records.push([key, message])
         }
-        await producer.sendAll(records);
+        await producer.sendAll(records)
     } catch (ex) {
         console.log('error', ex)
     }

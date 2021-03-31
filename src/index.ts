@@ -110,12 +110,12 @@ export interface Record {
 /**
  * An item that may be sent via the Producer.
  */
-export type Item = string | ArrayBuffer;
+export type Item = string | ArrayBuffer
 
 /**
  * A key/value element that may be sent via the Producer.
  */
-export type KeyValue = [Item, Item];
+export type KeyValue = [Item, Item]
 
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
@@ -220,7 +220,9 @@ export class TopicProducer {
             await this.inner.sendAll(elements)
             return
         } catch (error) {
-            throw new Error(`failed to send batch of key-value records due to: ${error}`)
+            throw new Error(
+                `failed to send batch of key-value records due to: ${error}`
+            )
         }
     }
 }
