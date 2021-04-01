@@ -2695,6 +2695,9 @@ img {
 					<a href="topicproducer.html#send" class="tsd-kind-icon">send</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="topicproducer.html#sendall" class="tsd-kind-icon">send<wbr>All</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="topicproducer.html#sendrecord" class="tsd-kind-icon">send<wbr>Record</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
@@ -2765,6 +2768,7 @@ img {
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="topicproducer.html#send" class="tsd-kind-icon">send</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="topicproducer.html#sendall" class="tsd-kind-icon">send<wbr>All</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="topicproducer.html#sendrecord" class="tsd-kind-icon">send<wbr>Record</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="topicproducer.html#create" class="tsd-kind-icon">create</a></li>
 						</ul>
@@ -2784,7 +2788,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L148">index.ts:148</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L159">index.ts:159</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2817,7 +2821,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">inner<span class="tsd-signature-symbol">:</span> <a href="topicproducer.html" class="tsd-signature-type" data-tsd-kind="Class">TopicProducer</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L148">index.ts:148</a></li>
+						<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L159">index.ts:159</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2828,23 +2832,23 @@ img {
 				<a name="send" class="tsd-anchor"></a>
 				<h3>send</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ProducerItem</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ProducerItem</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ProducerItem</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ProducerItem</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L112">index.ts:112</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L122">index.ts:122</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+								<h5>key: <span class="tsd-signature-type">ProducerItem</span></h5>
 							</li>
 							<li>
-								<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+								<h5>value: <span class="tsd-signature-type">ProducerItem</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -2852,26 +2856,71 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L191">index.ts:191</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L202">index.ts:202</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Sends a key-value event to a specific partition within this producer&#39;s topic</p>
+								<p>Sends a key-value event to this producer&#39;s topic</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+								<h5>key: <span class="tsd-signature-type">ProducerItem</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<p>The Key data of the record to send</p>
 								</div>
 							</li>
 							<li>
-								<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+								<h5>value: <span class="tsd-signature-type">ProducerItem</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<p>The Value data of the record to send</p>
+								</div>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="sendall" class="tsd-anchor"></a>
+				<h3>send<wbr>All</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">send<wbr>All<span class="tsd-signature-symbol">(</span>records<span class="tsd-signature-symbol">: </span><a href="../modules.html#keyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">KeyValue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">send<wbr>All<span class="tsd-signature-symbol">(</span>elements<span class="tsd-signature-symbol">: </span><a href="../modules.html#keyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">KeyValue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L123">index.ts:123</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>records: <a href="../modules.html#keyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">KeyValue</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L213">index.ts:213</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Sends a list of key-value elements to this producer&#39;s topic</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>elements: <a href="../modules.html#keyvalue" class="tsd-signature-type" data-tsd-kind="Type alias">KeyValue</a><span class="tsd-signature-symbol">[]</span></h5>
+								<div class="tsd-comment tsd-typography">
 								</div>
 							</li>
 						</ul>
@@ -2890,7 +2939,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L111">index.ts:111</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L121">index.ts:121</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2907,7 +2956,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L177">index.ts:177</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L188">index.ts:188</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2944,7 +2993,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/24bba57/src/index.ts#L168">index.ts:168</a></li>
+								<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/9512f2e/src/index.ts#L179">index.ts:179</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
