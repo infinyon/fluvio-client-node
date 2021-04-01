@@ -64,3 +64,12 @@ example_create_managed_spu:	build
 
 example_delete_managed_spu:	build
 	FLUVIO_DEV=1 npx ts-node ./examples/deleteManagedSpu.ts
+
+install-clippy:
+	rustup component add clippy --toolchain stable
+
+check-clippy: install-clippy
+	cargo +stable clippy --all --all-features --all-targets -- \
+		-D warnings \
+		-A clippy::needless_question_mark \
+		-A clippy::upper_case_acronyms

@@ -107,9 +107,20 @@ export interface Record {
     valueString(): string
 }
 
+/**
+ * An item that may be sent via the Producer is a string or byte buffer.
+ */
+type ProducerItem = string | ArrayBuffer
+
+/**
+ * A key/value element that may be sent via the Producer.
+ */
+export type KeyValue = [ProducerItem, ProducerItem]
+
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
-    send(key: string | ArrayBuffer, value: string | ArrayBuffer): Promise<void>
+    send(key: ProducerItem, value: ProducerItem): Promise<void>
+    sendAll(records: KeyValue[]): Promise<void>
 }
 
 /**
@@ -184,7 +195,7 @@ export class TopicProducer {
     }
 
     /**
-     * Sends a key-value event to a specific partition within this producer's topic
+     * Sends a key-value event to this producer's topic
      * @param key The Key data of the record to send
      * @param value The Value data of the record to send
      */
@@ -192,12 +203,15 @@ export class TopicProducer {
         key: string | ArrayBuffer,
         value: string | ArrayBuffer
     ): Promise<void> {
-        try {
-            await this.inner.send(key, value)
-            return
-        } catch (error) {
-            throw new Error(`failed to send key-value record due to: ${error}`)
-        }
+        await this.inner.send(key, value)
+    }
+
+    /**
+     * Sends a list of key-value elements to this producer's topic
+     * @param elements
+     */
+    async sendAll(elements: KeyValue[]): Promise<void> {
+        await this.inner.sendAll(elements)
     }
 }
 
