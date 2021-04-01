@@ -108,18 +108,18 @@ export interface Record {
 }
 
 /**
- * An item that may be sent via the Producer.
+ * An item that may be sent via the Producer is a string or byte buffer.
  */
-export type Item = string | ArrayBuffer
+type ProducerItem = string | ArrayBuffer
 
 /**
  * A key/value element that may be sent via the Producer.
  */
-export type KeyValue = [Item, Item]
+export type KeyValue = [ProducerItem, ProducerItem]
 
 export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
-    send(key: Item, value: Item): Promise<void>
+    send(key: ProducerItem, value: ProducerItem): Promise<void>
     sendAll(records: KeyValue[]): Promise<void>
 }
 

@@ -1,6 +1,7 @@
 import Fluvio, {
     FluvioAdmin,
     OffsetFrom,
+    KeyValue,
     Offset,
 } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
@@ -176,6 +177,51 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
             expect(record.valueString()).toEqual(`Message: ${counter}`)
             counter++
             if (counter >= MAX_COUNT) break
+        }
+        expect(counter).toEqual(MAX_COUNT)
+    })
+})
+
+describe('Fluvio Batch Producer', () => {
+    jest.setTimeout(100000) // 100 seconds
+    let admin: FluvioAdmin
+    let fluvio: Fluvio
+    let topic: string
+
+    beforeAll(async () => {
+        topic = uuidV4()
+        fluvio = await Fluvio.connect()
+        admin = await fluvio.admin()
+        console.log(`Creating topic ${topic}`)
+        const new_topic = await admin.createTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    afterAll(async () => {
+        console.log(`Deleting topic ${topic}`)
+        await admin.deleteTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    test('Send records using batch producer', async () => {
+        const producer = await fluvio.topicProducer(topic)
+
+        const MAX_COUNT = 10;
+        const records: KeyValue[] = [];
+        for (let i = 0; i < MAX_COUNT; i++) {
+            const key = `${i}`;
+            const value = `This is record ${i}`;
+            const record: KeyValue = [key, value];
+            records.push(record);
+        }
+        await producer.sendAll(records);
+        const consumer = await fluvio.partitionConsumer(topic, 0);
+        let counter = 0;
+        const stream = await consumer.createStream(Offset.FromBeginning())
+        for await (const record of stream) {
+            expect(record.valueString()).toEqual(`This is record ${counter}`);
+            counter++;
+            if (counter >= MAX_COUNT) break;
         }
         expect(counter).toEqual(MAX_COUNT)
     })
