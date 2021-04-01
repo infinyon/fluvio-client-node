@@ -16,31 +16,31 @@ jobs:
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
   check_fmt:
-    name: check formatting
+    name: Check fmt and clippy
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        rust: [stable]
+        os: [ubuntu-latest]
         node: [ '14' ]
     steps:
       - uses: actions/checkout@v2
-      - name: Install ${{ matrix.rust }}
+      - name: Install Rust stable
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust }}
+          toolchain: stable
           override: true
           components: clippy
-      - name: check fmt
+      - name: Check fmt
         run: cargo fmt -- --check
-      - name: check clippy
-        run: cargo clippy -- -D warnings
+      - name: Check clippy
+        run: make check-clippy
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - name: check prettier
+      - name: Check prettier
         run: make npm_lint
+
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
@@ -89,6 +89,7 @@ jobs:
       - name: Run Examples
         run: |
           FLUVIO_DEV=1 make examples
+
   check_security:
     name: check security
     runs-on: ${{ matrix.os }}

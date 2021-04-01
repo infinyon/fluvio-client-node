@@ -76,6 +76,33 @@ impl TopicProducerJS {
         client.send(key, value).await?;
         Ok(())
     }
+
+    #[node_bindgen]
+    async fn send_all(&self, elements: Vec<(ProduceArg, ProduceArg)>) -> Result<(), FluvioError> {
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+
+        let records: Vec<_> = elements
+            .iter()
+            .map(|(key, value)| {
+                let key = match &key {
+                    ProduceArg::String(string) => string.as_bytes(),
+                    ProduceArg::ArrayBuffer(buffer) => buffer.as_bytes(),
+                };
+
+                let value = match &value {
+                    ProduceArg::String(string) => string.as_bytes(),
+                    ProduceArg::ArrayBuffer(buffer) => buffer.as_bytes(),
+                };
+
+                (Some(key), value)
+            })
+            .collect();
+        client.send_all(records).await?;
+        Ok(())
+    }
 }
 
 /// Callers may give 'string' or 'ArrayBuffer' values to `producer.send`
