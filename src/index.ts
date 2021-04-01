@@ -203,12 +203,7 @@ export class TopicProducer {
         key: string | ArrayBuffer,
         value: string | ArrayBuffer
     ): Promise<void> {
-        try {
-            await this.inner.send(key, value)
-            return
-        } catch (error) {
-            throw new Error(`failed to send key-value record due to: ${error}`)
-        }
+        await this.inner.send(key, value)
     }
 
     /**
@@ -216,14 +211,7 @@ export class TopicProducer {
      * @param elements
      */
     async sendAll(elements: KeyValue[]): Promise<void> {
-        try {
-            await this.inner.sendAll(elements)
-            return
-        } catch (error) {
-            throw new Error(
-                `failed to send batch of key-value records due to: ${error}`
-            )
-        }
+        await this.inner.sendAll(elements)
     }
 }
 
