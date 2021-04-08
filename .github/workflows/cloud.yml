@@ -3,7 +3,7 @@ name: Fluvio Cloud CI
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, cloud-ci-test ]
   pull_request:
     branches: [ master ]
   schedule:
