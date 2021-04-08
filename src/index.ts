@@ -219,6 +219,7 @@ export interface PartitionConsumer {
     fetch(offset?: Offset): Promise<FetchablePartitionResponse>
     stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
+    createStream(offset: Offset): Promise<AsyncIterable<Record>>
 }
 
 /**
