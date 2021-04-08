@@ -1,0 +1,60 @@
+name: Fluvio Cloud CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron:  '0 14 * * *'
+
+jobs:
+  cancel_previous_runs:
+    name: Cancel Previous Runs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+
+  smoke_test:
+    name: Smoke test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        rust: [stable]
+        node: [ '12', '14', '15' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install fluvio
+        run: |
+          curl -fsS https://packages.fluvio.io/v1/install.sh | bash
+          echo "${HOME}/.fluvio/bin" >> $GITHUB_PATH
+
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
+          use-tool-cache: true
+
+      - name: Login to fluvio cloud
+        run: |
+          fluvio cloud login --email ${FLUVIO_CLOUD_TEST_USERNAME} --password ${FLUVIO_CLOUD_TEST_PASSWORD}
+        env:
+          FLUVIO_CLOUD_TEST_USERNAME: ${{ secrets.FLUVIO_CLOUD_TEST_USERNAME }}
+          FLUVIO_CLOUD_TEST_PASSWORD: ${{ secrets.FLUVIO_CLOUD_TEST_PASSWORD }}
+
+      - name: Run unit tests
+        run: |
+          make test_all
