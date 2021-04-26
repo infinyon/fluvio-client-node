@@ -3,7 +3,7 @@ name: Fluvio Cloud CI
 on:
   workflow_dispatch:
   push:
-    branches: [ master, cloud-ci-test ]
+    branches: [ master ]
   schedule:
     - cron:  '0 14 * * *'
 
