@@ -52,7 +52,7 @@ impl TopicProducerJS {
             .inner
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        client.send_record(value.into_bytes(), partition).await?;
+        client.send_all(Some((None::<Vec<u8>>, value.into_bytes()))).await?;
         Ok(())
     }
 
