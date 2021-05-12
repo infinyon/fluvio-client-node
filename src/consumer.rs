@@ -378,7 +378,7 @@ impl<'a> FetchablePartitionResponseWrapper {
 
     #[node_bindgen(getter)]
     fn last_stable_offset(&self) -> Option<i64> {
-        Some(self.0.as_ref()?.last_stable_offset)
+        Some(self.0.as_ref()?.high_watermark)
     }
 
     #[node_bindgen(getter)]

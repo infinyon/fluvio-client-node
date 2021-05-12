@@ -1,6 +1,9 @@
 all:	build
 
-build:
+install:
+	npm install
+
+build: install
 	npm run build:platform
 	npm run build:ts
 
