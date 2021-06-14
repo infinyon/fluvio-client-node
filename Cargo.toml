@@ -17,11 +17,8 @@ log = "0.4.13"
 serde = { version = "1.0.119", features = ["derive"] }
 serde_json = "1.0.61"
 node-bindgen = "4.1.0"
-fluvio = { version = "0.7", features = ["admin"] }
+fluvio = { version = "0.8", features = ["admin"] }
 fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]
 node-bindgen = { version = "4.3.0", features = ["build"] }
-
-[patch.crates-io]
-fluvio = { git = "https://github.com/infinyon/fluvio", rev = "8c151f8a4ae0825c38706faa088d0940264e1bef" }
