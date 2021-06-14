@@ -53,7 +53,7 @@ impl TopicProducerJS {
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
         client
-            .send_all(Some((None::<Vec<u8>>, value.into_bytes())))
+            .send_all(Some((Vec::new(), value.into_bytes())))
             .await?;
         Ok(())
     }
@@ -99,7 +99,7 @@ impl TopicProducerJS {
                     ProduceArg::ArrayBuffer(buffer) => buffer.as_bytes(),
                 };
 
-                (Some(key), value)
+                (key, value)
             })
             .collect();
         client.send_all(records).await?;

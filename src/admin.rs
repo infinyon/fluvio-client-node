@@ -342,7 +342,7 @@ impl TryIntoJs for PartitionSpecWrapper {
         spec.set_property(LEADER_KEY, leader)?;
         spec.set_property(REPLICAS_KEY, replicas)?;
 
-        Ok(spec.try_to_js(js_env)?)
+        spec.try_to_js(js_env)
     }
 }
 
@@ -370,8 +370,8 @@ impl JSValue<'_> for TopicSpecWrapper {
                     optional_property!("ignoreRackAssignment", bool, false, js_obj);
 
                 Ok(Self(TopicSpec::Computed(TopicReplicaParam {
-                    replication_factor,
                     partitions,
+                    replication_factor,
                     ignore_rack_assignment,
                 })))
             }
