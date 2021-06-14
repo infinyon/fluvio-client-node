@@ -48,7 +48,7 @@ jobs:
 
       - name: Login to fluvio cloud
         run: |
-          fluvio cloud login --email ${FLUVIO_CLOUD_TEST_USERNAME} --password ${FLUVIO_CLOUD_TEST_PASSWORD}
+          fluvio cloud login --email ${FLUVIO_CLOUD_TEST_USERNAME} --password ${FLUVIO_CLOUD_TEST_PASSWORD} --remote 'https://cloud-dev.fluvio.io'
         env:
           FLUVIO_CLOUD_TEST_USERNAME: ${{ secrets.FLUVIO_CLOUD_TEST_USERNAME }}
           FLUVIO_CLOUD_TEST_PASSWORD: ${{ secrets.FLUVIO_CLOUD_TEST_PASSWORD }}
@@ -56,3 +56,12 @@ jobs:
       - name: Run unit tests
         run: |
           make test_all
+
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
