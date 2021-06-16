@@ -18,7 +18,7 @@ serde = { version = "1.0.119", features = ["derive"] }
 serde_json = "1.0.61"
 node-bindgen = "4.1.0"
 fluvio = { version = "0.8", features = ["admin"] }
-fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
+fluvio-future = { version = "0.3.5", features = ["tls", "task", "io"] }
 
 [build-dependencies]
 node-bindgen = { version = "4.3.0", features = ["build"] }
