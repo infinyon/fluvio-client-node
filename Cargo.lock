@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "nj-build"
 version = "0.2.3"
-source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#df48c1e0d4d6aae1a86491a08c6512aa6d9fdb91"
+source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#712d2fa579fd7939c0789be6189944cbe33656dc"
 dependencies = [
  "cc",
  "http_req",
@@ -1049,7 +1049,7 @@ dependencies = [
 [[package]]
 name = "nj-core"
 version = "5.0.0"
-source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#df48c1e0d4d6aae1a86491a08c6512aa6d9fdb91"
+source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#712d2fa579fd7939c0789be6189944cbe33656dc"
 dependencies = [
  "async-trait",
  "ctor",
@@ -1066,7 +1066,7 @@ dependencies = [
 [[package]]
 name = "nj-derive"
 version = "3.4.0"
-source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#df48c1e0d4d6aae1a86491a08c6512aa6d9fdb91"
+source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#712d2fa579fd7939c0789be6189944cbe33656dc"
 dependencies = [
  "Inflector",
  "proc-macro2",
@@ -1077,12 +1077,12 @@ dependencies = [
 [[package]]
 name = "nj-sys"
 version = "3.0.0"
-source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#df48c1e0d4d6aae1a86491a08c6512aa6d9fdb91"
+source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#712d2fa579fd7939c0789be6189944cbe33656dc"
 
 [[package]]
 name = "node-bindgen"
 version = "5.0.0"
-source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#df48c1e0d4d6aae1a86491a08c6512aa6d9fdb91"
+source = "git+https://github.com/simlay/node-bindgen?branch=fix-clippy-for-rust-1.53#712d2fa579fd7939c0789be6189944cbe33656dc"
 dependencies = [
  "nj-build",
  "nj-core",
