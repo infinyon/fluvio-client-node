@@ -1,5 +1,6 @@
 use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
+use crate::error::FluvioErrorJS;
 
 use std::fmt;
 use std::pin::Pin;
@@ -88,7 +89,7 @@ impl PartitionConsumerJS {
     async fn fetch(
         &self,
         offset: OffsetWrapper,
-    ) -> Result<FetchablePartitionResponseWrapper, FluvioError> {
+    ) -> Result<FetchablePartitionResponseWrapper, FluvioErrorJS> {
         let client = self
             .inner
             .as_ref()
@@ -103,7 +104,7 @@ impl PartitionConsumerJS {
         &self,
         offset: OffsetWrapper,
         cb: F,
-    ) -> Result<(), FluvioError> {
+    ) -> Result<(), FluvioErrorJS> {
         let client = self
             .inner
             .as_ref()
@@ -116,7 +117,7 @@ impl PartitionConsumerJS {
         client: Arc<PartitionConsumer>,
         offset: OffsetWrapper,
         cb: F,
-    ) -> Result<(), FluvioError> {
+    ) -> Result<(), FluvioErrorJS> {
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
@@ -135,7 +136,7 @@ impl PartitionConsumerJS {
     async fn create_stream(
         &self,
         offset: OffsetWrapper,
-    ) -> Result<PartitionConsumerIterator, FluvioError> {
+    ) -> Result<PartitionConsumerIterator, FluvioErrorJS> {
         let client = self
             .inner
             .as_ref()
@@ -248,7 +249,7 @@ impl PartitionConsumerIterator {
     }
 
     #[node_bindgen]
-    async fn next(&mut self) -> Result<IterItem, FluvioError> {
+    async fn next(&mut self) -> Result<IterItem, FluvioErrorJS> {
         if let Some(ref mut inner) = self.inner {
             let next: Option<Result<Record, _>> = inner.next().await;
             let next: Option<Record> = next.transpose()?;
