@@ -22,7 +22,3 @@ fluvio-future = { version = "0.1.15", features = ["tls", "task", "io"] }
 
 [build-dependencies]
 node-bindgen = { version = "5.0.0", features = ["build"] }
-
-[patch.crates-io]
-node-bindgen = { git = "https://github.com/simlay/node-bindgen", branch = "fix-clippy-for-rust-1.53"}
-#node-bindgen = { path = "../node-bindgen/" }
