@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [ '14' ]
+        node: [ '16' ]
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust stable
@@ -40,6 +40,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Check prettier
         run: make npm_lint
+      - name: Check docs building
+        run: make run_docs
 
   smoke_test:
     name: Smoke test
@@ -98,7 +100,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '14' ]
+        node: [ '16' ]
     steps:
       - uses: actions/checkout@v2
       - name: Install ${{ matrix.rust }}

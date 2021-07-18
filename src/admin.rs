@@ -1,5 +1,6 @@
 use crate::{CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
+use crate::error::FluvioErrorJS;
 
 use std::convert::{TryInto};
 use std::fmt::Display;
@@ -76,7 +77,7 @@ impl FluvioAdminJS {
         self.inner.replace(client);
     }
 
-    async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioError>
+    async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioErrorJS>
     where
         S: ListSpec + Encoder + Decoder + Serialize,
         S::Status: Encoder + Decoder + Serialize,
@@ -92,17 +93,17 @@ impl FluvioAdminJS {
             // // convert to array buffer and wrap in the buffer
             Ok(ArrayBuffer::new(json_slice))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn list_topic(&mut self) -> Result<ArrayBuffer, FluvioError> {
+    async fn list_topic(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
         self.js_list::<TopicSpec>().await
     }
 
     #[node_bindgen]
-    async fn find_topic(&mut self, topic_name: String) -> Result<TopicInfo, FluvioError> {
+    async fn find_topic(&mut self, topic_name: String) -> Result<TopicInfo, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             let topics = client.list::<TopicSpec, _>(vec![]).await?;
 
@@ -114,7 +115,7 @@ impl FluvioAdminJS {
             // // convert to array buffer and wrap in the buffer
             Ok(TopicInfo(Some(ArrayBuffer::new(json))))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
@@ -123,36 +124,36 @@ impl FluvioAdminJS {
         &mut self,
         topic: String,
         spec: TopicSpecWrapper,
-    ) -> Result<String, FluvioError> {
+    ) -> Result<String, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             debug!("Creating Topic with Spec: {:?}", spec.0);
             client.create(topic.clone(), false, spec.0).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn delete_topic(&mut self, topic: String) -> Result<String, FluvioError> {
+    async fn delete_topic(&mut self, topic: String) -> Result<String, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             client.delete::<TopicSpec, String>(topic.clone()).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn list_spu(&mut self) -> Result<ArrayBuffer, FluvioError> {
-        self.js_list::<SpuSpec>().await
+    async fn list_spu(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
+        serde::__private::Ok(self.js_list::<SpuSpec>().await?)
     }
 
     #[node_bindgen]
     async fn find_partition(
         &mut self,
         topic: String,
-    ) -> Result<PartitionMetadataWrapper, FluvioError> {
+    ) -> Result<PartitionMetadataWrapper, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             let partitions = client.list::<PartitionSpec, _>(vec![]).await?;
 
@@ -168,15 +169,15 @@ impl FluvioAdminJS {
                 debug!("Found Partition: {:?}", partition);
                 Ok(PartitionMetadataWrapper(partition))
             } else {
-                Err(FluvioError::Other("failed to find partition".to_owned()))
+                Err(FluvioError::Other("failed to find partition".to_owned()).into())
             }
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn list_partitions(&mut self) -> Result<ArrayBuffer, FluvioError> {
+    async fn list_partitions(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
         self.js_list::<PartitionSpec>().await
     }
 
@@ -185,22 +186,22 @@ impl FluvioAdminJS {
         &mut self,
         name: String,
         spec: CustomSpuSpecWrapper,
-    ) -> Result<(), FluvioError> {
+    ) -> Result<(), FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             client.create(name, false, spec.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn delete_custom_spu(&mut self, key: CustomSpuKeyWrapper) -> Result<(), FluvioError> {
+    async fn delete_custom_spu(&mut self, key: CustomSpuKeyWrapper) -> Result<(), FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             client.delete::<CustomSpuSpec, _>(key.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
@@ -209,23 +210,23 @@ impl FluvioAdminJS {
         &mut self,
         name: String,
         spec: SpuGroupSpecWrapper,
-    ) -> Result<(), FluvioError> {
+    ) -> Result<(), FluvioErrorJS> {
         debug!("Creating a new managed spu: {:?}", spec.0);
         if let Some(client) = &mut self.inner {
             client.create::<SpuGroupSpec>(name, false, spec.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 
     #[node_bindgen]
-    async fn delete_managed_spu(&mut self, name: String) -> Result<(), FluvioError> {
+    async fn delete_managed_spu(&mut self, name: String) -> Result<(), FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             client.delete::<SpuGroupSpec, _>(name).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
     }
 }

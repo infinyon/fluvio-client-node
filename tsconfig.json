@@ -6,6 +6,7 @@
     "./build.js",
     "./native/**/*",
     "./docs/**/*",
+    "./target/**/*",
     "src/fluvio.test.ts",
     "./jest.config.js"
   ],

@@ -24,8 +24,8 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@types/node": "^14.14.31",
-        "typescript": "^4.1.5"
+        "@types/node": "^16.3.2",
+        "typescript": "^4.3.5"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
@@ -43,14 +43,14 @@
     },
     "devDependencies": {
         "@types/jest": "^26.0.22",
-        "@types/mocha": "^8.2.2",
-        "@types/uuid": "^8.3.0",
-        "jest": "^26.6.3",
+        "@types/mocha": "^8.2.3",
+        "@types/uuid": "^8.3.1",
+        "jest": "^27.0.6",
         "prettier": "^2.2.1",
-        "ts-jest": "^26.5.4",
-        "ts-node": "^9.1.1",
+        "ts-jest": "^27.0.3",
+        "ts-node": "^10.1.0",
         "tslint": "^6.1.3",
-        "typedoc": "^0.20.35",
+        "typedoc": "^0.21.4",
         "uuid": "^8.3.2"
     }
 }

@@ -13,7 +13,7 @@ test_all: build
 npm_lint:
 	npm run prettier:check
 
-run_docs:
+run_docs: install
 	npm run docs
 
 pack:
