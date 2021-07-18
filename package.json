@@ -24,8 +24,8 @@
     "author": "team@fluvio.io",
     "license": "Apache-2.0",
     "dependencies": {
-        "@types/node": "^14.14.31",
-        "typescript": "^4.1.5"
+        "@types/node": "^16.3.2",
+        "typescript": "^4.3.5"
     },
     "scripts": {
         "prettier": "npx prettier --write '{src,examples,test,native,demos}/**/*.{ts,js}'",
