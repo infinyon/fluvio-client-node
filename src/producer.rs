@@ -1,4 +1,5 @@
 use crate::CLIENT_NOT_FOUND_ERROR_MSG;
+use crate::error::FluvioErrorJS;
 
 use log::debug;
 use fluvio::TopicProducer;
@@ -46,7 +47,7 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send_record(&self, value: String, partition: i32) -> Result<(), FluvioError> {
+    async fn send_record(&self, value: String, partition: i32) -> Result<(), FluvioErrorJS> {
         debug!("Sending record: {} to partition: {}", value, partition);
         let client = self
             .inner
@@ -59,7 +60,7 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send(&self, key: ProduceArg, value: ProduceArg) -> Result<(), FluvioError> {
+    async fn send(&self, key: ProduceArg, value: ProduceArg) -> Result<(), FluvioErrorJS> {
         let client = self
             .inner
             .as_ref()
@@ -80,7 +81,7 @@ impl TopicProducerJS {
     }
 
     #[node_bindgen]
-    async fn send_all(&self, elements: Vec<(ProduceArg, ProduceArg)>) -> Result<(), FluvioError> {
+    async fn send_all(&self, elements: Vec<(ProduceArg, ProduceArg)>) -> Result<(), FluvioErrorJS> {
         let client = self
             .inner
             .as_ref()

@@ -3,6 +3,7 @@ mod connect;
 mod consumer;
 mod producer;
 mod fluvio;
+mod error;
 
 use shared::*;
 
