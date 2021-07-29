@@ -398,7 +398,7 @@ impl<'a> FetchablePartitionResponseWrapper {
 
         if let Some(ref transactions) = inner.aborted {
             for i in transactions {
-                aborted_transactions.push(AbortedTransactionWrapper(&i));
+                aborted_transactions.push(AbortedTransactionWrapper(i));
             }
         }
         aborted_transactions
@@ -507,7 +507,7 @@ impl TryIntoJs for RecordSetWrapper<'_> {
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
                 let value = record.value().as_ref();
-                let value = if let Ok(v) = std::str::from_utf8(&value) {
+                let value = if let Ok(v) = std::str::from_utf8(value) {
                     Some(v.to_owned())
                 } else {
                     None
