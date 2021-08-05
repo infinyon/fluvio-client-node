@@ -50,13 +50,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         rust: [stable]
-        node: [ '12', '14', '15' ]
+        node: [ '12', '14', '16' ]
     steps:
       - name: Install Fluvio Local Cluster
         uses: infinyon/fluvio@master
         with:
           cluster-type: local
           version: 'latest'
+      - uses: AbsaOSS/k3d-action@v1.5.0
+        name: "Create fluvio k3d Cluster"
+        with:
+          cluster-name: "fluvio"
       - name: Check Fluvio Installation
         run: |
           fluvio version
