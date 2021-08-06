@@ -3,6 +3,13 @@
 ### Improvements
 ### Fixed
 
+## 0.9.0
+### Improvements
+* Updates to fluvio 0.9.0. ([#120](https://github.com/infinyon/fluvio-client-node/pull/120))
+* Remove `error_code` from `FetchablePartitionResponse`. ([#120](https://github.com/infinyon/fluvio-client-node/pull/120))
+* Make CI use k3d rather than minikube. ([#120](https://github.com/infinyon/fluvio-client-node/pull/120))
+### Fixed
+
 ## 0.7.2
 
 ### Improvements

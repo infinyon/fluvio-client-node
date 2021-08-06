@@ -362,10 +362,6 @@ impl<'a> FetchablePartitionResponseWrapper {
     fn set_inner(&mut self, inner: Option<FetchablePartitionResponse<RecordSet>>) {
         self.0 = inner;
     }
-    #[node_bindgen(getter)]
-    fn error_code(&self) -> Option<i32> {
-        Some(self.0.as_ref()?.error_code as i32)
-    }
 
     #[node_bindgen(getter)]
     fn partition_index(&self) -> Option<i32> {
