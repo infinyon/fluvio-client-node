@@ -7,8 +7,15 @@ build: install
 	npm run build:platform
 	npm run build:ts
 
-test_all: build
-	RUST_BACKTRACE=full RUST_LOG=fluvio_client_node=debug FLUVIO_DEV=$(shell uname | tr '[:upper:]' '[:lower:]') npx jest -w 1
+
+JEST=./node_modules/.bin/jest -w 1
+FLUVIO_DEV=FLUVIO_DEV=$(shell uname | tr '[:upper:]' '[:lower:]')
+RUST_ENVS=RUST_BACKTRACE=full RUST_LOG=fluvio_client_node=debug
+test_all:
+	$(RUST_ENVS) $(FLUVIO_DEV) $(JEST) --testNamePattern '^(?!MacOSCi).*'
+
+test_macos_ci:
+	$(RUST_ENVS) $(FLUVIO_DEV) $(JEST) --testNamePattern 'MacOSCi'
 
 npm_lint:
 	npm run prettier:check

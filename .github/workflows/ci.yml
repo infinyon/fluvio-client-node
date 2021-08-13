@@ -43,6 +43,36 @@ jobs:
       - name: Check docs building
         run: make run_docs
 
+  macos_ci:
+    name: MacOS Linking test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        rust: [stable]
+        node: [ '12', '14', '16' ]
+    steps:
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
+          use-tool-cache: true
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install and Build
+        run: |
+          npm install
+      - name: Test
+        run: |
+          make test_macos_ci
+
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
