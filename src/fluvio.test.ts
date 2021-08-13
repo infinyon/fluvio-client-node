@@ -224,6 +224,6 @@ describe('Fluvio Batch Producer', () => {
 
 describe('MacOSCi', () => {
     test('', async () => {
-        await expect(Fluvio.connect()).rejects.toEqual(["Fluvio socket error"]);
+        await expect(Fluvio.connect()).rejects.toEqual(['Fluvio socket error'])
     })
 })
