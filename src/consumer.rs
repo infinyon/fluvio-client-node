@@ -362,10 +362,6 @@ impl<'a> FetchablePartitionResponseWrapper {
     fn set_inner(&mut self, inner: Option<FetchablePartitionResponse<RecordSet>>) {
         self.0 = inner;
     }
-    #[node_bindgen(getter)]
-    fn error_code(&self) -> Option<i32> {
-        Some(self.0.as_ref()?.error_code as i32)
-    }
 
     #[node_bindgen(getter)]
     fn partition_index(&self) -> Option<i32> {
@@ -398,7 +394,7 @@ impl<'a> FetchablePartitionResponseWrapper {
 
         if let Some(ref transactions) = inner.aborted {
             for i in transactions {
-                aborted_transactions.push(AbortedTransactionWrapper(&i));
+                aborted_transactions.push(AbortedTransactionWrapper(i));
             }
         }
         aborted_transactions
@@ -507,7 +503,7 @@ impl TryIntoJs for RecordSetWrapper<'_> {
                 let key = ArrayBuffer::new(Vec::new()).try_to_js(js_env)?;
 
                 let value = record.value().as_ref();
-                let value = if let Ok(v) = std::str::from_utf8(&value) {
+                let value = if let Ok(v) = std::str::from_utf8(value) {
                     Some(v.to_owned())
                 } else {
                     None

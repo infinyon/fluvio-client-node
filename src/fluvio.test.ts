@@ -221,3 +221,13 @@ describe('Fluvio Batch Producer', () => {
         expect(counter).toEqual(MAX_COUNT)
     })
 })
+
+describe('MacOSCi', () => {
+    test('', async () => {
+        // The errors will either be ['Fluvio socket error'] or ['Fluvio config error']
+        // Getting expect to work with either is annoying.
+        let error = await expect(Fluvio.connect()).rejects.toEqual([
+            'Fluvio socket error',
+        ])
+    })
+})
