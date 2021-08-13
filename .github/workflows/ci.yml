@@ -35,7 +35,7 @@ jobs:
       - name: Check clippy
         run: make check-clippy
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.3.0
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: ${{ matrix.node }}
       - name: Check prettier
@@ -43,15 +43,50 @@ jobs:
       - name: Check docs building
         run: make run_docs
 
+  macos_ci:
+    name: MacOS Linking test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        rust: [stable]
+        node: [ '12', '14', '16' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ${{ matrix.rust }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
+          use-tool-cache: true
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install and Build
+        run: |
+          npm install
+      - name: Test
+        run: |
+          make test_macos_ci
+
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         rust: [stable]
-        node: [ '12', '14', '15' ]
+        node: [ '12', '14', '16' ]
     steps:
+      - uses: AbsaOSS/k3d-action@v1.5.0
+        name: "Create fluvio k3d Cluster"
+        with:
+          cluster-name: "fluvio"
       - name: Install Fluvio Local Cluster
         uses: infinyon/fluvio@master
         with:
@@ -80,7 +115,7 @@ jobs:
           version: latest
           use-tool-cache: true
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.3.0
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: ${{ matrix.node }}
       - name: Install and Build
