@@ -95,6 +95,7 @@ impl PartitionConsumerJS {
             .as_ref()
             .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
 
+        #[allow(deprecated)]
         let response = client.fetch(offset.0).await?;
         Ok(FetchablePartitionResponseWrapper(Some(response)))
     }
