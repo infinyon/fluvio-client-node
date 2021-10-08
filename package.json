@@ -38,7 +38,7 @@
         "publish:platform": "node ./build.js --release && cd native && npm run publish:platform",
         "publish:native": "cd ./native && npm publish --access public",
         "postinstall": "npm run build:ts",
-        "docs": "npx typedoc --out docs ./src/index.ts --theme minimal",
+        "docs": "npx typedoc --out docs ./src/index.ts",
         "test": "npm run build:test && npx jest"
     },
     "devDependencies": {
