@@ -227,7 +227,7 @@ describe('MacOSCi', () => {
         // The errors will either be ['Fluvio socket error'] or ['Fluvio config error']
         // Getting expect to work with either is annoying.
         let error = await expect(Fluvio.connect()).rejects.toEqual([
-            'Fluvio config error',
+            "Fluvio config error: Config has no active profile",
         ])
     })
 })
