@@ -83,7 +83,7 @@ jobs:
         rust: [stable]
         node: [ '12', '14', '16' ]
     steps:
-      - uses: AbsaOSS/k3d-action@v1.6.3
+      - uses: AbsaOSS/k3d-action@v2
         name: "Create fluvio k3d Cluster"
         with:
           cluster-name: "fluvio"
