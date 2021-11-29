@@ -10,7 +10,9 @@ use fluvio::{FluvioAdmin, FluvioError};
 use fluvio::metadata::objects::{ListSpec, ListResponse};
 use fluvio::dataplane::core::{Decoder, Encoder};
 use fluvio::metadata::spu::{
-    CustomSpu, SpuSpec, CustomSpuSpec, IngressPort, IngressAddr, EncryptionEnum, Endpoint,
+    SpuSpec,
+    CustomSpu,
+    CustomSpuSpec, IngressPort, IngressAddr, EncryptionEnum, Endpoint,
     CustomSpuKey,
 };
 use fluvio::metadata::spg::{SpuGroupSpec, SpuConfig, StorageConfig, ReplicationConfig, EnvVar};
