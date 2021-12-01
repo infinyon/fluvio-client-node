@@ -2,16 +2,16 @@ use crate::{CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 use crate::error::FluvioErrorJS;
 
-use std::convert::{TryInto};
+use std::convert::{TryInto, TryFrom};
 use std::fmt::Display;
 use log::debug;
 
 use fluvio::{FluvioAdmin, FluvioError};
-use fluvio::metadata::objects::{ListSpec, ListResponse};
+use fluvio::metadata::objects::ListResponse;
+use fluvio::metadata::AdminSpec;
 use fluvio::dataplane::core::{Decoder, Encoder};
-use fluvio::metadata::spu::{
-    CustomSpu, SpuSpec, CustomSpuSpec, IngressPort, IngressAddr, EncryptionEnum, Endpoint,
-    CustomSpuKey,
+use fluvio::metadata::{
+    spu::{SpuSpec},
 };
 use fluvio::metadata::spg::{SpuGroupSpec, SpuConfig, StorageConfig, ReplicationConfig, EnvVar};
 use fluvio::metadata::topic::{PartitionMap, PartitionMaps};
@@ -20,6 +20,7 @@ use fluvio::metadata::partition::{PartitionSpec, PartitionStatus, PartitionResol
 use fluvio::metadata::topic::TopicSpec;
 use fluvio::metadata::topic::TopicReplicaParam;
 use fluvio::dataplane::ReplicaKey;
+use fluvio::metadata::objects::{ObjectApiListRequest, ObjectApiListResponse, ListRequest};
 use serde::{Serialize};
 
 use node_bindgen::derive::node_bindgen;
@@ -77,24 +78,30 @@ impl FluvioAdminJS {
         self.inner.replace(client);
     }
 
-    async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioErrorJS>
-    where
-        S: ListSpec + Encoder + Decoder + Serialize,
-        S::Status: Encoder + Decoder + Serialize,
-        ListResponse: TryInto<Vec<Metadata<S>>>,
-        <ListResponse as TryInto<Vec<Metadata<S>>>>::Error: Display,
-    {
-        if let Some(client) = &mut self.inner {
-            // client.clone().write().await
-            let data = client.list::<S, _>(vec![]).await?;
-            let json_slice = serde_json::to_vec(&data).map_err(|err| {
-                FluvioError::Other(format!("serialization error: {}", err.to_string()))
-            })?;
-            // // convert to array buffer and wrap in the buffer
-            Ok(ArrayBuffer::new(json_slice))
+    fn client(&self) -> Result<&FluvioAdmin, FluvioErrorJS> {
+        if let Some(client) = &self.inner {
+            Ok(client)
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
+    }
+
+    async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioErrorJS>
+    where
+        S: AdminSpec + Encoder + Decoder + Serialize,
+        <S as AdminSpec>::ListType: Serialize,
+
+        ObjectApiListRequest: From<ListRequest<S>>,
+        ListResponse<S>: TryFrom<ObjectApiListResponse>,
+        <ListResponse<S> as TryFrom<ObjectApiListResponse>>::Error: Display,
+    {
+        let client = self.client()?;
+        let data = client.list::<S, _>(vec![]).await?;
+        let json_slice = serde_json::to_vec(&data).map_err(|err| {
+            FluvioError::Other(format!("serialization error: {}", err.to_string()))
+        })?;
+        // // convert to array buffer and wrap in the buffer
+        Ok(ArrayBuffer::new(json_slice))
     }
 
     #[node_bindgen]
@@ -179,30 +186,6 @@ impl FluvioAdminJS {
     #[node_bindgen]
     async fn list_partitions(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
         self.js_list::<PartitionSpec>().await
-    }
-
-    #[node_bindgen]
-    async fn create_custom_spu(
-        &mut self,
-        name: String,
-        spec: CustomSpuSpecWrapper,
-    ) -> Result<(), FluvioErrorJS> {
-        if let Some(client) = &mut self.inner {
-            client.create(name, false, spec.0).await?;
-            Ok(())
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
-        }
-    }
-
-    #[node_bindgen]
-    async fn delete_custom_spu(&mut self, key: CustomSpuKeyWrapper) -> Result<(), FluvioErrorJS> {
-        if let Some(client) = &mut self.inner {
-            client.delete::<CustomSpuSpec, _>(key.0).await?;
-            Ok(())
-        } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
-        }
     }
 
     #[node_bindgen]
@@ -399,130 +382,6 @@ impl JSValue<'_> for PartitionWrap {
     }
 }
 
-pub struct IngressAddrWrapper(Vec<IngressAddr>);
-
-impl JSValue<'_> for IngressAddrWrapper {
-    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
-            let hostname = optional_property!("hostname", String, js_obj);
-            let hostname = Some(hostname.unwrap_or_else(|| "localhost".to_string()));
-            let ip = optional_property!("ip", String, js_obj);
-
-            debug!("Hostname: {:?}", hostname);
-
-            Ok(Self(vec![IngressAddr { hostname, ip }]))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-pub struct EncryptionEnumWrapper(EncryptionEnum);
-
-impl JSValue<'_> for EncryptionEnumWrapper {
-    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(string) = env.convert_to_rust::<String>(js_value) {
-            let encrption = match string.as_ref() {
-                "plaintext" => EncryptionEnum::PLAINTEXT,
-                "SSL" => EncryptionEnum::SSL,
-                _ => EncryptionEnum::PLAINTEXT,
-            };
-
-            Ok(Self(encrption))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-pub struct IngressPortWrapper(IngressPort);
-
-impl JSValue<'_> for IngressPortWrapper {
-    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
-            let port = must_property!("port", u32, js_obj) as u16;
-            debug!("Found Port: {:?}", port);
-            let ingress = must_property!("ingress", IngressAddrWrapper, js_obj);
-            let encryption = must_property!("encryption", EncryptionEnumWrapper, js_obj);
-
-            Ok(Self(IngressPort {
-                port,
-                ingress: ingress.0,
-                encryption: encryption.0,
-            }))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-pub struct EndpointWrapper(Endpoint);
-
-impl JSValue<'_> for EndpointWrapper {
-    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
-            let port = must_property!("port", u32, js_obj) as u16;
-            let host = must_property!("host", String, js_obj);
-            let encryption = must_property!("encryption", String, js_obj);
-
-            Ok(Self(Endpoint {
-                port,
-                host,
-                encryption: match encryption.as_ref() {
-                    "plaintext" => EncryptionEnum::PLAINTEXT,
-                    "SSL" => EncryptionEnum::SSL,
-                    _ => EncryptionEnum::PLAINTEXT,
-                },
-            }))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-pub struct CustomSpuSpecWrapper(CustomSpuSpec);
-
-impl JSValue<'_> for CustomSpuSpecWrapper {
-    fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
-            let id = must_property!("id", i32, js_obj);
-
-            let public_endpoint: IngressPortWrapper =
-                must_property!("publicEndpoint", IngressPortWrapper, js_obj);
-
-            let private_endpoint: EndpointWrapper =
-                must_property!("privateEndpoint", EndpointWrapper, js_obj);
-
-            let rack = optional_property!("rack", String, js_obj);
-
-            Ok(Self(CustomSpuSpec {
-                id,
-                private_endpoint: private_endpoint.0,
-                public_endpoint: public_endpoint.0,
-                rack,
-            }))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-struct DeleteCustomSpu(CustomSpu);
-
-impl JSValue<'_> for DeleteCustomSpu {
-    fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(id) = env.convert_to_rust::<i32>(n_value) {
-            Ok(Self(CustomSpu::Id(id)))
-        } else if let Ok(name) = env.convert_to_rust::<String>(n_value) {
-            Ok(Self(CustomSpu::Name(name)))
-        } else {
-            Err(NjError::Other(
-                "spu id must be number or string".to_string(),
-            ))
-        }
-    }
-}
-
 pub struct ReplicationConfigWrapper(ReplicationConfig);
 
 impl JSValue<'_> for ReplicationConfigWrapper {
@@ -620,22 +479,6 @@ impl JSValue<'_> for SpuGroupSpecWrapper {
                 min_id,
                 spu_config: spu_config.0,
             }))
-        } else {
-            Err(NjError::Other("parameter must be json".to_owned()))
-        }
-    }
-}
-
-pub struct CustomSpuKeyWrapper(CustomSpuKey);
-
-impl JSValue<'_> for CustomSpuKeyWrapper {
-    fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
-        if let Ok(value) = env.convert_to_rust::<String>(n_value) {
-            let key = match value.parse::<i32>() {
-                Ok(id) => CustomSpuKey::Id(id),
-                Err(_) => CustomSpuKey::Name(value),
-            };
-            Ok(Self(key))
         } else {
             Err(NjError::Other("parameter must be json".to_owned()))
         }
