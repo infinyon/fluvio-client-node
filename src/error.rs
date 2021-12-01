@@ -9,3 +9,11 @@ impl From<fluvio::FluvioError> for FluvioErrorJS {
         Self(inner.to_string())
     }
 }
+
+use fluvio::dataplane::ErrorCode;
+
+impl From<ErrorCode> for FluvioErrorJS {
+    fn from(inner: ErrorCode) -> Self {
+        Self(inner.to_string())
+    }
+}
