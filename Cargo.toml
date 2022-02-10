@@ -15,7 +15,7 @@ test = false
 [dependencies]
 log = "0.4.13"
 serde = { version = "1.0.130", features = ["derive"] }
-serde_json = "1.0.61"
+serde_json = "1.0.78"
 node-bindgen = "5.0.0"
 fluvio = { version = "0.10", features = ["admin"] }
 fluvio-future = { version = "0.3.9", features = ["tls", "task", "io"] }
