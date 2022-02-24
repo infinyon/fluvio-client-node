@@ -32,7 +32,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           override: true
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: ${{ matrix.node }}
       - name: Install fluvio
