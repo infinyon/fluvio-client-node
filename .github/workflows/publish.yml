@@ -16,7 +16,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         node: ['16']
-        target: [x86_64-unknown-linux-musl]
+        target: [x86_64-unknown-linux-gnu]
         include:
           - os: macos-latest
             target: x86_64-apple-darwin
@@ -84,8 +84,8 @@ jobs:
         run: |
           du -hs dist/*/index.node
 
-          lipo ./dist/x86_64-unknown-linux-musl/index.node ./dist/aarch64-unknown-linux-musl/index.node -create -output ./dist/linux/index.node
-          rm -r ./dist/x86_64-unknown-linux-musl ./dist/aarch64-unknown-linux-musl
+          lipo ./dist/x86_64-unknown-linux-gnu/index.node ./dist/aarch64-unknown-linux-gnu/index.node -create -output ./dist/linux/index.node
+          rm -r ./dist/x86_64-unknown-linux-gnu ./dist/aarch64-unknown-linux-gnu
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
