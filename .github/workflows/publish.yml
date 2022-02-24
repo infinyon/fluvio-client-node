@@ -5,6 +5,9 @@ on:
   push:
     tags:
       - 'v*'
+  pull_request:
+    branches: [ master ]
+
 jobs:
   build_and_upload_artifacts:
     name: Publish Using github
@@ -12,7 +15,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node: ['14']
+        node: ['16']
+        include:
+          - os: macos-latest
+            rust-target: x86_64-apple-darwin
+          - os: macos-latest
+            rust-target: aarch64-apple-darwin
+          - os: ubuntu-latest
+            rust-target: aarch64-unknown-linux-musl
+          - os: ubuntu-latest
+            rust-target: x86_64-unknown-linux-musl
     steps:
       - uses: actions/checkout@v2
         with:
@@ -25,7 +37,7 @@ jobs:
           toolchain: stable
           override: true
       - name: Install nj-cli build
-        run: cargo install nj-cli
+        run: cargo install nj-cli --git https://github.com/simlay/node-bindgen --branch add-cross-compile-support
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
@@ -34,22 +46,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Build package
         run: |
-          node ./build.js --release
+          jn-cli build -o ./dist/${{matrix.target}} --release --target ${{matrix.target}}
 
-      - name: 'Upload Artifact - linux'
-        uses: actions/upload-artifact@v2
-        if: startsWith(matrix.os, 'ubuntu')
-        with:
-          name: linux.index.node
-          path: ./dist/linux/
-          retention-days: 5
-
-      - name: 'Upload Artifact - macos'
+      - name: 'Upload Artifact - ${{matrix.os}} for ${{matrix.target}}'
         uses: actions/upload-artifact@v2
         if: startsWith(matrix.os, 'macos')
         with:
-          name: darwin.index.node
-          path: ./dist/darwin/
+          name: ${{matrix.target}}.node
+          path: ./dist/${{matrix.target}}
           retention-days: 5
 
   publish-to-npm-with-artifacts:
@@ -60,22 +64,26 @@ jobs:
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
           fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-
-      - name: Download linux.index.node
-        uses: actions/download-artifact@v2
-        with:
-          name: linux.index.node
-          path: ./dist/linux/
-
-      - name: Download darwin.index.node
-        uses: actions/download-artifact@v2
-        with:
-          name: darwin.index.node
-          path: ./dist/darwin/
+      - uses: actions/download-artifact@v2
 
       - name: size of darwin file
         run: |
           du -hs dist/*/index.node
+          ls -R ./dist
+          mkdir -p ./dist/{linux,darwin}
+
+      - name: Build universal dylib for macos
+        run: |
+          ls -R
+          lipo ./dist/x86_64-apple-darwin/index.node ./dist/aarch64-apple-darwin/index.node -create -output ./dist/darwin/index.node
+          rm -r ./dist/x86_64-apple-darwin ./dist/aarch64-apple-darwin
+
+      - name: Build universal dylib for linux
+        run: |
+          du -hs dist/*/index.node
+
+          lipo ./dist/x86_64-unknown-linux-musl/index.node ./dist/aarch64-unknown-linux-musl/index.node -create -output ./dist/linux/index.node
+          rm -r ./dist/x86_64-unknown-linux-musl ./dist/aarch64-unknown-linux-musl
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
@@ -84,6 +92,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish
+        if: github.event_name == 'workflow_dispatch'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
         run: npm publish --access public
