@@ -75,7 +75,7 @@ jobs:
 
       - name: size of darwin file
         run: |
-          du -hs dist/*.node
+          du -hs dist/*
           ls -R ./dist
           mkdir -p ./dist/{linux,darwin}
 
@@ -87,7 +87,7 @@ jobs:
 
       - name: Build universal dylib for linux
         run: |
-          du -hs dist/*.node
+          du -hs dist/*
           lipo ./dist/x86_64-unknown-linux-gnu/index.node -create -output ./dist/linux/index.node
           rm -r ./dist/x86_64-unknown-linux-gnu
 
