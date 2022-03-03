@@ -65,7 +65,7 @@ jobs:
           retention-days: 5
 
   publish-to-npm-with-artifacts:
-    runs-on: [ubuntu-latest]
+    runs-on: [macos-latest] # macos needed for lipo command
     needs: [build_and_upload_artifacts]
     steps:
       - uses: actions/checkout@v2
@@ -88,7 +88,7 @@ jobs:
       - name: Build universal dylib for linux
         run: |
           du -hs dist/*
-          lipo ./dist/x86_64-unknown-linux-gnu/index.node -create -output ./dist/linux/index.node
+          mv ./dist/x86_64-unknown-linux-gnu/index.node ./dist/linux/index.node
           rm -r ./dist/x86_64-unknown-linux-gnu
 
       - name: Use Node.js ${{ matrix.node }}
