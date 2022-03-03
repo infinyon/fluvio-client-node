@@ -98,7 +98,7 @@ impl FluvioAdminJS {
         let client = self.client()?;
         let data = client.list::<S, _>(vec![]).await?;
         let json_slice = serde_json::to_vec(&data).map_err(|err| {
-            FluvioError::Other(format!("serialization error: {}", err.to_string()))
+            FluvioError::Other(format!("serialization error: {}", err))
         })?;
         // // convert to array buffer and wrap in the buffer
         Ok(ArrayBuffer::new(json_slice))
@@ -117,7 +117,7 @@ impl FluvioAdminJS {
             let topic = topics.iter().find(|topic| topic.name == topic_name);
 
             let json = serde_json::to_vec(&topic).map_err(|err| {
-                FluvioError::Other(format!("serialization error: {}", err.to_string()))
+                FluvioError::Other(format!("serialization error: {}", err))
             })?;
             // // convert to array buffer and wrap in the buffer
             Ok(TopicInfo(Some(ArrayBuffer::new(json))))
