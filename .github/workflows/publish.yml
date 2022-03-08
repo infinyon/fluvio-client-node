@@ -45,8 +45,11 @@ jobs:
           toolchain: stable
           override: true
       - run: rustup target add ${{matrix.target}}
-      - name: Install nj-cli build
-        run: cargo install nj-cli --git https://github.com/simlay/node-bindgen --branch add-cross-compile-support
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
+          use-tool-cache: true
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
