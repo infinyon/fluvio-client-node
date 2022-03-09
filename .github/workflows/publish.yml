@@ -37,7 +37,7 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Stable Rust
         uses: actions-rs/toolchain@v1
@@ -71,7 +71,7 @@ jobs:
     runs-on: [macos-latest] # macos needed for lipo command
     needs: [build_and_upload_artifacts]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
         with:
           path: ./dist/
