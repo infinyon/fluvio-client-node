@@ -52,7 +52,7 @@ jobs:
           use-tool-cache: true
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           registry-url: 'https://registry.npmjs.org'
@@ -95,7 +95,7 @@ jobs:
           rm -r ./dist/x86_64-unknown-linux-gnu
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           registry-url: 'https://registry.npmjs.org'
