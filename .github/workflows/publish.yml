@@ -5,27 +5,51 @@ on:
   push:
     tags:
       - 'v*'
+  pull_request:
+    branches: [ master ]
+
 jobs:
   build_and_upload_artifacts:
     name: Publish Using github
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        node: ['14']
+        os: [ubuntu-latest]
+        node: ['16']
+        target: [x86_64-unknown-linux-gnu]
+        include:
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
         with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions/checkout@v2
 
       - name: Install Stable Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
-      - name: Install nj-cli build
-        run: cargo install nj-cli
+      - run: rustup target add ${{matrix.target}}
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: nj-cli
+          version: latest
+          use-tool-cache: true
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
@@ -34,48 +58,41 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Build package
         run: |
-          node ./build.js --release
+          nj-cli build -o ./dist/${{matrix.target}} --release --target ${{matrix.target}}
 
-      - name: 'Upload Artifact - linux'
+      - name: 'Upload Artifact - ${{matrix.os}} for ${{matrix.target}}'
         uses: actions/upload-artifact@v2
-        if: startsWith(matrix.os, 'ubuntu')
         with:
-          name: linux.index.node
-          path: ./dist/linux/
-          retention-days: 5
-
-      - name: 'Upload Artifact - macos'
-        uses: actions/upload-artifact@v2
-        if: startsWith(matrix.os, 'macos')
-        with:
-          name: darwin.index.node
-          path: ./dist/darwin/
+          name: ${{matrix.target}}
+          path: ./dist/${{matrix.target}}
           retention-days: 5
 
   publish-to-npm-with-artifacts:
-    runs-on: [ubuntu-latest]
+    runs-on: [macos-latest] # macos needed for lipo command
     needs: [build_and_upload_artifacts]
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
         with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-
-      - name: Download linux.index.node
-        uses: actions/download-artifact@v2
-        with:
-          name: linux.index.node
-          path: ./dist/linux/
-
-      - name: Download darwin.index.node
-        uses: actions/download-artifact@v2
-        with:
-          name: darwin.index.node
-          path: ./dist/darwin/
+          path: ./dist/
 
       - name: size of darwin file
         run: |
-          du -hs dist/*/index.node
+          du -hs dist/*
+          ls -R ./dist
+          mkdir -p ./dist/{linux,darwin}
+
+      - name: Build universal dylib for macos
+        run: |
+          ls -R
+          lipo ./dist/x86_64-apple-darwin/index.node ./dist/aarch64-apple-darwin/index.node -create -output ./dist/darwin/index.node
+          rm -r ./dist/x86_64-apple-darwin/ ./dist/aarch64-apple-darwin/
+
+      - name: Build universal dylib for linux
+        run: |
+          du -hs dist/*
+          mv ./dist/x86_64-unknown-linux-gnu/index.node ./dist/linux/index.node
+          rm -r ./dist/x86_64-unknown-linux-gnu
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2.5.0
@@ -84,6 +101,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish
+        if: github.event_name == 'workflow_dispatch'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
         run: npm publish --access public

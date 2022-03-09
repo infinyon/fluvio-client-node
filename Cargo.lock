@@ -494,9 +494,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56767ac92cafdf04df86dab13087848aa20490489f598f39eae003036e2868b6"
+checksum = "dfe0455a1fb968aa443f8c4da91cef4d096349c9d47932f1fab94be55ec0f7b4"
 dependencies = [
  "async-channel",
  "async-lock",
@@ -557,9 +557,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-controlplane-metadata"
-version = "0.12.4"
+version = "0.12.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26f4029245bf957da97eb8462938914e5d17c7a971d364969457422b6849b9ac"
+checksum = "a856120c79c955f07e4b1d8963912911a968e271bff8cdb85b76f7d50e7dfb39"
 dependencies = [
  "async-trait",
  "base64",
@@ -598,9 +598,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-future"
-version = "0.3.11"
+version = "0.3.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2645caef3993b4bcb8a4aa90da3546d993a9ce8a710acebb5fed588d4c2f1e7"
+checksum = "dc1cf2cf885d9872c9da76c6db9dd664b02d63ea69a237bac5c651fb6482cec7"
 dependencies = [
  "async-io",
  "async-net",
@@ -625,9 +625,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-protocol"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "839703012ea287b4f8d62a8f5969b91e334bd1cf1edaad09c4771d4907c20031"
+checksum = "4f044f00e9dd25f19d820b5a6ae2d33024d71bce84b116a37b60e34dd101baf8"
 dependencies = [
  "bytes",
  "fluvio-future",
@@ -638,9 +638,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-protocol-derive"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a3b914791eb14ac38de3c061f68fb724ee72012adc3190e4e3b5c98f0793cc24"
+checksum = "72a044c3c9abee81fd343a1dcc7f3a2886a68482b5ce1800a1d42e7881aa3da7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -668,9 +668,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-socket"
-version = "0.10.4"
+version = "0.10.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01708d7f24d3d9bcaac4ddb9923fc85016d70f666b7e35153704dea23425f604"
+checksum = "885aad9d84a64ab435edd76ad7e80f80347a628e5b89d31017494a69b989c9e1"
 dependencies = [
  "async-channel",
  "async-lock",
@@ -720,9 +720,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-types"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13be5a509dbb08559cc0b513c7000273cd8674ae643b93dc19fabb9232e06c0a"
+checksum = "ff53bb9bb6f69ea84cbfa76f5c8f8b49b5d9e7e38b29b0f00049d139b51584e9"
 dependencies = [
  "event-listener",
  "thiserror",
