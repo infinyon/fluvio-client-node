@@ -14,11 +14,10 @@ use fluvio::metadata::{
     spu::{SpuSpec},
 };
 use fluvio::metadata::spg::{SpuGroupSpec, SpuConfig, StorageConfig, ReplicationConfig, EnvVar};
-use fluvio::metadata::topic::{PartitionMap, PartitionMaps};
+use fluvio::metadata::topic::{PartitionMap};
 use fluvio::metadata::objects::Metadata;
 use fluvio::metadata::partition::{PartitionSpec, PartitionStatus, PartitionResolution, ReplicaStatus};
 use fluvio::metadata::topic::TopicSpec;
-use fluvio::metadata::topic::TopicReplicaParam;
 use fluvio::dataplane::ReplicaKey;
 use fluvio::metadata::objects::{ObjectApiListRequest, ObjectApiListResponse, ListRequest};
 use serde::{Serialize};
@@ -301,7 +300,7 @@ impl JSValue<'_> for PartitionSpecWrapper {
             let leader = must_property!(LEADER_KEY, i32, js_obj);
             let replicas = must_property!(REPLICAS_KEY, Vec<i32>, js_obj);
 
-            Ok(Self(PartitionSpec { leader, replicas }))
+            Ok(Self(PartitionSpec::new(leader, replicas)))
         } else {
             Err(NjError::Other("must pass json param".to_owned()))
         }
@@ -339,7 +338,7 @@ impl JSValue<'_> for TopicSpecWrapper {
                 let partition_list: Vec<PartitionMap> =
                     assign_param.into_iter().map(|p| p.0).collect();
 
-                let topic_spec = TopicSpec::Assigned(PartitionMaps::from(partition_list));
+                let topic_spec = TopicSpec::new_assigned(partition_list);
 
                 Ok(Self(topic_spec))
             } else {
@@ -351,11 +350,11 @@ impl JSValue<'_> for TopicSpecWrapper {
                 let ignore_rack_assignment =
                     optional_property!("ignoreRackAssignment", bool, false, js_obj);
 
-                Ok(Self(TopicSpec::Computed(TopicReplicaParam {
+                Ok(Self(TopicSpec::new_computed(
                     partitions,
                     replication_factor,
-                    ignore_rack_assignment,
-                })))
+                    Some(ignore_rack_assignment),
+                )))
             }
         } else {
             Err(NjError::Other("must pass json param".to_owned()))

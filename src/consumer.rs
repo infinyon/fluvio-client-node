@@ -85,21 +85,6 @@ impl PartitionConsumerJS {
         self.inner.replace(client);
     }
 
-    #[node_bindgen]
-    async fn fetch(
-        &self,
-        offset: OffsetWrapper,
-    ) -> Result<FetchablePartitionResponseWrapper, FluvioErrorJS> {
-        let client = self
-            .inner
-            .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-
-        #[allow(deprecated)]
-        let response = client.fetch(offset.0).await?;
-        Ok(FetchablePartitionResponseWrapper(Some(response)))
-    }
-
     #[node_bindgen(mt)]
     async fn stream<F: Fn(RecordJS) + 'static + Send + Sync>(
         &self,
