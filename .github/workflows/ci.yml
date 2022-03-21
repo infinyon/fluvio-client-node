@@ -149,3 +149,11 @@ jobs:
         uses: actions-rs/audit-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+  done:
+    name: Done
+    needs: [check_fmt, check_security, smoke_test, macos_ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Done
+        run: echo Done
