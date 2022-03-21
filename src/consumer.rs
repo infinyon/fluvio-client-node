@@ -85,7 +85,6 @@ impl PartitionConsumerJS {
         self.inner.replace(client);
     }
 
-
     #[node_bindgen(mt)]
     async fn stream<F: Fn(RecordJS) + 'static + Send + Sync>(
         &self,
