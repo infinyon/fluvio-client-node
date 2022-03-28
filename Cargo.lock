@@ -494,9 +494,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio"
-version = "0.12.6"
+version = "0.12.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4648f1bbfaa578b3465aacdddfcd8c4056b62d1e62c973b588fa15e760e0bc0"
+checksum = "05ecc8a147a0d8514ede660cdce600b0f53ed2dabd7051c909241eec96aff642"
 dependencies = [
  "async-channel",
  "async-lock",
@@ -571,9 +571,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-controlplane-metadata"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72dbdc5fcaec2716d38f7695c3fb7a10d22f922b0b71d517f40cf9b83e4f1ffd"
+checksum = "10bee445892a98056fc54760d23bc213052e2a5b9d13146924989354ec6f661d"
 dependencies = [
  "async-trait",
  "base64",
@@ -664,9 +664,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-sc-schema"
-version = "0.12.3"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca9e57f6a220fc36558f70da894021d183dc8d54c9012cdd33dcfb90daa57f20"
+checksum = "492d00f9e00e2164a6b973cd1161dcbfc898c68a8c3c4bedfdbc369c4f14ff90"
 dependencies = [
  "fluvio-controlplane-metadata",
  "fluvio-dataplane-protocol",
