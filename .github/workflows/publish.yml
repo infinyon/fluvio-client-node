@@ -72,7 +72,7 @@ jobs:
     needs: [build_and_upload_artifacts]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: ./dist/
 
