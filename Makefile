@@ -34,9 +34,7 @@ clean:
 	rm -rf dist
 
 examples: example_produce example_list_topic example_create_topic \
-	example_find_topic example_create_custom_spu \
-	example_delete_custom_spu example_create_managed_spu \
-	example_delete_managed_spu # TODO: example_consume example_delete_topic
+	example_find_topic \
 
 
 example_produce:	build
@@ -59,21 +57,6 @@ example_delete_topic:	build
 
 example_find_topic:	build
 	FLUVIO_DEV=1 npx ts-node ./examples/findTopic.ts
-
-example_list_spu:	build
-	FLUVIO_DEV=1 npx ts-node ./examples/listSpu.ts
-
-example_create_custom_spu:	build
-	FLUVIO_DEV=1 npx ts-node ./examples/createCustomSpu.ts
-
-example_delete_custom_spu:	build
-	FLUVIO_DEV=1 npx ts-node ./examples/deleteCustomSpu.ts
-
-example_create_managed_spu:	build
-	FLUVIO_DEV=1 npx ts-node ./examples/createManagedSpu.ts
-
-example_delete_managed_spu:	build
-	FLUVIO_DEV=1 npx ts-node ./examples/deleteManagedSpu.ts
 
 install-clippy:
 	rustup component add clippy --toolchain stable
