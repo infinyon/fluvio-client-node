@@ -73,7 +73,11 @@ await consumer.stream(async (data: string) => {
 
 ```
 
-Please look at [`./examples`](https://github.com/infinyon/fluvio-client-node/tree/master/examples) and [`./test`](https://github.com/infinyon/fluvio-client-node/tree/master/test) folder for more detailed examples.
+Please look at
+[`./examples`](https://github.com/infinyon/fluvio-client-node/tree/master/examples)
+and
+[`./tests`](https://github.com/infinyon/fluvio-client-node/blob/master/src/fluvio.test.ts)
+folder for more detailed examples.
 
 
 ## Contributing
