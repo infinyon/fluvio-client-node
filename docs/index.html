@@ -6,7 +6,10 @@
 </div>
 <br />
 
-<p><a href="https://github.com/infinyon/flv-client-node/actions"><img src="https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg" alt="Build Status"></a> <a href="https://www.npmjs.com/package/@fluvio/client"><img src="https://img.shields.io/npm/dm/@fluvio/client.svg" alt="Github All Releases"></a> <a href="https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></p>
+<p><a href="https://github.com/infinyon/fluvio-client-node/actions"><img src="https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg" alt="Build Status"></a>
+<a href="https://www.npmjs.com/package/@fluvio/client"><img src="https://img.shields.io/npm/dm/@fluvio/client.svg" alt="Github All Releases"></a>
+<a href="https://github.com/infinyon/fluvio-client-node/blob/master/LICENSE-APACHE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
+<a href="https://infinyon.github.io/fluvio-client-node/"><img src="https://img.shields.io/badge/fluvio-docs-blue" alt="Docs"></a></p>
 
 <a href="#installation-on-npm" id="installation-on-npm" style="color: inherit; text-decoration: none;">
   <h2>Installation on NPM</h2>
@@ -31,18 +34,11 @@
 </a>
 <pre><code class="language-ts"><span class="hl-0">import</span><span class="hl-1"> </span><span class="hl-2">Fluvio</span><span class="hl-1">, { </span><span class="hl-2">RecordSet</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;@fluvio/client&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">// define the name of the topic to use</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">TOPIC_NAME</span><span class="hl-1"> = </span><span class="hl-3">&quot;my-topic&quot;</span><br/><br/><span class="hl-4">// define the partition where the topic</span><br/><span class="hl-4">// records will be stored;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">PARTITION</span><span class="hl-1"> = </span><span class="hl-7">0</span><br/><br/><span class="hl-4">// Instantiate a new fluvio client</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">fluvio</span><span class="hl-1"> = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">Fluvio</span><span class="hl-1">.</span><span class="hl-8">connect</span><span class="hl-1">();</span><br/><br/><span class="hl-4">//// Fluvio Admin Client</span><br/><br/><span class="hl-4">// Create a new Fluvio Admin Client to manage</span><br/><span class="hl-4">// topics and partitions</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">admin</span><span class="hl-1"> = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">fluvio</span><span class="hl-1">.</span><span class="hl-8">admin</span><span class="hl-1">();</span><br/><br/><span class="hl-4">// Create a new topic</span><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">admin</span><span class="hl-1">.</span><span class="hl-8">createTopic</span><span class="hl-1">(</span><span class="hl-6">TOPIC_NAME</span><span class="hl-1">)</span><br/><br/><span class="hl-4">//// Topic Producer</span><br/><br/><span class="hl-4">// Create a topic producer for the topic;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">producer</span><span class="hl-1"> = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">fluvio</span><span class="hl-1">.</span><span class="hl-8">topicProducer</span><span class="hl-1">(</span><span class="hl-6">TOPIC_NAME</span><span class="hl-1">);</span><br/><br/><span class="hl-4">// Send a new topic record</span><br/><span class="hl-2">producer</span><span class="hl-1">.</span><span class="hl-8">sendRecord</span><span class="hl-1">(</span><span class="hl-3">&quot;stringified data&quot;</span><span class="hl-1">, </span><span class="hl-6">PARTITION</span><span class="hl-1">)</span><br/><br/><span class="hl-4">//// Partition Consumer</span><br/><br/><span class="hl-4">// Instantiate a new topic listener;</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">consumer</span><span class="hl-1"> = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">fluvio</span><span class="hl-1">.</span><span class="hl-8">partitionConsumer</span><span class="hl-1">(</span><span class="hl-6">TOPIC_NAME</span><span class="hl-1">, </span><span class="hl-6">PARTITION</span><span class="hl-1">)</span><br/><br/><span class="hl-4">// Listen for new topics sent by a topic producer;</span><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">consumer</span><span class="hl-1">.</span><span class="hl-8">stream</span><span class="hl-1">(</span><span class="hl-5">async</span><span class="hl-1"> (</span><span class="hl-2">data</span><span class="hl-1">: </span><span class="hl-9">string</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">// handle data record</span><br/><span class="hl-1">})</span><br/>
 </code></pre>
-<p>Please look at <a href="https://github.com/infinyon/fluvio-client-node/tree/master/examples"><code>./examples</code></a> and <a href="https://github.com/infinyon/fluvio-client-node/tree/master/test"><code>./test</code></a> folder for more detailed examples.</p>
-
-<a href="#demo-applications" id="demo-applications" style="color: inherit; text-decoration: none;">
-  <h2>Demo Applications</h2>
-</a>
-<p>Writing an application and considering using Fluvio? Check out the <a href="https://github.com/infinyon/fluvio-client-node/tree/master/demos"><code>./demos</code></a> folder for example
-applications using the fluvio node client.</p>
-<p><strong>Apps:</strong></p>
-<ul>
-<li><a href="https://nightly.fluvio.io/tutorials/node/hello-world/">&quot;Hello, World!&quot;</a></li>
-<li><a href="https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app">Streaming App</a></li>
-</ul>
+<p>Please look at
+<a href="https://github.com/infinyon/fluvio-client-node/tree/master/examples"><code>./examples</code></a>
+and
+<a href="https://github.com/infinyon/fluvio-client-node/blob/master/src/fluvio.test.ts"><code>./tests</code></a>
+folder for more detailed examples.</p>
 
 <a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
   <h2>Contributing</h2>
