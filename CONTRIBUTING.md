@@ -21,7 +21,7 @@ Familiarity with
 
 Currently, fluvio supports the following platforms:
 - macOS X
-- Linux  
+- Linux
 - Other platforms such as Windows can be made to work, but we haven't tried them yet.
 
 ## Pre-requisites
@@ -33,7 +33,7 @@ Please open an Issue on GitHub with the label `question`.
 
 ## Getting Started
 
-Please follow our [Installation Guide](https://github.com/infinyon/fluvio/blob/master/doc/INSTALL.md) to get fluvio up and running.
+Please follow our [Development notes](https://github.com/infinyon/fluvio-client-node/blob/master/DEVELOPING.md) to get fluvio up and running.
 
 To learn about the Fluvio Architecture, please visit the [Developer](https://github.com/infinyon/fluvio/blob/master/DEVELOPER.md) section.
 
@@ -49,7 +49,7 @@ To suggest an enhancement, please create an issue on GitHub with the label `enha
 
 ### Creating pull request
 
-- Fork the `flv-client-node` repository to your GitHub Account.
+- Fork the `fluvio-client-node` repository to your GitHub Account.
 
 - Create a branch, submit a PR when your changes are tested and ready for review
 

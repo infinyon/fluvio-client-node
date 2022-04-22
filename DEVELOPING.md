@@ -1,15 +1,5 @@
 # Developing the Fluvio Node.js Client
 
-## Module Hierarchy
-
-```
-- @fluvio/client
-    - @fluvio/native
-        - @fluvio/native-darwin
-        - @fluvio/native-linux
-        - @fluvio/native-win
-```
-
 ## Developing the Native Platform Specific Modules
 
 ### Pre-Requisites
@@ -53,45 +43,4 @@ However, make sure you have your `FLUVIO_DEV` environment variable set before ru
 
 ### Publishing `@fluvio/client`
 
-There are currently two methods for publishing the `@fluvio/client` module using the [`Publish`](https://github.com/infinyon/fluvio-client-node/blob/master/.github/workflows/publish.yml) workflow.
-
-```yaml
-name: Publish
-
-on:
-  workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
-```
-
-Manually publishing the module can be accomplished using Github Actions and using the [`Run workflow`](https://github.com/infinyon/fluvio-client-node/actions?query=workflow%3APublish) button.
-
-### Publishing `@fluvio/native`
-
-Currently, this module can only be published using a manually run `workflow_dispatch` event using to [`Run workflow](https://github.com/infinyon/fluvio-client-node/actions?query=workflow%3A%22Publish+%40fluvio%2Fnative%22) button.
-
-In most cases, this module will not need to be updated unless there are new platforms added.
-
-### Publishing `@fluvio/native-<platform>`
-
-Currently, this module can only be published using a manually run `workflow_dispatch` event using to [`Run workflow](https://github.com/infinyon/fluvio-client-node/actions?query=workflow%3A%22Publish+%40fluvio%2Fnative-%3Cplatform%3E%22) button.
-
-## Which Module do I Publish?
-
-1) When changes are made to the TypeScript files (i.e. `./src/**/*.ts`), then an update must be published for the `@fluvio/client` module.</br></br>The `@fluvio/client` module is dependent on the `@fluvio/native` module.
-
-2) The only time the `@fluvio/native` module is required to be updated is if a new platform needs to be added. In most cases, the `@fluvio/native` module <u>**SHOULD NOT**</u> need to be updated given changes to the `./src/**/*.{ts,rs}` files.</br></br>The `@fluvio/native` module is a thin wrapper that _installs_ and _requires_ the platform specific fluvio native modules, e.g. `@fluvio/native-<platform>`, when the package is installed.
-
-3) When changes are made to the source Rust `node-bindgen` files (i.e. `./src/**/*.rs`), then an update must be published for the `@fluvio/native-<platform>` modules.
-
-<hr/>
-
-## Which Modules Should be Published First?
-
-When there are changes to both the `.ts` and `.rs` files, make sure you publish the `@fluvio/native-<platform>` module before the `@fluvio/client` module.
-
-Remember to bump the version numbers of each of the modules that have changes.
-
-Again, in most cases, there is no need to publish the `@fluvio/native` module, unless you are adding a new platform.
-
+Run the [Publish GitHub workflow](https://github.com/infinyon/fluvio-client-node/actions/workflows/publish.yml).

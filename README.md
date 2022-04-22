@@ -6,7 +6,10 @@
 </div>
 <br />
 
-[![Build Status](https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg)](https://github.com/infinyon/flv-client-node/actions) [![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)](https://www.npmjs.com/package/@fluvio/client) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/flv-client-node/blob/master/LICENSE-APACHE)
+[![Build Status](https://github.com/infinyon/fluvio-client-node/workflows/CI/badge.svg)](https://github.com/infinyon/fluvio-client-node/actions)
+[![Github All Releases](https://img.shields.io/npm/dm/@fluvio/client.svg)](https://www.npmjs.com/package/@fluvio/client)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/infinyon/fluvio-client-node/blob/master/LICENSE-APACHE)
+[![Docs](https://img.shields.io/badge/fluvio-docs-blue)](https://infinyon.github.io/fluvio-client-node/)
 
 ## Installation on NPM
 
@@ -70,17 +73,11 @@ await consumer.stream(async (data: string) => {
 
 ```
 
-Please look at [`./examples`](https://github.com/infinyon/fluvio-client-node/tree/master/examples) and [`./test`](https://github.com/infinyon/fluvio-client-node/tree/master/test) folder for more detailed examples.
-
-## Demo Applications
-
-Writing an application and considering using Fluvio? Check out the [`./demos`](https://github.com/infinyon/fluvio-client-node/tree/master/demos) folder for example
-applications using the fluvio node client.
-
-__Apps:__
-
-- ["Hello, World!"](https://nightly.fluvio.io/tutorials/node/hello-world/)
-- [Streaming App](https://github.com/infinyon/fluvio-client-node/tree/master/demos/streaming-app)
+Please look at
+[`./examples`](https://github.com/infinyon/fluvio-client-node/tree/master/examples)
+and
+[`./tests`](https://github.com/infinyon/fluvio-client-node/blob/master/src/fluvio.test.ts)
+folder for more detailed examples.
 
 
 ## Contributing
