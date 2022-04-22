@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { Offset } from '@fluvio/client';
+import Fluvio, { Offset } from '@fluvio/client'
 import { v4 as uuidV4 } from 'uuid'
 
 // Set unique topic name

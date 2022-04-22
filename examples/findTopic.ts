@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio from '@fluvio/client';
+import Fluvio from '@fluvio/client'
 
 async function findTopic() {
     const fluvio = new Fluvio()
