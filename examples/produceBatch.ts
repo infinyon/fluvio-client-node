@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { KeyValue } from '@fluvio/client'
+import Fluvio, { KeyValue } from '../'
 import { v4 as uuidV4 } from 'uuid'
 
 // Set delay for creating a topic;

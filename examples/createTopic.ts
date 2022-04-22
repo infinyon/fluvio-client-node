@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { TopicReplicaParam } from '@fluvio/client'
+import Fluvio, { TopicReplicaParam } from '../'
 import { v4 as uuidV4 } from 'uuid'
 
 console.log('connecting client to sc')

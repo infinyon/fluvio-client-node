@@ -34,7 +34,7 @@ clean:
 	rm -rf dist
 
 examples: example_produce example_list_topic example_create_topic \
-	example_find_topic \
+	example_find_topic
 
 
 example_produce:	build
