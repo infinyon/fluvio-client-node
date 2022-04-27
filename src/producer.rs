@@ -106,6 +106,16 @@ impl TopicProducerJS {
         client.send_all(records).await?;
         Ok(())
     }
+
+    #[node_bindgen]
+    async fn flush(&self) -> Result<(), FluvioErrorJS> {
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        client.flush().await?;
+        Ok(())
+    }
 }
 
 /// Callers may give 'string' or 'ArrayBuffer' values to `producer.send`

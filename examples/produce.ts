@@ -50,6 +50,7 @@ async function produce(keyValue: boolean = true) {
                 // Send a simple record with no key
                 await producer.sendRecord(message, 0)
             }
+            await producer.flush()
         }
     } catch (ex) {
         console.log('error', ex)

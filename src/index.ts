@@ -121,6 +121,7 @@ export interface TopicProducer {
     sendRecord(data: string, partition: number): Promise<void>
     send(key: ProducerItem, value: ProducerItem): Promise<void>
     sendAll(records: KeyValue[]): Promise<void>
+    flush(): Promise<void>
 }
 
 /**
@@ -212,6 +213,9 @@ export class TopicProducer {
      */
     async sendAll(elements: KeyValue[]): Promise<void> {
         await this.inner.sendAll(elements)
+    }
+    async flush(): Promise<void> {
+        await this.inner.flush()
     }
 }
 
