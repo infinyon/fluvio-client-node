@@ -36,8 +36,6 @@ async function produce(keyValue: boolean = true) {
             }
             await producer.flush()
         }
-        
-        await producer.flush();
 
     } catch (ex) {
         console.log('error', ex)
