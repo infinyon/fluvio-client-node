@@ -35,7 +35,7 @@ clean:
 
 example_npm_init:
 	fluvio topic create node-examples || true
-	cd examples && npm install -D typescript ts-node @types/node && npm install -S @fluvio/client --path ../
+	cd examples && npm init -y && npm install -D typescript ts-node @types/node && npm install -S @fluvio/client --path ../
 
 examples: example_produce example_list_topics example_create_topic \
 	example_find_topic
