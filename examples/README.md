@@ -32,7 +32,9 @@ Note: Fluvio is installed from `npi` rather than called locally.
 
 All examples run with:
 
-`npx ts-node ./<name-of-example>.ts`
+```
+npx ts-node ./<name-of-example>.ts
+````
 
 #### API summary
 * [Create Topic](#create-topic)
@@ -51,7 +53,8 @@ All examples run with:
 Create topic `node-examples`:
 
 ```
-% npx ts-node ./createTopic.ts     
+% npx ts-node ./createTopic.ts  
+
 connecting client to sc
 topic 'node-examples' created
 ```
@@ -59,7 +62,7 @@ topic 'node-examples' created
 Use fluvio CLI to check:
 
 ```
-%fluvio topic list
+% fluvio topic list
 ```
 
 
@@ -69,6 +72,7 @@ Check if topic `node-examples` exists:
 
 ```
 % npx ts-node ./findTopic.ts
+
 connecting client to fluvio
 topic:  {
   "name": "node-examples",
@@ -103,6 +107,7 @@ List all topics:
 
 ```
 % npx ts-node ./listTopic.ts
+
 connecting client to fluvio
 topics:  [
   {
@@ -137,6 +142,7 @@ Delete topic `node-examples`:
 
 ```
 % npx ts-node ./deleteTopic.ts 
+
 connecting client to fluvio
 topic 'node-examples' deleted
 ```
@@ -147,6 +153,7 @@ Produce 10 records to `node-example` topic.
 
 ```
 % npx ts-node ./produce.ts
+
 connecting client to fluvio
 {"key":1,"message":"Value 1"}
 {"key":2,"message":"Value 2"}
@@ -168,6 +175,7 @@ Produce 10 records to `node-example` topic using `batching`. Batching small pack
 
 ```
 % npx ts-node ./produceBatch.ts
+
 connecting client to fluvio
 [
   [
@@ -190,6 +198,7 @@ Consume all records stored in `node-example`:
 
 ```
 % npx ts-node ./consume.ts
+
 connecting client to fluvio
 read from beginning
 Key=KEY 1, Value={"key":1,"message":"Value 1"}
@@ -216,6 +225,7 @@ Consumer reads all messages from the beginning of `node-example`:
 
 ```
 % npx ts-node ./consumeIterator.ts
+
 connecting client to fluvio
 read from node-examples
 Key=KEY 1, value={"key":1,"message":"Value 1"}
