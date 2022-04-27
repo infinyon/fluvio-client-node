@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio from "@fluvio/client";
+import Fluvio from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 
@@ -18,7 +18,7 @@ async function createTopic() {
         // create topic
         await admin.createTopic(TOPIC_NAME)
 
-        console.log(`topic '${ TOPIC_NAME }' created`)
+        console.log(`topic '${TOPIC_NAME}' created`)
     } catch (ex) {
         console.log('problem creating topic', ex)
     }

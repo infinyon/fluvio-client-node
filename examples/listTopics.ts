@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio from "@fluvio/client";
+import Fluvio from '@fluvio/client'
 
 async function listTopics() {
     try {
@@ -15,7 +15,10 @@ async function listTopics() {
 
         // List all topics
         const topics = await admin.listTopic()
-        console.log('topics: ', JSON.stringify(JSON.parse(topics), undefined, 2))
+        console.log(
+            'topics: ',
+            JSON.stringify(JSON.parse(topics), undefined, 2)
+        )
     } catch (ex) {
         console.log('problem listing topics', ex)
     }

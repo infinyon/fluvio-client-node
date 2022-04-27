@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio from "@fluvio/client";
+import Fluvio from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 
@@ -18,7 +18,7 @@ async function deleteTopic() {
         // delete topic
         await admin.deleteTopic(TOPIC_NAME)
 
-        console.log(`topic '${ TOPIC_NAME }' deleted`)
+        console.log(`topic '${TOPIC_NAME}' deleted`)
     } catch (ex) {
         console.log('problem deleting topic', ex)
     }

@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio from "@fluvio/client";
+import Fluvio from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 
@@ -20,7 +20,7 @@ async function produce(keyValue: boolean = true) {
                 message: `Value ${i}`,
             })
 
-            console.log(message);
+            console.log(message)
 
             // Send a key/value record
             if (keyValue) {
@@ -36,7 +36,6 @@ async function produce(keyValue: boolean = true) {
             }
             await producer.flush()
         }
-
     } catch (ex) {
         console.log('error', ex)
     }

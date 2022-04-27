@@ -1,11 +1,11 @@
 /* tslint:disable:no-console */
-import Fluvio, {Offset, Record} from "@fluvio/client";
+import Fluvio, { Offset, Record } from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 const PARTITION = 0
 
 async function consumeIterator() {
-    try {    
+    try {
         const fluvio = new Fluvio()
 
         console.log('connecting client to fluvio')
@@ -28,10 +28,9 @@ async function consumeIterator() {
             if (count >= 10) break
             count++
         }
-
     } catch (ex) {
         console.log('error', ex)
-    }        
+    }
 }
 
 consumeIterator()
