@@ -30,6 +30,7 @@ async function produceBatch() {
 
         // send all records in a batch
         await producer.sendAll(records)
+        await producer.flush()
     } catch (ex) {
         console.log('error', ex)
     }

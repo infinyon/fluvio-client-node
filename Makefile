@@ -33,29 +33,32 @@ run_publish:
 clean:
 	rm -rf dist
 
+example_npm_init:
+	cd examples && npm install -D typescript ts-node @types/node && npm install -S @fluvio/client --path ../
+
 examples: example_produce example_list_topic example_create_topic \
 	example_find_topic
 
 
-example_produce:	build
+example_produce: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/produce.ts
 
-example_consume:	build
+example_consume: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/consume.ts
 
-example_iterator:	build
+example_iterator: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/iterator.ts
 
-example_list_topic:	build
+example_list_topic: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/listTopic.ts
 
-example_create_topic:	build
+example_create_topic: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/createTopic.ts
 
-example_delete_topic:	build
+example_delete_topic: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/deleteTopic.ts
 
-example_find_topic:	build
+example_find_topic: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/findTopic.ts
 
 install-clippy:
