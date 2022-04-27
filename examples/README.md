@@ -219,9 +219,7 @@ The consume reads all records from the beginning of list, then waits for new rec
 
 ### Consume Iterator
 
-As oposed to the previous `Consume` API, the conume iterator reads to completion. The API exists when it reches the end of the list.
-
-Consumer reads all messages from the beginning of `node-example`:
+As opposed to the previous `Consume` API, the iterator variant reads to completion. The API stops reading when it reches the end of the list.
 
 ```
 % npx ts-node ./consumeIterator.ts
@@ -240,7 +238,7 @@ Key=KEY 9, value={"key":9,"message":"Value 9"}
 Key=KEY 10, value={"key":10,"message":"Value 10"}
 ```
 
-Note, in this example the API retrieves both the key and the value.
+Note, in this example the API retrieves both keys and values.
 
 ## Other references
 * [Typedoc API page](https://infinyon.github.io/fluvio-client-node/)
