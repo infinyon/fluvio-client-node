@@ -34,9 +34,10 @@ clean:
 	rm -rf dist
 
 example_npm_init:
+	fluvio topic create node-examples || true
 	cd examples && npm install -D typescript ts-node @types/node && npm install -S @fluvio/client --path ../
 
-examples: example_produce example_list_topic example_create_topic \
+examples: example_produce example_list_topics example_create_topic \
 	example_find_topic
 
 
@@ -49,8 +50,8 @@ example_consume: build example_npm_init
 example_iterator: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/iterator.ts
 
-example_list_topic: build example_npm_init
-	FLUVIO_DEV=1 npx ts-node ./examples/listTopic.ts
+example_list_topics: build example_npm_init
+	FLUVIO_DEV=1 npx ts-node ./examples/listTopics.ts
 
 example_create_topic: build example_npm_init
 	FLUVIO_DEV=1 npx ts-node ./examples/createTopic.ts
