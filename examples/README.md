@@ -5,7 +5,7 @@
 Before running the examples, you'll need to have completed the following:
 
 - Install <a href="https://nodejs.org" target="_blank">Node.js</a> (**v16.11.0** or above)
-- Have the [Fluvio CLI] installed. Node API the profile installed by the CLI to connect to the cluster.
+- Have the [Fluvio CLI] installed. Node API uses the profile installed by Fluvio CLI to connect to the cluster.
     - Update existing Fluvio CLI with `fluvio update`.
 - Have access to a Fluvio cluster. 
     - Signup for a free [Infinyon Cloud] account, or 
