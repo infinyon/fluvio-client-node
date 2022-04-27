@@ -25,7 +25,7 @@ npm install -D typescript ts-node @types/node
 npm install -S @fluvio/client
 ```
 
-Note: Fluvio is installed from `npi` rather than called locally.
+Note: Fluvio is installed from `npm` rather than called locally.
 
 
 ## Examples
