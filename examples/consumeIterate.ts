@@ -6,7 +6,7 @@ import { v4 as uuidV4 } from 'uuid'
 const TOPIC_NAME = uuidV4()
 const PARTITION = 0
 
-async function iterate() {
+async function consumeIterate() {
     // Explicitly call `.connect()` to connect to the cluster;
     // This allows for lazily-loading the connection, useful in
     // situations where the fluvio client does not need to immediately
@@ -35,4 +35,4 @@ async function iterate() {
     }
 }
 
-iterate()
+consumeIterate()

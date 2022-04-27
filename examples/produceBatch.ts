@@ -1,34 +1,16 @@
 /* tslint:disable:no-console */
-import Fluvio, { KeyValue } from '../'
-import { v4 as uuidV4 } from 'uuid'
+import Fluvio from "@fluvio/client";
 
-// Set delay for creating a topic;
-async function sleep(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms)
-    })
-}
+const TOPIC_NAME = 'node-examples'
 
-// Set unique topic name
-const TOPIC_NAME = uuidV4()
-
-async function produce() {
+async function produceBatch() {
     try {
         const fluvio = new Fluvio()
 
-        // Explicitly call `.connect()` to connect to the cluster;
-        // This allows for lazily-loading the connection, useful in
-        // situations where the fluvio client does not need to immediately
-        // connect.
+        console.log('connecting client to fluvio')
+
+        // Connect to the fluvio cluster referenced in the cli profile.
         await fluvio.connect()
-
-        // Set the admin client;
-        const admin = await fluvio.admin()
-
-        // Create the topic
-        await admin.createTopic(TOPIC_NAME)
-        console.log(`Producing on ${TOPIC_NAME} in 10 seconds`)
-        await sleep(10000)
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
         const records: KeyValue[] = []
@@ -43,10 +25,13 @@ async function produce() {
             const key: ArrayBuffer = encoder.encode(`KEY ${i}`)
             records.push([key, message])
         }
+
+        console.log(records);
+
         await producer.sendAll(records)
     } catch (ex) {
         console.log('error', ex)
     }
 }
 
-produce()
+produceBatch()
