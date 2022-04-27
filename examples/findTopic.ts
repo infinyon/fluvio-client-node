@@ -1,21 +1,27 @@
 /* tslint:disable:no-console */
-import Fluvio from '../'
+import Fluvio from '@fluvio/client'
+
+const TOPIC_NAME = 'node-examples'
 
 async function findTopic() {
-    const fluvio = new Fluvio()
+    try {
+        const fluvio = new Fluvio()
 
-    // Explicitly call `.connect()` to connect to the cluster;
-    // This allows for lazily-loading the connection, useful in
-    // situations where the fluvio client does not need to immediately
-    // connect.
-    await fluvio.connect()
+        console.log('connecting client to fluvio')
 
-    // Set the admin client;
-    const admin = await fluvio.admin()
+        // Connect to the fluvio cluster referenced in the cli profile.
+        await fluvio.connect()
 
-    const topic = await admin.findTopic('my-topic')
+        // Set the admin client;
+        const admin = await fluvio.admin()
 
-    console.log('topic: ', topic)
+        // Look-up a specific topic
+        const topic = await admin.findTopic(TOPIC_NAME)
+
+        console.log('topic: ', JSON.stringify(topic, undefined, 2))
+    } catch (ex) {
+        console.log('problem finding topic', ex)
+    }
 }
 
 findTopic()

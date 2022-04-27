@@ -1,25 +1,24 @@
 /* tslint:disable:no-console */
-import Fluvio from '../'
+import Fluvio from '@fluvio/client'
 
-console.log('connecting client to sc')
+const TOPIC_NAME = 'node-examples'
 
 async function deleteTopic() {
     try {
         const fluvio = new Fluvio()
 
-        // Explicitly call `.connect()` to connect to the cluster;
-        // This allows for lazily-loading the connection, useful in
-        // situations where the fluvio client does not need to immediately
-        // connect.
+        console.log('connecting client to fluvio')
+
+        // Connect to the fluvio cluster referenced in the cli profile.
         await fluvio.connect()
 
         // Set the admin client;
         const admin = await fluvio.admin()
 
         // delete topic
-        await admin.deleteTopic('test3')
+        await admin.deleteTopic(TOPIC_NAME)
 
-        console.log('topic test3 deleted')
+        console.log(`topic '${TOPIC_NAME}' deleted`)
     } catch (ex) {
         console.log('problem deleting topic', ex)
     }

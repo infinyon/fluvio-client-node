@@ -50,7 +50,7 @@ jobs:
       matrix:
         os: [macos-latest]
         rust: [stable]
-        node: [ '12', '14', '16' ]
+        node: [ '14', '16', '18' ]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}
@@ -81,7 +81,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '12', '14', '16' ]
+        node: [ '14', '16', '18']
     steps:
       - uses: AbsaOSS/k3d-action@v2
         name: "Create fluvio k3d Cluster"
