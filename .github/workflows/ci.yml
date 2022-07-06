@@ -12,7 +12,7 @@ jobs:
     name: Cancel Previous Runs
     runs-on: ubuntu-latest
     steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
+      - uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
   check_fmt:
@@ -145,10 +145,10 @@ jobs:
           override: true
       - name: npm audit
         run: npm audit
-      - name: Security audit
-        uses: actions-rs/audit-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Security audit
+      #  uses: actions-rs/audit-check@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
   done:
     name: Done
     needs: [check_fmt, check_security, smoke_test, macos_ci]
