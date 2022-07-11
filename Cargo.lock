@@ -523,7 +523,7 @@ dependencies = [
  "event-listener",
  "fluvio-compression",
  "fluvio-dataplane-protocol",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "fluvio-protocol",
  "fluvio-sc-schema",
  "fluvio-socket",
@@ -544,13 +544,14 @@ dependencies = [
 
 [[package]]
 name = "fluvio-async-tls"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54126ce6fe585aea438300ad7ae143a6798770314b2c44485e1626be776bedc1"
+checksum = "5aab83884d2a39e57047387dc20a62cf6e28d1e3212591ad64826c4dbb5dfa76"
 dependencies = [
  "futures-core",
  "futures-io",
  "rustls",
+ "rustls-pemfile",
  "webpki",
  "webpki-roots",
 ]
@@ -560,7 +561,7 @@ name = "fluvio-client-node"
 version = "0.9.0"
 dependencies = [
  "fluvio",
- "fluvio-future",
+ "fluvio-future 0.4.0",
  "log",
  "node-bindgen",
  "serde",
@@ -589,7 +590,7 @@ dependencies = [
  "async-trait",
  "base64",
  "fluvio-dataplane-protocol",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "fluvio-protocol",
  "fluvio-stream-model",
  "fluvio-types",
@@ -612,7 +613,7 @@ dependencies = [
  "crc32c",
  "eyre",
  "fluvio-compression",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "fluvio-protocol",
  "fluvio-types",
  "flv-util",
@@ -634,7 +635,6 @@ dependencies = [
  "async-std",
  "async-trait",
  "cfg-if",
- "fluvio-async-tls",
  "fluvio-wasm-timer",
  "futures-lite",
  "futures-util",
@@ -642,10 +642,33 @@ dependencies = [
  "openssl",
  "openssl-sys",
  "pin-project",
- "rustls",
  "thiserror",
  "tracing",
  "tracing-subscriber",
+ "ws_stream_wasm",
+]
+
+[[package]]
+name = "fluvio-future"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1c5cd00d18863c3e95c7adeeefa35a27b9482abb987dc0c293215334e4f3fd69"
+dependencies = [
+ "async-io",
+ "async-net",
+ "async-std",
+ "async-trait",
+ "cfg-if",
+ "fluvio-async-tls",
+ "fluvio-wasm-timer",
+ "futures-lite",
+ "futures-util",
+ "log",
+ "pin-project",
+ "rustls",
+ "rustls-pemfile",
+ "thiserror",
+ "tracing",
  "webpki",
  "ws_stream_wasm",
 ]
@@ -657,7 +680,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c875b24392b835610a0e8c620d11e696014bd106f48a9759bbd080bd1f25d4dd"
 dependencies = [
  "bytes",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "fluvio-protocol-derive",
  "tokio-util",
  "tracing",
@@ -705,7 +728,7 @@ dependencies = [
  "bytes",
  "cfg-if",
  "event-listener",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "fluvio-protocol",
  "futures-util",
  "once_cell",
@@ -1156,7 +1179,7 @@ checksum = "5178b6345ee9ac1599900a40988bdb7be4bb3abc7b3ba0ebb9b112a1a4379b7b"
 dependencies = [
  "async-trait",
  "ctor",
- "fluvio-future",
+ "fluvio-future 0.3.18",
  "futures-lite",
  "inventory",
  "libc",
@@ -1500,15 +1523,23 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.19.1"
+version = "0.20.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35edb675feee39aec9c99fa5ff985081995a06d594114ae14cbe797ad7b7a6d7"
+checksum = "5aab8ee6c7097ed6057f43c187a62418d0c05a4bd5f18b3571db50ee0f9ce033"
 dependencies = [
- "base64",
  "log",
  "ring",
  "sct",
  "webpki",
+]
+
+[[package]]
+name = "rustls-pemfile"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7522c9de787ff061458fe9a829dc790a3f5b22dc571694fc5883f448b94d9a9"
+dependencies = [
+ "base64",
 ]
 
 [[package]]
@@ -1535,9 +1566,9 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "sct"
-version = "0.6.1"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b362b83898e0e69f38515b82ee15aa80636befe47c3b6d3d89a911e78fc228ce"
+checksum = "d53dcdb7c9f8158937a7981b48accfd39a43af418591a5d008c7b22b5e1b7ca4"
 dependencies = [
  "ring",
  "untrusted",
@@ -2061,9 +2092,9 @@ dependencies = [
 
 [[package]]
 name = "webpki"
-version = "0.21.4"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8e38c0608262c46d4a56202ebabdeb094cef7e560ca7a226c6bf055188aa4ea"
+checksum = "f095d78192e208183081cc07bc5515ef55216397af48b873e5edcd72637fa1bd"
 dependencies = [
  "ring",
  "untrusted",
@@ -2071,9 +2102,9 @@ dependencies = [
 
 [[package]]
 name = "webpki-roots"
-version = "0.21.1"
+version = "0.22.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aabe153544e473b775453675851ecc86863d2a81d786d741f6b76778f2a48940"
+checksum = "f1c760f0d366a6c24a02ed7816e23e691f5d92291f94d15e836006fd11b04daf"
 dependencies = [
  "webpki",
 ]
