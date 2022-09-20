@@ -224,6 +224,7 @@ export interface PartitionConsumer {
     stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
     createStream(offset: Offset): Promise<AsyncIterable<Record>>
+    streamWithConfig(offset: Offset, config: ConsumerConfig, cb: (record: Record) => void): Promise<void>;
 }
 
 /**
@@ -895,6 +896,15 @@ export class Offset {
     public static FromEnd(): Offset {
         return new Offset({ index: 0, from: OffsetFrom.End })
     }
+}
+
+export enum SmartModuleType {
+    Filter = 'filter',
+}
+
+export interface ConsumerConfig {
+    smartmoduleType: SmartModuleType;
+    smartmoduleData: string;
 }
 
 export interface BatchHeader {

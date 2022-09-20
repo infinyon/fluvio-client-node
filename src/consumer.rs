@@ -10,7 +10,7 @@ use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
-use fluvio::consumer::Record;
+use fluvio::consumer::{Record, SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm};
 use fluvio_future::task::spawn;
 use fluvio_future::io::{Stream, StreamExt};
 
@@ -49,6 +49,10 @@ const KEY_KEY: &str = "key";
 const VALUE_KEY: &str = "value";
 
 const BATCHES_KEY: &str = "batches";
+
+const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
+const CONFIG_SMART_MODULE_DATA_KEY: &str = "smartmoduleData";
+const CONFIG_SMART_MODULE_TYPE_FILTER: &str = "filter";
 
 impl TryIntoJs for PartitionConsumerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -141,7 +145,10 @@ impl PartitionConsumerJS {
         config: ConfigWrapper,
     ) -> Result<PartitionConsumerIterator, FluvioErrorJS> {
         let config: ConsumerConfig = config.0;
-        let client = self.inner.as_ref().ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
         let stream = client.stream_with_config(offset.0, config).await?;
         let mut iterator = PartitionConsumerIterator::new();
 
@@ -358,9 +365,37 @@ pub struct ConfigWrapper(ConsumerConfig);
 impl JSValue<'_> for ConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         debug!("convert fetch consumer config param");
-        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {}
+        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
+            let smartmodule_data = optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj);
+            let smartmodule: Option<SmartModuleInvocation> = if let Some(smartmodule_type) =
+                optional_property!(CONFIG_SMART_MODULE_TYPE_KEY, String, js_obj)
+            {
+                let kind = match smartmodule_type.as_str() {
+                    "filter" => SmartModuleKind::Filter,
+                    "map" => SmartModuleKind::Map,
+                    "array_map" => SmartModuleKind::ArrayMap,
+                    "filter_map" => SmartModuleKind::FilterMap,
+                    _ => panic!("Invalid smartmodule kind"),
+                };
 
-        todo!()
+                let mut smartmodule = SmartModuleInvocation::default();
+
+                smartmodule.kind = kind;
+
+                Some(smartmodule)
+            } else {
+                None
+            };
+
+            let consumer_config = ConsumerConfig::builder()
+                .smartmodule(smartmodule)
+                .build()
+                .map_err(|e| NjError::Other(e.to_string()))?;
+
+            Ok(ConfigWrapper(consumer_config))
+        } else {
+            Err(NjError::Other("must pass json param".to_owned()))
+        }
     }
 }
 
