@@ -52,7 +52,6 @@ const BATCHES_KEY: &str = "batches";
 
 const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
 const CONFIG_SMART_MODULE_DATA_KEY: &str = "smartmoduleData";
-const CONFIG_SMART_MODULE_TYPE_FILTER: &str = "filter";
 
 impl TryIntoJs for PartitionConsumerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -366,29 +365,32 @@ impl JSValue<'_> for ConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         debug!("convert fetch consumer config param");
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
-            let smartmodule_data = optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj);
-            let smartmodule: Option<SmartModuleInvocation> = if let Some(smartmodule_type) =
-                optional_property!(CONFIG_SMART_MODULE_TYPE_KEY, String, js_obj)
-            {
-                let kind = match smartmodule_type.as_str() {
-                    "filter" => SmartModuleKind::Filter,
-                    "map" => SmartModuleKind::Map,
-                    "array_map" => SmartModuleKind::ArrayMap,
-                    "filter_map" => SmartModuleKind::FilterMap,
-                    _ => panic!("Invalid smartmodule kind"),
-                };
+            let smartmodule_data = must_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj);
+            let smartmodule_type = must_property!(CONFIG_SMART_MODULE_TYPE_KEY, String, js_obj);
+            let smartmodule_kind = match smartmodule_type.as_str() {
+                "filter" => Ok(SmartModuleKind::Filter),
+                "map" => Ok(SmartModuleKind::Map),
+                "array_map" => Ok(SmartModuleKind::ArrayMap),
+                "filter_map" => Ok(SmartModuleKind::FilterMap),
+                _ => Err(NjError::Other(format!(
+                    "Provided SmartModule type: \"{}\" is not valid",
+                    smartmodule_type
+                ))),
+            }?;
 
-                let mut smartmodule = SmartModuleInvocation::default();
+            let mut smartmodule = SmartModuleInvocation::default();
+            let wasm = base64::decode(smartmodule_data).map_err(|e| {
+                NjError::Other(format!(
+                    "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
+                    e
+                ))
+            })?;
 
-                smartmodule.kind = kind;
-
-                Some(smartmodule)
-            } else {
-                None
-            };
+            smartmodule.kind = smartmodule_kind;
+            smartmodule.wasm = SmartModuleInvocationWasm::AdHoc(wasm);
 
             let consumer_config = ConsumerConfig::builder()
-                .smartmodule(smartmodule)
+                .smartmodule(Some(smartmodule))
                 .build()
                 .map_err(|e| NjError::Other(e.to_string()))?;
 
