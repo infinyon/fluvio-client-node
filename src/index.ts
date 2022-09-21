@@ -905,6 +905,9 @@ export class Offset {
 
 export enum SmartModuleType {
     Filter = 'filter',
+    Map = 'map',
+    ArrayMap = 'array_map',
+    FilterMap = 'filter_map',
 }
 
 export interface ConsumerConfig {
