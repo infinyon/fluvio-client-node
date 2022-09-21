@@ -1,5 +1,6 @@
-import Fluvio, { FluvioAdmin, OffsetFrom, KeyValue, Offset } from '../src/index'
+import Fluvio, { FluvioAdmin, OffsetFrom, KeyValue, Offset, SmartModuleType } from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
+import fs from 'fs';
 
 const topic_create_timeout = 10000
 async function sleep(ms: number) {
@@ -123,6 +124,42 @@ describe('Fluvio Batch Producer', () => {
         expect(counter).toEqual(MAX_COUNT)
     })
 })
+
+describe('Configures a SmartModule with a Filter configuration', () => {
+    jest.setTimeout(100000) // 100 seconds
+    let admin: FluvioAdmin
+    let fluvio: Fluvio
+    let topic: string
+
+    beforeAll(async () => {
+        topic = uuidV4()
+        fluvio = await Fluvio.connect()
+        admin = await fluvio.admin()
+
+        console.log(`Creating topic ${topic}`)
+
+        await admin.createTopic(topic)
+        await sleep(topic_create_timeout)
+    });
+
+    afterAll(async () => {
+        console.log(`Deleting topic ${topic}`)
+        await admin.deleteTopic(topic)
+        await sleep(topic_create_timeout)
+    });
+
+    test('Applies a Filter SmartModule on the provided stream', async () => {
+        const producer = await fluvio.topicProducer(topic)
+        const consumer = await fluvio.partitionConsumer(topic, 0);
+        const wasmSmartModule = await fs.promises.readFile('../fixtures/server_logs_filter.wasm', 'binary');
+        const serverLogsFile = await fs.promises.readFile('../fixtures/server.log');
+        const serverLogs: { message: string; level: string; }[] = JSON.parse(serverLogsFile.toString());
+        const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
+            smartmoduleType: SmartModuleType.Filter,
+            smartmoduleData: wasmSmartModule,
+        });
+    })
+});
 
 describe('MacOSCi', () => {
     test('', async () => {

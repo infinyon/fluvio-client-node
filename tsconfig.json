@@ -8,7 +8,9 @@
     "./docs/**/*",
     "./target/**/*",
     "src/fluvio.test.ts",
-    "./jest.config.js"
+    "./jest.config.js",
+    "./fixtures/*.wasm",
+    "./fixtures/*.log",
   ],
   "compilerOptions": {
     "target": "es6",

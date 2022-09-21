@@ -5,6 +5,7 @@ use crate::error::FluvioErrorJS;
 use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
+use fluvio::dataplane::smartmodule::SmartModuleExtraParams;
 use log::{debug, error};
 use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
@@ -378,7 +379,6 @@ impl JSValue<'_> for ConfigWrapper {
                 ))),
             }?;
 
-            let mut smartmodule = SmartModuleInvocation::default();
             let wasm = base64::decode(smartmodule_data).map_err(|e| {
                 NjError::Other(format!(
                     "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
@@ -386,9 +386,11 @@ impl JSValue<'_> for ConfigWrapper {
                 ))
             })?;
 
-            smartmodule.kind = smartmodule_kind;
-            smartmodule.wasm = SmartModuleInvocationWasm::AdHoc(wasm);
-
+            let smartmodule = SmartModuleInvocation {
+                wasm: SmartModuleInvocationWasm::AdHoc(wasm),
+                kind: smartmodule_kind,
+                params: SmartModuleExtraParams::default(),
+            };
             let consumer_config = ConsumerConfig::builder()
                 .smartmodule(Some(smartmodule))
                 .build()

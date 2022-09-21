@@ -36,10 +36,7 @@ function getDistPath() {
             console.log('Platform is not supported')
     }
 }
-const native_path = !process.env.FLUVIO_DEV
-    ? `${getDistPath()}/index.node`
-    : `${process.cwd()}/dist/${getDistPath()}/index.node`
-
+const native_path = `${process.cwd()}/dist/${getDistPath()}/index.node`
 const native = require(`${native_path}`)
 
 export const PartitionConsumerJS = native.PartitionConsumerJS
@@ -224,7 +221,7 @@ export interface PartitionConsumer {
     stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
     createStream(offset: Offset): Promise<AsyncIterable<Record>>
-    streamWithConfig(offset: Offset, config: ConsumerConfig, cb: (record: Record) => void): Promise<void>;
+    streamWithConfig(offset: Offset, config: ConsumerConfig): Promise<AsyncIterable<Record>>;
 }
 
 /**
@@ -318,6 +315,14 @@ export class PartitionConsumer {
      */
     async createStream(offset: Offset): Promise<AsyncIterable<Record>> {
         let stream = await this.inner.createStream(offset)
+        stream[Symbol.asyncIterator] = () => {
+            return stream
+        }
+        return stream
+    }
+
+    async streamWithConfig(offset: Offset, config: ConsumerConfig): Promise<AsyncIterable<Record>> {
+        let stream = await this.inner.streamWithConfig(offset, config)
         stream[Symbol.asyncIterator] = () => {
             return stream
         }
