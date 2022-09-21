@@ -911,6 +911,7 @@ export enum SmartModuleType {
 }
 
 export interface ConsumerConfig {
+    maxBytes?: number;
     smartmoduleType: SmartModuleType;
     smartmoduleData?: string;
     smartmoduleName?: string;

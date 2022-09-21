@@ -2,7 +2,6 @@ use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 use crate::error::FluvioErrorJS;
 
-use std::collections::BTreeMap;
 use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -52,6 +51,7 @@ const VALUE_KEY: &str = "value";
 
 const BATCHES_KEY: &str = "batches";
 
+const CONFIG_SMART_MODULE_MAX_BYTES_KEY: &str = "maxBytes";
 const CONFIG_SMART_MODULE_DATA_KEY: &str = "smartmoduleData";
 const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
 const CONFIG_SMART_MODULE_NAME_KEY: &str = "smartmoduleName";
@@ -380,23 +380,24 @@ impl JSValue<'_> for ConfigWrapper {
                 ))),
             }?;
 
+            let mut config_builder = ConsumerConfig::builder();
+
+            if let Some(max_bytes) = optional_property!(CONFIG_SMART_MODULE_MAX_BYTES_KEY, i32, js_obj) {
+                config_builder.max_bytes(max_bytes);
+            }
+
             if let Some(smartmodule_name) =
                 optional_property!(CONFIG_SMART_MODULE_NAME_KEY, String, js_obj)
             {
                 let smartmodule = SmartModuleInvocation {
                     wasm: SmartModuleInvocationWasm::Predefined(smartmodule_name),
                     kind: smartmodule_kind,
-                    params: BTreeMap::default().into(),
+                    params: SmartModuleExtraParams::default(),
                 };
-                let consumer_config = ConsumerConfig::builder()
-                    .smartmodule(Some(smartmodule))
-                    .build()
-                    .map_err(|e| NjError::Other(e.to_string()))?;
 
-                return Ok(ConfigWrapper(consumer_config));
-            }
-
-            if let Some(smartmodule_data) =
+                config_builder
+                    .smartmodule(Some(smartmodule));
+            } else if let Some(smartmodule_data) =
                 optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj)
             {
                 let wasm = base64::decode(smartmodule_data).map_err(|e| {
@@ -412,18 +413,14 @@ impl JSValue<'_> for ConfigWrapper {
                     params: SmartModuleExtraParams::default(),
                 };
 
-                let consumer_config = ConsumerConfig::builder()
-                    .smartmodule(Some(smartmodule))
-                    .build()
-                    .map_err(|e| NjError::Other(e.to_string()))?;
-
-                return Ok(ConfigWrapper(consumer_config));
+                config_builder
+                    .smartmodule(Some(smartmodule));
             }
 
-            Err(NjError::Other(format!(
-                "You must provide either the {} or the {} options for the config.",
-                CONFIG_SMART_MODULE_NAME_KEY, CONFIG_SMART_MODULE_DATA_KEY
-            )))
+            let consumer_config = config_builder.build()
+                    .map_err(|e| NjError::Other(e.to_string()))?;
+
+            Ok(ConfigWrapper(consumer_config))
         } else {
             Err(NjError::Other("must pass json param".to_owned()))
         }
