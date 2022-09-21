@@ -152,24 +152,28 @@ describe('Configures a SmartModule with a Filter configuration', () => {
         const producer = await fluvio.topicProducer(topic)
         const consumer = await fluvio.partitionConsumer(topic, 0);
         const wasmSmartModule = await fs.promises.readFile('./fixtures/server_logs_filter.wasm.gz');
-        const serverLogsFile = await fs.promises.readFile('./fixtures/server.json', 'utf8');
+        const serverLogsFile = await fs.promises.readFile('./fixtures/server_log.json', 'utf8');
         const serverLogs: { message: string; level: string; }[] = JSON.parse(serverLogsFile);
         const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
             smartmoduleType: SmartModuleType.Filter,
             smartmoduleData: wasmSmartModule.toString('base64'),
         });
+        const receivedLogs = [];
 
-        console.log('Sends every server log through the producer');
-        let count = 0;
         for (let log of serverLogs) {
-            count++;
-            producer.send(count.toString(), JSON.stringify(log));
+            producer.send(uuidV4(), JSON.stringify(log));
         }
 
-        console.log('Sends every server log through the producer');
         for await (const record of stream) {
-            console.log(record);
+            receivedLogs.push(JSON.parse(record.valueString()));
+
+            if (receivedLogs.length >= 5) {
+                break;
+            }
         }
+
+        expect(receivedLogs.find((log) => log.level === 'debug')).toBeUndefined();
+        expect(receivedLogs.length).toBe(serverLogs.filter((log) => log.level !== 'debug').length);
     })
 });
 
