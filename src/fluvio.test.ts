@@ -1,6 +1,12 @@
-import Fluvio, { FluvioAdmin, OffsetFrom, KeyValue, Offset, SmartModuleType } from '../src/index'
+import Fluvio, {
+    FluvioAdmin,
+    OffsetFrom,
+    KeyValue,
+    Offset,
+    SmartModuleType,
+} from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
-import fs from 'fs';
+import fs from 'fs'
 
 const topic_create_timeout = 10000
 async function sleep(ms: number) {
@@ -140,42 +146,52 @@ describe('Configures a SmartModule with a Filter configuration', () => {
 
         await admin.createTopic(topic)
         await sleep(topic_create_timeout)
-    });
+    })
 
     afterAll(async () => {
         console.log(`Deleting topic ${topic}`)
         await admin.deleteTopic(topic)
         await sleep(topic_create_timeout)
-    });
+    })
 
     test('Applies a Filter SmartModule on the provided stream', async () => {
         const producer = await fluvio.topicProducer(topic)
-        const consumer = await fluvio.partitionConsumer(topic, 0);
-        const wasmSmartModule = await fs.promises.readFile('./fixtures/server_logs_filter.wasm.gz');
-        const serverLogsFile = await fs.promises.readFile('./fixtures/server_log.json', 'utf8');
-        const serverLogs: { message: string; level: string; }[] = JSON.parse(serverLogsFile);
+        const consumer = await fluvio.partitionConsumer(topic, 0)
+        const wasmSmartModule = await fs.promises.readFile(
+            './fixtures/server_logs_filter.wasm.gz'
+        )
+        const serverLogsFile = await fs.promises.readFile(
+            './fixtures/server_log.json',
+            'utf8'
+        )
+        const serverLogs: { message: string; level: string }[] =
+            JSON.parse(serverLogsFile)
         const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
             smartmoduleType: SmartModuleType.Filter,
             smartmoduleData: wasmSmartModule.toString('base64'),
-        });
-        const receivedLogs = [];
+        })
+        const receivedLogs = []
 
         for (let log of serverLogs) {
-            producer.send(uuidV4(), JSON.stringify(log));
+            producer.send(uuidV4(), JSON.stringify(log))
         }
 
         for await (const record of stream) {
-            receivedLogs.push(JSON.parse(record.valueString()));
+            receivedLogs.push(JSON.parse(record.valueString()))
 
             if (receivedLogs.length >= 5) {
-                break;
+                break
             }
         }
 
-        expect(receivedLogs.find((log) => log.level === 'debug')).toBeUndefined();
-        expect(receivedLogs.length).toBe(serverLogs.filter((log) => log.level !== 'debug').length);
+        expect(
+            receivedLogs.find((log) => log.level === 'debug')
+        ).toBeUndefined()
+        expect(receivedLogs.length).toBe(
+            serverLogs.filter((log) => log.level !== 'debug').length
+        )
     })
-});
+})
 
 describe('MacOSCi', () => {
     test('', async () => {

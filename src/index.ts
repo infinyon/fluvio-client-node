@@ -224,7 +224,10 @@ export interface PartitionConsumer {
     stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
     createStream(offset: Offset): Promise<AsyncIterable<Record>>
-    streamWithConfig(offset: Offset, config: ConsumerConfig): Promise<AsyncIterable<Record>>;
+    streamWithConfig(
+        offset: Offset,
+        config: ConsumerConfig
+    ): Promise<AsyncIterable<Record>>
 }
 
 /**
@@ -324,7 +327,10 @@ export class PartitionConsumer {
         return stream
     }
 
-    async streamWithConfig(offset: Offset, config: ConsumerConfig): Promise<AsyncIterable<Record>> {
+    async streamWithConfig(
+        offset: Offset,
+        config: ConsumerConfig
+    ): Promise<AsyncIterable<Record>> {
         let stream = await this.inner.streamWithConfig(offset, config)
         stream[Symbol.asyncIterator] = () => {
             return stream
@@ -914,10 +920,10 @@ export enum SmartModuleType {
 }
 
 export interface ConsumerConfig {
-    maxBytes?: number;
-    smartmoduleType: SmartModuleType;
-    smartmoduleData?: string;
-    smartmoduleName?: string;
+    maxBytes?: number
+    smartmoduleType: SmartModuleType
+    smartmoduleData?: string
+    smartmoduleName?: string
 }
 
 export interface BatchHeader {
