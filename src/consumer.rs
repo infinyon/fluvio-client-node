@@ -2,6 +2,7 @@ use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 use crate::error::FluvioErrorJS;
 
+use std::collections::BTreeMap;
 use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -51,8 +52,9 @@ const VALUE_KEY: &str = "value";
 
 const BATCHES_KEY: &str = "batches";
 
-const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
 const CONFIG_SMART_MODULE_DATA_KEY: &str = "smartmoduleData";
+const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
+const CONFIG_SMART_MODULE_NAME_KEY: &str = "smartmoduleName";
 
 impl TryIntoJs for PartitionConsumerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -366,7 +368,6 @@ impl JSValue<'_> for ConfigWrapper {
     fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
         debug!("convert fetch consumer config param");
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
-            let smartmodule_data = must_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj);
             let smartmodule_type = must_property!(CONFIG_SMART_MODULE_TYPE_KEY, String, js_obj);
             let smartmodule_kind = match smartmodule_type.as_str() {
                 "filter" => Ok(SmartModuleKind::Filter),
@@ -379,24 +380,50 @@ impl JSValue<'_> for ConfigWrapper {
                 ))),
             }?;
 
-            let wasm = base64::decode(smartmodule_data).map_err(|e| {
-                NjError::Other(format!(
-                    "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
-                    e
-                ))
-            })?;
+            if let Some(smartmodule_name) =
+                optional_property!(CONFIG_SMART_MODULE_NAME_KEY, String, js_obj)
+            {
+                let smartmodule = SmartModuleInvocation {
+                    wasm: SmartModuleInvocationWasm::Predefined(smartmodule_name),
+                    kind: smartmodule_kind,
+                    params: BTreeMap::default().into(),
+                };
+                let consumer_config = ConsumerConfig::builder()
+                    .smartmodule(Some(smartmodule))
+                    .build()
+                    .map_err(|e| NjError::Other(e.to_string()))?;
 
-            let smartmodule = SmartModuleInvocation {
-                wasm: SmartModuleInvocationWasm::AdHoc(wasm),
-                kind: smartmodule_kind,
-                params: SmartModuleExtraParams::default(),
-            };
-            let consumer_config = ConsumerConfig::builder()
-                .smartmodule(Some(smartmodule))
-                .build()
-                .map_err(|e| NjError::Other(e.to_string()))?;
+                return Ok(ConfigWrapper(consumer_config));
+            }
 
-            Ok(ConfigWrapper(consumer_config))
+            if let Some(smartmodule_data) =
+                optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj)
+            {
+                let wasm = base64::decode(smartmodule_data).map_err(|e| {
+                    NjError::Other(format!(
+                        "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
+                        e
+                    ))
+                })?;
+
+                let smartmodule = SmartModuleInvocation {
+                    wasm: SmartModuleInvocationWasm::AdHoc(wasm),
+                    kind: smartmodule_kind,
+                    params: SmartModuleExtraParams::default(),
+                };
+
+                let consumer_config = ConsumerConfig::builder()
+                    .smartmodule(Some(smartmodule))
+                    .build()
+                    .map_err(|e| NjError::Other(e.to_string()))?;
+
+                return Ok(ConfigWrapper(consumer_config));
+            }
+
+            Err(NjError::Other(format!(
+                "You must provide either the {} or the {} options for the config.",
+                CONFIG_SMART_MODULE_NAME_KEY, CONFIG_SMART_MODULE_DATA_KEY
+            )))
         } else {
             Err(NjError::Other("must pass json param".to_owned()))
         }
