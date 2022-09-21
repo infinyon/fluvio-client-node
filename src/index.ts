@@ -912,7 +912,8 @@ export enum SmartModuleType {
 
 export interface ConsumerConfig {
     smartmoduleType: SmartModuleType;
-    smartmoduleData: string;
+    smartmoduleData?: string;
+    smartmoduleName?: string;
 }
 
 export interface BatchHeader {
