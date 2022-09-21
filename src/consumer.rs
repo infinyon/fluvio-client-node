@@ -382,7 +382,9 @@ impl JSValue<'_> for ConfigWrapper {
 
             let mut config_builder = ConsumerConfig::builder();
 
-            if let Some(max_bytes) = optional_property!(CONFIG_SMART_MODULE_MAX_BYTES_KEY, i32, js_obj) {
+            if let Some(max_bytes) =
+                optional_property!(CONFIG_SMART_MODULE_MAX_BYTES_KEY, i32, js_obj)
+            {
                 config_builder.max_bytes(max_bytes);
             }
 
@@ -395,8 +397,7 @@ impl JSValue<'_> for ConfigWrapper {
                     params: SmartModuleExtraParams::default(),
                 };
 
-                config_builder
-                    .smartmodule(Some(smartmodule));
+                config_builder.smartmodule(Some(smartmodule));
             } else if let Some(smartmodule_data) =
                 optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj)
             {
@@ -413,12 +414,12 @@ impl JSValue<'_> for ConfigWrapper {
                     params: SmartModuleExtraParams::default(),
                 };
 
-                config_builder
-                    .smartmodule(Some(smartmodule));
+                config_builder.smartmodule(Some(smartmodule));
             }
 
-            let consumer_config = config_builder.build()
-                    .map_err(|e| NjError::Other(e.to_string()))?;
+            let consumer_config = config_builder
+                .build()
+                .map_err(|e| NjError::Other(e.to_string()))?;
 
             Ok(ConfigWrapper(consumer_config))
         } else {
