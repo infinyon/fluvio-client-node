@@ -36,7 +36,10 @@ function getDistPath() {
             console.log('Platform is not supported')
     }
 }
-const native_path = `${process.cwd()}/dist/${getDistPath()}/index.node`
+const native_path = !process.env.FLUVIO_DEV
+    ? `${getDistPath()}/index.node`
+    : `${process.cwd()}/dist/${getDistPath()}/index.node`
+
 const native = require(`${native_path}`)
 
 export const PartitionConsumerJS = native.PartitionConsumerJS
