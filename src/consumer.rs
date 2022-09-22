@@ -5,7 +5,6 @@ use crate::error::FluvioErrorJS;
 use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
-use fluvio::dataplane::smartmodule::SmartModuleExtraParams;
 use log::{debug, error};
 use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
@@ -394,7 +393,7 @@ impl JSValue<'_> for ConfigWrapper {
                 let smartmodule = SmartModuleInvocation {
                     wasm: SmartModuleInvocationWasm::Predefined(smartmodule_name),
                     kind: smartmodule_kind,
-                    params: SmartModuleExtraParams::default(),
+                    ..Default::default()
                 };
 
                 config_builder.smartmodule(Some(smartmodule));
@@ -411,7 +410,7 @@ impl JSValue<'_> for ConfigWrapper {
                 let smartmodule = SmartModuleInvocation {
                     wasm: SmartModuleInvocationWasm::AdHoc(wasm),
                     kind: smartmodule_kind,
-                    params: SmartModuleExtraParams::default(),
+                    ..Default::default()
                 };
 
                 config_builder.smartmodule(Some(smartmodule));
