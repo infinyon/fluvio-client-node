@@ -150,7 +150,7 @@ impl FluvioAdminJS {
 
     #[node_bindgen]
     async fn list_spu(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
-        serde::__private::Ok(self.js_list::<SpuSpec>().await?)
+        self.js_list::<SpuSpec>().await
     }
 
     #[node_bindgen]

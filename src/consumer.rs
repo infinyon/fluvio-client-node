@@ -231,8 +231,7 @@ impl fmt::Debug for RecordJS {
             .unwrap()
             .key()
             .is_some()
-            .then(|| "Some(<Key>)")
-            .unwrap_or("None");
+            .then_some("Some(<Key>)");
 
         f.debug_struct("RecordJS")
             .field("key", &key)
