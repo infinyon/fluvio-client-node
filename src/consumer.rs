@@ -6,11 +6,11 @@ use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
 use log::{debug, error};
-use fluvio::PartitionConsumer;
+use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
-use fluvio::consumer::Record;
+use fluvio::consumer::{Record, SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm};
 use fluvio_future::task::spawn;
 use fluvio_future::io::{Stream, StreamExt};
 
@@ -49,6 +49,11 @@ const KEY_KEY: &str = "key";
 const VALUE_KEY: &str = "value";
 
 const BATCHES_KEY: &str = "batches";
+
+const CONFIG_SMART_MODULE_MAX_BYTES_KEY: &str = "maxBytes";
+const CONFIG_SMART_MODULE_DATA_KEY: &str = "smartmoduleData";
+const CONFIG_SMART_MODULE_TYPE_KEY: &str = "smartmoduleType";
+const CONFIG_SMART_MODULE_NAME_KEY: &str = "smartmoduleName";
 
 impl TryIntoJs for PartitionConsumerJS {
     fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
@@ -131,6 +136,25 @@ impl PartitionConsumerJS {
         let stream = client.stream(offset.0).await?;
         let mut iterator = PartitionConsumerIterator::new();
         iterator.set_inner(Box::pin(stream));
+        Ok(iterator)
+    }
+
+    #[node_bindgen]
+    async fn stream_with_config(
+        &self,
+        offset: OffsetWrapper,
+        config: ConfigWrapper,
+    ) -> Result<PartitionConsumerIterator, FluvioErrorJS> {
+        let config: ConsumerConfig = config.0;
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        let stream = client.stream_with_config(offset.0, config).await?;
+        let mut iterator = PartitionConsumerIterator::new();
+
+        iterator.set_inner(Box::pin(stream));
+
         Ok(iterator)
     }
 }
@@ -330,6 +354,72 @@ impl JSValue<'_> for OffsetWrapper {
             };
 
             Ok(Self(offset))
+        } else {
+            Err(NjError::Other("must pass json param".to_owned()))
+        }
+    }
+}
+
+pub struct ConfigWrapper(ConsumerConfig);
+
+impl JSValue<'_> for ConfigWrapper {
+    fn convert_to_rust(env: &JsEnv, js_value: napi_value) -> Result<Self, NjError> {
+        debug!("convert fetch consumer config param");
+        if let Ok(js_obj) = env.convert_to_rust::<JsObject>(js_value) {
+            let smartmodule_type = must_property!(CONFIG_SMART_MODULE_TYPE_KEY, String, js_obj);
+            let smartmodule_kind = match smartmodule_type.as_str() {
+                "filter" => Ok(SmartModuleKind::Filter),
+                "map" => Ok(SmartModuleKind::Map),
+                "array_map" => Ok(SmartModuleKind::ArrayMap),
+                "filter_map" => Ok(SmartModuleKind::FilterMap),
+                _ => Err(NjError::Other(format!(
+                    "Provided SmartModule type: \"{}\" is not valid",
+                    smartmodule_type
+                ))),
+            }?;
+
+            let mut config_builder = ConsumerConfig::builder();
+
+            if let Some(max_bytes) =
+                optional_property!(CONFIG_SMART_MODULE_MAX_BYTES_KEY, i32, js_obj)
+            {
+                config_builder.max_bytes(max_bytes);
+            }
+
+            if let Some(smartmodule_name) =
+                optional_property!(CONFIG_SMART_MODULE_NAME_KEY, String, js_obj)
+            {
+                let smartmodule = SmartModuleInvocation {
+                    wasm: SmartModuleInvocationWasm::Predefined(smartmodule_name),
+                    kind: smartmodule_kind,
+                    ..Default::default()
+                };
+
+                config_builder.smartmodule(Some(smartmodule));
+            } else if let Some(smartmodule_data) =
+                optional_property!(CONFIG_SMART_MODULE_DATA_KEY, String, js_obj)
+            {
+                let wasm = base64::decode(smartmodule_data).map_err(|e| {
+                    NjError::Other(format!(
+                        "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
+                        e
+                    ))
+                })?;
+
+                let smartmodule = SmartModuleInvocation {
+                    wasm: SmartModuleInvocationWasm::AdHoc(wasm),
+                    kind: smartmodule_kind,
+                    ..Default::default()
+                };
+
+                config_builder.smartmodule(Some(smartmodule));
+            }
+
+            let consumer_config = config_builder
+                .build()
+                .map_err(|e| NjError::Other(e.to_string()))?;
+
+            Ok(ConfigWrapper(consumer_config))
         } else {
             Err(NjError::Other("must pass json param".to_owned()))
         }
