@@ -4,6 +4,10 @@ use crate::error::FluvioErrorJS;
 
 use std::convert::{TryInto, TryFrom};
 use std::fmt::Display;
+use fluvio::metadata::smartmodule::{
+    SmartModuleSpec, SmartModuleInputKind, SmartModuleOutputKind, SmartModuleSourceCode,
+    SmartModuleSourceCodeLanguage,
+};
 use log::debug;
 
 use fluvio::{FluvioAdmin, FluvioError};
@@ -205,6 +209,19 @@ impl FluvioAdminJS {
         if let Some(client) = &mut self.inner {
             client.delete::<SpuGroupSpec, _>(name).await?;
             Ok(())
+        } else {
+            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+        }
+    }
+
+    #[node_bindgen]
+    async fn list_smart_modules(
+        &mut self,
+    ) -> Result<Vec<Metadata<SmartModuleSpec>>, FluvioErrorJS> {
+        if let Some(client) = &mut self.inner {
+            let smart_modules = client.list::<SmartModuleSpec, _>(Vec::default()).await?;
+
+            Ok(smart_modules)
         } else {
             Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
         }
@@ -491,5 +508,33 @@ impl TryIntoJs for TopicInfo {
         } else {
             ().try_to_js(js_env)
         }
+    }
+}
+
+struct MetadataSmartModuleSpecWrapper(Metadata<SmartModuleSpec>);
+
+impl TryIntoJs for MetadataSmartModuleSpecWrapper {
+    fn try_to_js(self, js_env: &JsEnv) -> Result<napi_value, NjError> {
+        let mut metadata = JsObject::create(js_env)?;
+
+        let name = js_env.create_string_utf8(&self.0.name)?;
+        metadata.set_property("name", name);
+
+        let status = js_env.create_string_utf8(&self.0.status.to_string())?;
+        metadata.set_property("status", status);
+
+        let mut spec = JsObject::create(js_env)?;
+        let input_kind = match self.0.spec.input_kind {
+            SmartModuleInputKind::Stream => js_env.create_string_utf8("stream")?,
+            SmartModuleInputKind::External => js_env.create_string_utf8("external")?,
+        };
+        let output_kind = match self.0.spec.output_kind {
+            SmartModuleOutputKind::Stream => js_env.create_string_utf8("stream")?,
+            SmartModuleOutputKind::External => js_env.create_string_utf8("external")?,
+            SmartModuleOutputKind::Table => js_env.create_string_utf8("table")?,
+        };
+
+        metadata.set_property("spec", spec.napi_value());
+        metadata.try_to_js(js_env)
     }
 }
