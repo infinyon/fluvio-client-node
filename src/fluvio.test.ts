@@ -157,9 +157,6 @@ describe('Configures a SmartModule with a Filter configuration', () => {
     test('Applies a Filter SmartModule on the provided stream', async () => {
         const producer = await fluvio.topicProducer(topic)
         const consumer = await fluvio.partitionConsumer(topic, 0)
-        const wasmSmartModule = await fs.promises.readFile(
-            './fixtures/server_logs_filter.wasm.gz'
-        )
         const serverLogsFile = await fs.promises.readFile(
             './fixtures/server_log.json',
             'utf8'
@@ -168,7 +165,7 @@ describe('Configures a SmartModule with a Filter configuration', () => {
             JSON.parse(serverLogsFile)
         const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
             smartmoduleType: SmartModuleType.Filter,
-            smartmoduleData: wasmSmartModule.toString('base64'),
+            smartmoduleData: './fixtures/server_logs_filter.wasm',
         })
         const receivedLogs = []
 

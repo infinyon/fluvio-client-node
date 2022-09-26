@@ -1,5 +1,6 @@
 /* tslint:disable:max-classes-per-file */
 import { EventEmitter } from 'events'
+import { openWasmFile } from './utils'
 
 export const DEFAULT_HOST = '127.0.0.1'
 export const DEFAULT_PORT = 9003
@@ -331,6 +332,12 @@ export class PartitionConsumer {
         offset: Offset,
         config: ConsumerConfig
     ): Promise<AsyncIterable<Record>> {
+        if (typeof config.smartmoduleData === 'string') {
+            const gzipedWasmFile = await openWasmFile(config.smartmoduleData)
+
+            config.smartmoduleData = gzipedWasmFile.toString('base64')
+        }
+
         let stream = await this.inner.streamWithConfig(offset, config)
         stream[Symbol.asyncIterator] = () => {
             return stream
