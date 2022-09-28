@@ -106,7 +106,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
         run: npm publish --access public
 
-      - name: Create GitHub Releas
+      - name: Create GitHub Release
         if: github.event_name == 'workflow_dispatch'
         uses: actions/github-script@v6
         with:
