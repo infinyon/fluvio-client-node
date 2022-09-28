@@ -165,7 +165,7 @@ describe('Configures a SmartModule with a Filter configuration', () => {
             JSON.parse(serverLogsFile)
         const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
             smartmoduleType: SmartModuleType.Filter,
-            smartmoduleData: './fixtures/server_logs_filter.wasm',
+            smartmoduleFile: './fixtures/server_logs_filter.wasm',
         })
         const receivedLogs = []
 

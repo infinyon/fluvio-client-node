@@ -332,8 +332,8 @@ export class PartitionConsumer {
         offset: Offset,
         config: ConsumerConfig
     ): Promise<AsyncIterable<Record>> {
-        if (typeof config.smartmoduleData === 'string') {
-            const gzipedWasmFile = await openWasmFile(config.smartmoduleData)
+        if (typeof config.smartmoduleFile === 'string') {
+            const gzipedWasmFile = await openWasmFile(config.smartmoduleFile)
 
             config.smartmoduleData = gzipedWasmFile.toString('base64')
         }
@@ -929,6 +929,18 @@ export enum SmartModuleType {
 export interface ConsumerConfig {
     maxBytes?: number
     smartmoduleType: SmartModuleType
+    /**
+     * Path to a SmartModule WASM file.
+     *
+     * @remarks
+     * Internally replaces the value provided to `smartmoduleData`,
+     * you must provide one, either `smartmoduleFile` or `smartmoduleData`.
+     */
+    smartmoduleFile?: string
+
+    /**
+     * Gzipped and Base64 encoded SmartModule WASM file.
+     */
     smartmoduleData?: string
     smartmoduleName?: string
 }
