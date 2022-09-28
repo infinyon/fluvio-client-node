@@ -107,12 +107,9 @@ jobs:
         run: npm publish --access public
 
       - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.request(`POST /repos/${{ github.repository }}/releases`, {
-              tag_name: "${{ github.ref }}",
-              generate_release_notes: true
-            });
+          files: |
+            Release.txt
+            LICENSE
