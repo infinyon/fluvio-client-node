@@ -62,10 +62,17 @@ impl JSValue<'_> for ConfigWrapper {
                                 file_path, io_err,
                             ))
                         })?;
-                        let reader = BufReader::new(file);
+                        let mut reader = BufReader::new(file);
                         let mut gz_encoder = GzEncoder::new(Vec::new(), Compression::default());
+                        let mut buff: Vec<u8> = Vec::new();
 
-                        gz_encoder.write_all(reader.buffer()).map_err(|io_err| {
+                        reader.read_to_end(&mut buff).map_err(|io_err| {
+                            NjError::Other(format!(
+                                "Failed to read contents of file on {}: {:?}",
+                                file_path, io_err
+                            ))
+                        })?;
+                        gz_encoder.write_all(buff.as_slice()).map_err(|io_err| {
                             NjError::Other(format!(
                                 "An error ocurred while reading WASM file on {}: {:?}",
                                 file_path, io_err
