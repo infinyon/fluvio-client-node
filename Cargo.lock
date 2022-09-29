@@ -560,6 +560,7 @@ name = "fluvio-client-node"
 version = "0.9.0"
 dependencies = [
  "base64",
+ "flate2",
  "fluvio",
  "fluvio-future",
  "log",
