@@ -226,6 +226,45 @@ describe('Configures a SmartModule', () => {
             serverLogs.filter((log) => log.level !== 'debug').length
         )
     })
+
+    // test('Complains when providing two SmartModule options at the same time', async () => {
+    //     const producer = await fluvio.topicProducer(topic)
+    //     const consumer = await fluvio.partitionConsumer(topic, 0)
+    //     const serverLogsFile = await fs.promises.readFile(
+    //         './fixtures/server_log.json',
+    //         'utf8'
+    //     )
+    //     const serverLogs: { message: string; level: string }[] =
+    //         JSON.parse(serverLogsFile)
+    //     const wasmSmartModule = await fs.promises.readFile(
+    //         './fixtures/server_logs_filter.wasm.gz'
+    //     )
+    //     const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
+    //         smartmoduleType: SmartModuleType.Filter,
+    //         smartmoduleFile: './fixtures/server_logs_filter.wasm',
+    //         smartmoduleData: wasmSmartModule.toString('base64'),
+    //     })
+    //     const receivedLogs = []
+
+    //     for (let log of serverLogs) {
+    //         producer.send(uuidV4(), JSON.stringify(log))
+    //     }
+
+    //     for await (const record of stream) {
+    //         receivedLogs.push(JSON.parse(record.valueString()))
+
+    //         if (receivedLogs.length >= 5) {
+    //             break
+    //         }
+    //     }
+
+    //     expect(
+    //         receivedLogs.find((log) => log.level === 'debug')
+    //     ).toBeUndefined()
+    //     expect(receivedLogs.length).toBe(
+    //         serverLogs.filter((log) => log.level !== 'debug').length
+    //     )
+    // })
 })
 
 describe('MacOSCi', () => {

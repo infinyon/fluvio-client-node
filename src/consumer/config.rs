@@ -52,15 +52,31 @@ impl JSValue<'_> for ConfigWrapper {
             let smartmodule: Option<SmartModuleInvocation> =
                 match (smartmodule_file, smartmodule_name, smartmodule_data) {
                     (None, None, None) => Ok(None),
-                    (Some(file), None, None) => {
-                        let path = PathBuf::from_str(file.as_str())
+                    (Some(file_path), None, None) => {
+                        debug!("Loads SmartModule file from {}", file_path);
+                        let path = PathBuf::from_str(file_path.as_str())
                             .map_err(|e| NjError::Other(e.to_string()))?;
-                        let file = File::open(path).unwrap();
+                        let file = File::open(path).map_err(|io_err| {
+                            NjError::Other(format!(
+                                "An error ocurred opening file on {}. {:?}",
+                                file_path, io_err,
+                            ))
+                        })?;
                         let reader = BufReader::new(file);
                         let mut gz_encoder = GzEncoder::new(Vec::new(), Compression::default());
 
-                        gz_encoder.write_all(reader.buffer()).unwrap();
-                        let bytes = gz_encoder.finish().unwrap();
+                        gz_encoder.write_all(reader.buffer()).map_err(|io_err| {
+                            NjError::Other(format!(
+                                "An error ocurred while reading WASM file on {}: {:?}",
+                                file_path, io_err
+                            ))
+                        })?;
+                        let bytes = gz_encoder.finish().map_err(|io_err| {
+                            NjError::Other(format!(
+                                "An error ocurred while encoding WASM into Gzip. {:?}",
+                                io_err
+                            ))
+                        })?;
 
                         Ok(Some(SmartModuleInvocation {
                             wasm: SmartModuleInvocationWasm::AdHoc(bytes),
