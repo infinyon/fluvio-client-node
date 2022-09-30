@@ -64,6 +64,7 @@ created by the top-level Fluvio client.</p>
 <a href="PartitionConsumer.html#endStream" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>end<wbr/>Stream</span></a>
 <a href="PartitionConsumer.html#fetch" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>fetch</span></a>
 <a href="PartitionConsumer.html#stream" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>stream</span></a>
+<a href="PartitionConsumer.html#streamWithConfig" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>stream<wbr/>With<wbr/>Config</span></a>
 <a href="PartitionConsumer.html#create" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
@@ -92,7 +93,7 @@ along with top-level Fluvio client options, if any.</p>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>inner</span><a href="#inner" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">inner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/15acd37/src/index.ts#L267">index.ts:267</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/infinyon/fluvio-client-node/blob/19ae01e/src/index.ts#L271">index.ts:271</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="createStream" class="tsd-anchor"></a>
@@ -216,6 +217,30 @@ and receive the events as a list of records.</p>
 <h5>record: <a href="../interfaces/Record.html" class="tsd-signature-type" data-tsd-kind="Interface">Record</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="streamWithConfig" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>stream<wbr/>With<wbr/>Config</span><a href="#streamWithConfig" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature" id="streamWithConfig.streamWithConfig-1">stream<wbr/>With<wbr/>Config<span class="tsd-signature-symbol">(</span>offset<span class="tsd-signature-symbol">: </span><a href="Offset.html" class="tsd-signature-type" data-tsd-kind="Class">Offset</a>, config<span class="tsd-signature-symbol">: </span><a href="../interfaces/ConsumerConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">ConsumerConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AsyncIterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Record.html" class="tsd-signature-type" data-tsd-kind="Interface">Record</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+<li class="tsd-signature" id="streamWithConfig.streamWithConfig-2">stream<wbr/>With<wbr/>Config<span class="tsd-signature-symbol">(</span>offset<span class="tsd-signature-symbol">: </span><a href="Offset.html" class="tsd-signature-type" data-tsd-kind="Class">Offset</a>, config<span class="tsd-signature-symbol">: </span><a href="../interfaces/ConsumerConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">ConsumerConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AsyncIterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Record.html" class="tsd-signature-type" data-tsd-kind="Interface">Record</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li></ul>
+<ul class="tsd-descriptions">
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>offset: <a href="Offset.html" class="tsd-signature-type" data-tsd-kind="Class">Offset</a></h5></li>
+<li>
+<h5>config: <a href="../interfaces/ConsumerConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">ConsumerConfig</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AsyncIterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Record.html" class="tsd-signature-type" data-tsd-kind="Interface">Record</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>offset: <a href="Offset.html" class="tsd-signature-type" data-tsd-kind="Class">Offset</a></h5></li>
+<li>
+<h5>config: <a href="../interfaces/ConsumerConfig.html" class="tsd-signature-type" data-tsd-kind="Interface">ConsumerConfig</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AsyncIterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Record.html" class="tsd-signature-type" data-tsd-kind="Interface">Record</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="create" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>create</span><a href="#create" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -259,6 +284,7 @@ and receive the events as a list of records.</p>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="PartitionConsumer.html#endStream" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>end<wbr/>Stream</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="PartitionConsumer.html#fetch" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>fetch</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="PartitionConsumer.html#stream" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>stream</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="PartitionConsumer.html#streamWithConfig" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>stream<wbr/>With<wbr/>Config</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="PartitionConsumer.html#create" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>create</a></li></ul></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
