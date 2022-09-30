@@ -1,5 +1,12 @@
-import Fluvio, { FluvioAdmin, OffsetFrom, KeyValue, Offset } from '../src/index'
+import Fluvio, {
+    FluvioAdmin,
+    OffsetFrom,
+    KeyValue,
+    Offset,
+    SmartModuleType,
+} from '../src/index'
 import { v4 as uuidV4 } from 'uuid'
+import fs from 'fs'
 
 const topic_create_timeout = 10000
 async function sleep(ms: number) {
@@ -121,6 +128,121 @@ describe('Fluvio Batch Producer', () => {
             if (counter >= MAX_COUNT) break
         }
         expect(counter).toEqual(MAX_COUNT)
+    })
+})
+
+describe('Configures a SmartModule', () => {
+    jest.setTimeout(100000) // 100 seconds
+    let admin: FluvioAdmin
+    let fluvio: Fluvio
+    let topic: string
+
+    beforeEach(async () => {
+        topic = uuidV4()
+        fluvio = await Fluvio.connect()
+        admin = await fluvio.admin()
+
+        console.log(`Creating topic ${topic}`)
+
+        await admin.createTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    afterEach(async () => {
+        console.log(`Deleting topic ${topic}`)
+        await admin.deleteTopic(topic)
+        await sleep(topic_create_timeout)
+    })
+
+    test('Applies a SmartModule on the provided stream using `smartmoduleFile`', async () => {
+        const producer = await fluvio.topicProducer(topic)
+        const consumer = await fluvio.partitionConsumer(topic, 0)
+        const serverLogsFile = await fs.promises.readFile(
+            './fixtures/server_log.json',
+            'utf8'
+        )
+        const serverLogs: { message: string; level: string }[] =
+            JSON.parse(serverLogsFile)
+        const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
+            smartmoduleType: SmartModuleType.Filter,
+            smartmoduleFile: './fixtures/server_logs_filter.wasm',
+        })
+        const receivedLogs = []
+
+        for (let log of serverLogs) {
+            producer.send(uuidV4(), JSON.stringify(log))
+        }
+
+        for await (const record of stream) {
+            receivedLogs.push(JSON.parse(record.valueString()))
+
+            if (receivedLogs.length >= 5) {
+                break
+            }
+        }
+
+        expect(
+            receivedLogs.find((log) => log.level === 'debug')
+        ).toBeUndefined()
+        expect(receivedLogs.length).toBe(
+            serverLogs.filter((log) => log.level !== 'debug').length
+        )
+    })
+
+    test('Applies a SmartModule on the provided stream using `smartmoduleData`', async () => {
+        const producer = await fluvio.topicProducer(topic)
+        const consumer = await fluvio.partitionConsumer(topic, 0)
+        const serverLogsFile = await fs.promises.readFile(
+            './fixtures/server_log.json',
+            'utf8'
+        )
+        const serverLogs: { message: string; level: string }[] =
+            JSON.parse(serverLogsFile)
+        const wasmSmartModule = await fs.promises.readFile(
+            './fixtures/server_logs_filter.wasm.gz'
+        )
+        const stream = await consumer.streamWithConfig(Offset.FromBeginning(), {
+            smartmoduleType: SmartModuleType.Filter,
+            smartmoduleData: wasmSmartModule.toString('base64'),
+        })
+        const receivedLogs = []
+
+        for (let log of serverLogs) {
+            producer.send(uuidV4(), JSON.stringify(log))
+        }
+
+        for await (const record of stream) {
+            receivedLogs.push(JSON.parse(record.valueString()))
+
+            if (receivedLogs.length >= 5) {
+                break
+            }
+        }
+
+        expect(
+            receivedLogs.find((log) => log.level === 'debug')
+        ).toBeUndefined()
+        expect(receivedLogs.length).toBe(
+            serverLogs.filter((log) => log.level !== 'debug').length
+        )
+    })
+
+    test('Complains when providing two SmartModule options at the same time', async () => {
+        const consumer = await fluvio.partitionConsumer(topic, 0)
+        const wasmSmartModule = await fs.promises.readFile(
+            './fixtures/server_logs_filter.wasm.gz'
+        )
+
+        expect(
+            async () =>
+                await consumer.streamWithConfig(Offset.FromBeginning(), {
+                    smartmoduleType: SmartModuleType.Filter,
+                    smartmoduleFile: './fixtures/server_logs_filter.wasm',
+                    smartmoduleData: wasmSmartModule.toString('base64'),
+                })
+        ).rejects.toThrowError(
+            'You must either provide one of smartmoduleFile, smartmoduleName or smartmoduleData'
+        )
     })
 })
 

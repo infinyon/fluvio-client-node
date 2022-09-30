@@ -224,6 +224,10 @@ export interface PartitionConsumer {
     stream(offset: Offset, cb: (record: Record) => void): Promise<void>
     endStream(): Promise<void>
     createStream(offset: Offset): Promise<AsyncIterable<Record>>
+    streamWithConfig(
+        offset: Offset,
+        config: ConsumerConfig
+    ): Promise<AsyncIterable<Record>>
 }
 
 /**
@@ -317,6 +321,17 @@ export class PartitionConsumer {
      */
     async createStream(offset: Offset): Promise<AsyncIterable<Record>> {
         let stream = await this.inner.createStream(offset)
+        stream[Symbol.asyncIterator] = () => {
+            return stream
+        }
+        return stream
+    }
+
+    async streamWithConfig(
+        offset: Offset,
+        config: ConsumerConfig
+    ): Promise<AsyncIterable<Record>> {
+        let stream = await this.inner.streamWithConfig(offset, config)
         stream[Symbol.asyncIterator] = () => {
             return stream
         }
@@ -895,6 +910,32 @@ export class Offset {
     public static FromEnd(): Offset {
         return new Offset({ index: 0, from: OffsetFrom.End })
     }
+}
+
+export enum SmartModuleType {
+    Filter = 'filter',
+    Map = 'map',
+    ArrayMap = 'array_map',
+    FilterMap = 'filter_map',
+}
+
+export interface ConsumerConfig {
+    maxBytes?: number
+    smartmoduleType: SmartModuleType
+    /**
+     * Path to a SmartModule WASM file.
+     *
+     * @remarks
+     * Internally replaces the value provided to `smartmoduleData`,
+     * you must provide one, either `smartmoduleFile` or `smartmoduleData`.
+     */
+    smartmoduleFile?: string
+
+    /**
+     * Gzipped and Base64 encoded SmartModule WASM file.
+     */
+    smartmoduleData?: string
+    smartmoduleName?: string
 }
 
 export interface BatchHeader {

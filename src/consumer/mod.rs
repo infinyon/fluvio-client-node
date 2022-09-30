@@ -1,3 +1,5 @@
+mod config;
+
 use crate::{OFFSET_BEGINNING, OFFSET_END, CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 use crate::error::FluvioErrorJS;
@@ -6,7 +8,7 @@ use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
 use log::{debug, error};
-use fluvio::PartitionConsumer;
+use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
 use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
@@ -131,6 +133,25 @@ impl PartitionConsumerJS {
         let stream = client.stream(offset.0).await?;
         let mut iterator = PartitionConsumerIterator::new();
         iterator.set_inner(Box::pin(stream));
+        Ok(iterator)
+    }
+
+    #[node_bindgen]
+    async fn stream_with_config(
+        &self,
+        offset: OffsetWrapper,
+        config: config::ConfigWrapper,
+    ) -> Result<PartitionConsumerIterator, FluvioErrorJS> {
+        let config: ConsumerConfig = config.inner;
+        let client = self
+            .inner
+            .as_ref()
+            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        let stream = client.stream_with_config(offset.0, config).await?;
+        let mut iterator = PartitionConsumerIterator::new();
+
+        iterator.set_inner(Box::pin(stream));
+
         Ok(iterator)
     }
 }

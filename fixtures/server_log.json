@@ -1,0 +1,11 @@
+[{"level":"info","message":"Server listening on 0.0.0.0:8000"},
+{"level":"info","message":"Accepted incoming connection"},
+{"level":"debug","message":"Deserializing request from client"},
+{"level":"debug","message":"Client request deserialized"},
+{"level":"debug","message":"Connecting to database"},
+{"level":"warn","message":"Client dropped connnection"},
+{"level":"info","message":"Accepted incoming connection"},
+{"level":"debug","message":"Deserializing request from client"},
+{"level":"debug","message":"Client request deserialized"},
+{"level":"debug","message":"Connecting to database"},
+{"level":"error","message":"Unable to connect to database"}]
