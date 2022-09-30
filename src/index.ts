@@ -922,6 +922,18 @@ export enum SmartModuleType {
 export interface ConsumerConfig {
     maxBytes?: number
     smartmoduleType: SmartModuleType
+    /**
+     * Path to a SmartModule WASM file.
+     *
+     * @remarks
+     * Internally replaces the value provided to `smartmoduleData`,
+     * you must provide one, either `smartmoduleFile` or `smartmoduleData`.
+     */
+    smartmoduleFile?: string
+
+    /**
+     * Gzipped and Base64 encoded SmartModule WASM file.
+     */
     smartmoduleData?: string
     smartmoduleName?: string
 }
