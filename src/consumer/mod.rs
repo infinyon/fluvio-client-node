@@ -10,11 +10,11 @@ use std::sync::Arc;
 use log::{debug, error};
 use fluvio::{PartitionConsumer, ConsumerConfig};
 use fluvio::{Offset, FluvioError};
-use fluvio::dataplane::fetch::{FetchablePartitionResponse, AbortedTransaction};
 use fluvio::dataplane::record::RecordSet;
 use fluvio::consumer::Record;
 use fluvio_future::task::spawn;
 use fluvio_future::io::{Stream, StreamExt};
+use fluvio_spu_schema::fetch::{FetchablePartitionResponse, AbortedTransaction};
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::NjError;
@@ -237,7 +237,7 @@ impl fmt::Debug for RecordJS {
     }
 }
 
-use fluvio::dataplane::ErrorCode;
+use fluvio_protocol::link::ErrorCode;
 type PartitionConsumerIteratorInner = Pin<Box<dyn Stream<Item = Result<Record, ErrorCode>> + Send>>;
 
 pub struct PartitionConsumerIterator {
