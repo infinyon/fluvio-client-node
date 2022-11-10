@@ -21,7 +21,6 @@ node-bindgen = "5.0.0"
 flate2 = "1.0.24"
 fluvio = { version = "0.14", features = ["admin"] }
 fluvio-future = { version = "0.4.2", features = ["tls", "task", "io"] }
-fluvio-protocol = "0.8.0"
 fluvio-spu-schema = "0.10.1"
 
 [build-dependencies]

@@ -237,7 +237,7 @@ impl fmt::Debug for RecordJS {
     }
 }
 
-use fluvio_protocol::link::ErrorCode;
+use fluvio::dataplane::link::ErrorCode;
 type PartitionConsumerIteratorInner = Pin<Box<dyn Stream<Item = Result<Record, ErrorCode>> + Send>>;
 
 pub struct PartitionConsumerIterator {

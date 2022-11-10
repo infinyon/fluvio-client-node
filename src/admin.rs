@@ -9,6 +9,7 @@ use log::debug;
 use fluvio::{FluvioAdmin, FluvioError};
 use fluvio::metadata::objects::ListResponse;
 use fluvio::metadata::AdminSpec;
+use fluvio::dataplane::record::ReplicaKey;
 use fluvio::dataplane::core::{Decoder, Encoder};
 use fluvio::metadata::{
     spu::{SpuSpec},
@@ -18,7 +19,6 @@ use fluvio::metadata::topic::{PartitionMap};
 use fluvio::metadata::objects::Metadata;
 use fluvio::metadata::partition::{PartitionSpec, PartitionStatus, PartitionResolution, ReplicaStatus};
 use fluvio::metadata::topic::TopicSpec;
-use fluvio_protocol::record::ReplicaKey;
 use fluvio::metadata::objects::{ObjectApiListRequest, ObjectApiListResponse, ListRequest};
 use serde::{Serialize};
 
