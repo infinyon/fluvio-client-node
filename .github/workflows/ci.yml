@@ -101,7 +101,7 @@ jobs:
           fluvio topic create "foobar"
           sleep 3
           echo foo | fluvio produce "foobar"
-          fluvio consume foobar -o 0 -d
+          fluvio consume foobar --start 0 -d
       - name: Create Topic
         run: |
           fluvio topic create -p 1 -r 1 my-topic
