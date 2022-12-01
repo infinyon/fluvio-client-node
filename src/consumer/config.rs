@@ -51,9 +51,9 @@ impl JSValue<'_> for ConfigWrapper {
             }?;
 
             let mut config_builder = ConsumerConfig::builder();
-            let smartmodule: Option<SmartModuleInvocation> =
+            let smartmodule: Vec<SmartModuleInvocation> =
                 match (smartmodule_file, smartmodule_name, smartmodule_data) {
-                    (None, None, None) => Ok(None),
+                    (None, None, None) => Ok(vec![]),
                     (Some(file_path), None, None) => {
                         debug!("Loads SmartModule file from {}", file_path);
                         let path = PathBuf::from_str(file_path.as_str())
@@ -87,17 +87,17 @@ impl JSValue<'_> for ConfigWrapper {
                             ))
                         })?;
 
-                        Ok(Some(SmartModuleInvocation {
+                        Ok(vec![SmartModuleInvocation {
                             wasm: SmartModuleInvocationWasm::AdHoc(bytes),
                             kind,
                             ..Default::default()
-                        }))
+                        }])
                     }
-                    (None, Some(name), None) => Ok(Some(SmartModuleInvocation {
+                    (None, Some(name), None) => Ok(vec![SmartModuleInvocation {
                         wasm: SmartModuleInvocationWasm::Predefined(name),
                         kind,
                         ..Default::default()
-                    })),
+                    }]),
                     (None, None, Some(data)) => {
                         let wasm = base64::decode(data).map_err(|e| {
                             NjError::Other(format!(
@@ -106,11 +106,11 @@ impl JSValue<'_> for ConfigWrapper {
             ))
                         })?;
 
-                        Ok(Some(SmartModuleInvocation {
+                        Ok(vec![SmartModuleInvocation {
                             wasm: SmartModuleInvocationWasm::AdHoc(wasm),
                             kind,
                             ..Default::default()
-                        }))
+                        }])
                     }
                     _ => Err(NjError::Other(format!(
                         "You must either provide one of {}, {} or {}",

@@ -88,14 +88,14 @@ impl FluvioAdminJS {
     async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioErrorJS>
     where
         S: AdminSpec + Encoder + Decoder + Serialize,
-        <S as AdminSpec>::ListType: Serialize,
 
         ObjectApiListRequest: From<ListRequest<S>>,
         ListResponse<S>: TryFrom<ObjectApiListResponse>,
         <ListResponse<S> as TryFrom<ObjectApiListResponse>>::Error: Display,
+        S::Status: Serialize + Encoder + Decoder,
     {
         let client = self.client()?;
-        let data = client.list::<S, _>(vec![]).await?;
+        let data = client.all::<S>().await?;
         let json_slice = serde_json::to_vec(&data)
             .map_err(|err| FluvioError::Other(format!("serialization error: {}", err)))?;
         // // convert to array buffer and wrap in the buffer
@@ -110,7 +110,7 @@ impl FluvioAdminJS {
     #[node_bindgen]
     async fn find_topic(&mut self, topic_name: String) -> Result<TopicInfo, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
-            let topics = client.list::<TopicSpec, _>(vec![]).await?;
+            let topics = client.all::<TopicSpec>().await?;
 
             let topic = topics.iter().find(|topic| topic.name == topic_name);
 
@@ -159,7 +159,7 @@ impl FluvioAdminJS {
         topic: String,
     ) -> Result<PartitionMetadataWrapper, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
-            let partitions = client.list::<PartitionSpec, _>(vec![]).await?;
+            let partitions = client.all::<PartitionSpec>().await?;
 
             if let Some(partition) = partitions.into_iter().find(|partition| {
                 let replica: ReplicaKey = partition
@@ -345,8 +345,8 @@ impl JSValue<'_> for TopicSpecWrapper {
                 debug!("assume computed, will extract as object");
 
                 // check replication
-                let replication_factor = optional_property!("replicationFactor", i32, 1, js_obj);
-                let partitions = optional_property!("partitions", i32, 1, js_obj);
+                let replication_factor = optional_property!("replicationFactor", u32, 1, js_obj);
+                let partitions = optional_property!("partitions", u32, 1, js_obj);
                 let ignore_rack_assignment =
                     optional_property!("ignoreRackAssignment", bool, false, js_obj);
 
@@ -467,7 +467,7 @@ struct SpuGroupSpecWrapper(SpuGroupSpec);
 impl JSValue<'_> for SpuGroupSpecWrapper {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
-            let replicas = must_property!("replicas", i32, js_obj) as u16;
+            let replicas = must_property!("replicas", u32, js_obj) as u16;
             let min_id = must_property!("minId", i32, js_obj);
             let spu_config = must_property!("spuConfig", SpuConfigWrapper, js_obj);
 

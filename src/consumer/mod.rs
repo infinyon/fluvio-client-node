@@ -370,7 +370,7 @@ impl<'a> FetchablePartitionResponseWrapper {
     }
 
     #[node_bindgen(getter)]
-    fn partition_index(&self) -> Option<i32> {
+    fn partition_index(&self) -> Option<u32> {
         Some(self.0.as_ref()?.partition_index)
     }
 

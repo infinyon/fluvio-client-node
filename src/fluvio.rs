@@ -62,7 +62,7 @@ impl FluvioJS {
     async fn partition_consumer(
         &mut self,
         topic: String,
-        partition: i32,
+        partition: u32,
     ) -> Result<PartitionConsumerJS, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
             Ok(PartitionConsumerJS::from(
