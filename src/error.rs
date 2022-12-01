@@ -10,7 +10,7 @@ impl From<fluvio::FluvioError> for FluvioErrorJS {
     }
 }
 
-use fluvio::dataplane::ErrorCode;
+use fluvio::dataplane::link::ErrorCode;
 
 impl From<ErrorCode> for FluvioErrorJS {
     fn from(inner: ErrorCode) -> Self {
