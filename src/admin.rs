@@ -369,7 +369,7 @@ struct PartitionWrap(PartitionMap);
 impl JSValue<'_> for PartitionWrap {
     fn convert_to_rust(env: &JsEnv, n_value: napi_value) -> Result<Self, NjError> {
         if let Ok(js_obj) = env.convert_to_rust::<JsObject>(n_value) {
-            let id = must_property!("id", i32, js_obj);
+            let id = must_property!("id", u32, js_obj);
             let replicas = must_property!("replicas", Vec<i32>, js_obj);
 
             Ok(Self(PartitionMap { id, replicas }))
