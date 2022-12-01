@@ -6,9 +6,7 @@ use std::str::FromStr;
 
 use log::debug;
 use fluvio::ConsumerConfig;
-use fluvio_spu_schema::server::smartmodule::{
-    SmartModuleInvocation, SmartModuleInvocationWasm, SmartModuleKind,
-};
+use fluvio::consumer::{SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm};
 
 use flate2::write::GzEncoder;
 use flate2::Compression;

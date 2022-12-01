@@ -1,6 +1,5 @@
 use fluvio::FluvioError;
 use node_bindgen::derive::node_bindgen;
-use fluvio::dataplane::link::ErrorCode;
 
 #[node_bindgen]
 pub struct FluvioErrorJS(String);
@@ -10,6 +9,8 @@ impl From<fluvio::FluvioError> for FluvioErrorJS {
         Self(inner.to_string())
     }
 }
+
+use fluvio::dataplane::ErrorCode;
 
 impl From<ErrorCode> for FluvioErrorJS {
     fn from(inner: ErrorCode) -> Self {
