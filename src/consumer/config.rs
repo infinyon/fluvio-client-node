@@ -45,8 +45,7 @@ impl JSValue<'_> for ConfigWrapper {
                 "array_map" => Ok(SmartModuleKind::ArrayMap),
                 "filter_map" => Ok(SmartModuleKind::FilterMap),
                 _ => Err(NjError::Other(format!(
-                    "Provided SmartModule type: \"{}\" is not valid",
-                    smartmodule_type
+                    "Provided SmartModule type: \"{smartmodule_type}\" is not valid",
                 ))),
             }?;
 
@@ -60,8 +59,7 @@ impl JSValue<'_> for ConfigWrapper {
                             .map_err(|e| NjError::Other(e.to_string()))?;
                         let file = File::open(path).map_err(|io_err| {
                             NjError::Other(format!(
-                                "An error ocurred opening file on {}. {:?}",
-                                file_path, io_err,
+                                "An error ocurred opening file on {file_path}. {io_err:?}",
                             ))
                         })?;
                         let mut reader = BufReader::new(file);
@@ -70,20 +68,17 @@ impl JSValue<'_> for ConfigWrapper {
 
                         reader.read_to_end(&mut buff).map_err(|io_err| {
                             NjError::Other(format!(
-                                "Failed to read contents of file on {}: {:?}",
-                                file_path, io_err
+                                "Failed to read contents of file on {file_path}: {io_err:?}",
                             ))
                         })?;
                         gz_encoder.write_all(buff.as_slice()).map_err(|io_err| {
                             NjError::Other(format!(
-                                "An error ocurred while reading WASM file on {}: {:?}",
-                                file_path, io_err
+                                "An error ocurred while reading WASM file on {file_path}: {io_err:?}",
                             ))
                         })?;
                         let bytes = gz_encoder.finish().map_err(|io_err| {
                             NjError::Other(format!(
-                                "An error ocurred while encoding WASM into Gzip. {:?}",
-                                io_err
+                                "An error ocurred while encoding WASM into Gzip. {io_err:?}",
                             ))
                         })?;
 
@@ -99,10 +94,13 @@ impl JSValue<'_> for ConfigWrapper {
                         ..Default::default()
                     }]),
                     (None, None, Some(data)) => {
-                        let wasm = base64::decode(data).map_err(|e| {
+                        use base64::{
+                            Engine as _,
+                            engine::general_purpose::STANDARD_NO_PAD
+                        };
+                        let wasm = STANDARD_NO_PAD.decode(data).map_err(|e| {
                             NjError::Other(format!(
-                "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
-                e
+                "An error ocurred attempting to decode the Base64 WASM file provided. {e:?}",
             ))
                         })?;
 
@@ -113,10 +111,7 @@ impl JSValue<'_> for ConfigWrapper {
                         }])
                     }
                     _ => Err(NjError::Other(format!(
-                        "You must either provide one of {}, {} or {}",
-                        CONFIG_SMART_MODULE_FILE_KEY,
-                        CONFIG_SMART_MODULE_NAME_KEY,
-                        CONFIG_SMART_MODULE_DATA_KEY
+                        "You must either provide one of {CONFIG_SMART_MODULE_FILE_KEY}, {CONFIG_SMART_MODULE_NAME_KEY} or {CONFIG_SMART_MODULE_DATA_KEY}",
                     ))),
                 }?;
 

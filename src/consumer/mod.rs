@@ -342,8 +342,7 @@ impl JSValue<'_> for OffsetWrapper {
                     OFFSET_END => Offset::from_end(offset_index),
                     _ => {
                         return Err(NjError::Other(format!(
-                            "unknown offset type. Must be either {:?} or {:?}.",
-                            OFFSET_BEGINNING, OFFSET_END
+                            "unknown offset type. Must be either {OFFSET_BEGINNING:?} or {OFFSET_END:?}."
                         )))
                     }
                 },
