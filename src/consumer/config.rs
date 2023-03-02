@@ -96,9 +96,9 @@ impl JSValue<'_> for ConfigWrapper {
                     (None, None, Some(data)) => {
                         use base64::{
                             Engine as _,
-                            engine::general_purpose::STANDARD_NO_PAD
+                            engine::general_purpose::STANDARD
                         };
-                        let wasm = STANDARD_NO_PAD.decode(data).map_err(|e| {
+                        let wasm = STANDARD.decode(data).map_err(|e| {
                             NjError::Other(format!(
                 "An error ocurred attempting to decode the Base64 WASM file provided. {e:?}",
             ))
