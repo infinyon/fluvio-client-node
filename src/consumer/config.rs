@@ -5,10 +5,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use log::debug;
-use fluvio::ConsumerConfig;
-use fluvio_spu_schema::server::smartmodule::{
-    SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm,
-};
+use fluvio::{ConsumerConfig, SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm};
 
 use flate2::write::GzEncoder;
 use flate2::Compression;
