@@ -37,6 +37,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.70"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7de8ce5e0f9f8d88245311066a578d72b7af3e7088f32783804676302df237e4"
+
+[[package]]
 name = "async-channel"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -234,12 +240,6 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "base64"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
-
-[[package]]
-name = "base64"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
@@ -294,7 +294,7 @@ checksum = "031718ddb8f78aa5def78a09e90defe30151d1f6c672f937af4dd916429ed996"
 dependencies = [
  "semver",
  "serde",
- "toml",
+ "toml 0.5.11",
  "url",
 ]
 
@@ -518,22 +518,22 @@ dependencies = [
 
 [[package]]
 name = "dirs"
-version = "4.0.0"
+version = "5.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca3aa72a6f96ea37bbc5aa912f6788242832f75369bdfdadcb0e38423f100059"
+checksum = "dece029acd3353e3a58ac2e3eb3c8d6c35827a892edc6cc4138ef9c33df46ecd"
 dependencies = [
  "dirs-sys",
 ]
 
 [[package]]
 name = "dirs-sys"
-version = "0.3.7"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b1d1d91c932ef41c0f2663aa8b0ca0342d444d842c06914aa0a7e352d0bada6"
+checksum = "04414300db88f70d74c5ff54e50f9e1d1737d9a5b90f53fcf2e95ca2a9ab554b"
 dependencies = [
  "libc",
  "redox_users",
- "winapi",
+ "windows-sys 0.45.0",
 ]
 
 [[package]]
@@ -620,15 +620,16 @@ dependencies = [
 
 [[package]]
 name = "fluvio"
-version = "0.15.2"
+version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a8e6ee913c6073a75e5a9ff3ad9227d26d063e1015933dd16c1a3ef936e7c5f"
+checksum = "584f6bd4fce13bfb62e1f6fe644db076edf004041e18f80089b9d56d1e730b14"
 dependencies = [
+ "anyhow",
  "async-channel",
  "async-lock",
  "async-rwlock",
  "async-trait",
- "base64 0.13.1",
+ "base64",
  "bytes",
  "cfg-if",
  "chrono",
@@ -652,7 +653,7 @@ dependencies = [
  "siphasher",
  "thiserror",
  "tokio",
- "toml",
+ "toml 0.7.3",
  "tracing",
 ]
 
@@ -660,15 +661,16 @@ dependencies = [
 name = "fluvio-client-node"
 version = "0.0.0"
 dependencies = [
- "base64 0.21.0",
+ "anyhow",
+ "base64",
  "flate2",
  "fluvio",
- "fluvio-future 0.4.5",
+ "fluvio-future 0.5.1",
  "fluvio-spu-schema",
- "log",
  "node-bindgen",
  "serde",
  "serde_json",
+ "tracing",
 ]
 
 [[package]]
@@ -687,12 +689,12 @@ dependencies = [
 
 [[package]]
 name = "fluvio-controlplane-metadata"
-version = "0.19.3"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a55e348d67fba83e9106afee29447c926e648d2ed3bd2c90f2ab2baf21227c3"
+checksum = "436f8f8a4446c066e692a1584ac655758793e2315dcf3ee8efde46ba42044444"
 dependencies = [
  "async-trait",
- "base64 0.13.1",
+ "base64",
  "bytes",
  "flate2",
  "fluvio-future 0.4.5",
@@ -704,7 +706,7 @@ dependencies = [
  "semver",
  "serde",
  "thiserror",
- "toml",
+ "toml 0.7.3",
  "tracing",
 ]
 
@@ -735,7 +737,6 @@ checksum = "37174044230084d1cfd7c02f194c5ec127bb8bc17c76f0cd74e943f2fe86ec34"
 dependencies = [
  "async-io",
  "async-net",
- "async-rustls",
  "async-std",
  "async-trait",
  "cfg-if",
@@ -746,6 +747,28 @@ dependencies = [
  "openssl",
  "openssl-sys",
  "pin-project",
+ "thiserror",
+ "tracing",
+ "ws_stream_wasm",
+]
+
+[[package]]
+name = "fluvio-future"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5f2d572470f98b25383ffe78d9c3fba2b986d9891efd78808025397e54eb1ec"
+dependencies = [
+ "async-io",
+ "async-net",
+ "async-rustls",
+ "async-std",
+ "async-trait",
+ "cfg-if",
+ "fluvio-wasm-timer",
+ "futures-lite",
+ "futures-util",
+ "log",
+ "pin-project",
  "rustls-pemfile",
  "thiserror",
  "tracing",
@@ -754,9 +777,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-protocol"
-version = "0.8.4"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "901733c2edd42073237bce22feacbc10832c38ea08e171c687c921994efc9b07"
+checksum = "53c0c69fe2cf98c94be24be12588c91fa2acdecb8058d68d8fb0b0595e99e0e4"
 dependencies = [
  "bytes",
  "content_inspector",
@@ -776,9 +799,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-protocol-derive"
-version = "0.4.5"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e9982118d9044e02ec1854df85d164778cf359bf2ce077fdf9c3fad146b0bbc"
+checksum = "f5398a06c3c9d9cc995adf5e380b2da02976d3778fa8bdf1afff06b318c1d4fb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -788,9 +811,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-sc-schema"
-version = "0.15.2"
+version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad6f5f2dfcf8ac5b92fe8155dca4b3d6e2874928dd5db6833ab75bcbb8459420"
+checksum = "ec0dad741c0502ec34ecde9696d4f338b690fab9a0efac6c0fa4cdb0ff5049e1"
 dependencies = [
  "fluvio-controlplane-metadata",
  "fluvio-protocol",
@@ -806,9 +829,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-smartmodule"
-version = "0.3.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a10bef73ebe43bf2ec120003b36079424cd3bcad7d8d9f5dbd248078a3fab029"
+checksum = "763c7759b6b47f5e1245f7aa4bdf10f76d3fad571d95370a2c61580e694b22ad"
 dependencies = [
  "eyre",
  "fluvio-protocol",
@@ -819,9 +842,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-smartmodule-derive"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1465b33d396d943cc819ae8cb2ad8e80998a974189320221a4c90e9439e062c"
+checksum = "00adc30d860f881c2f3b4f8a50fa4701df6a4928014c731f51884cb9c5bae102"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -830,9 +853,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-socket"
-version = "0.13.3"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1d7654fc7c679caa7eab7685b1726647283effbdc6cd090a68381e855878a63"
+checksum = "bf0d64f650b8b7ea016eb959dd31e55b2cf37a8da3c120d226ac32351b5eee3a"
 dependencies = [
  "async-channel",
  "async-lock",
@@ -855,9 +878,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-spu-schema"
-version = "0.11.1"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a455b11d3d2115612f9b149570118727f7ce121ac4255d2ca66e77d505d9aca3"
+checksum = "8cabfb364213f5cbf3c18dc8c29993ece69987b0fa9cb7b88d6cbd81149bd040"
 dependencies = [
  "bytes",
  "educe",
@@ -874,9 +897,9 @@ dependencies = [
 
 [[package]]
 name = "fluvio-stream-model"
-version = "0.8.4"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af4d2fde86534ef6e649a5ff081fd3623daeb103958c48a5a2e1c543fc18045c"
+checksum = "e2b1157f194e3480931a68d8d6a21e829d96acd09332fc2db7a511e4ccfe0784"
 dependencies = [
  "async-rwlock",
  "event-listener",
@@ -1089,6 +1112,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "hashbrown"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
+
+[[package]]
 name = "hermit-abi"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1149,6 +1178,16 @@ name = "indenter"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce23b50ad8242c51a442f3ff322d56b02f08852c77e4c0b4d3fd684abc89c683"
+
+[[package]]
+name = "indexmap"
+version = "1.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
+dependencies = [
+ "autocfg",
+ "hashbrown",
+]
 
 [[package]]
 name = "instant"
@@ -1752,7 +1791,7 @@ version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d194b56d58803a43635bdc398cd17e383d6f71f9182b9a192c127ca42494a59b"
 dependencies = [
- "base64 0.21.0",
+ "base64",
 ]
 
 [[package]]
@@ -1858,6 +1897,15 @@ checksum = "057d394a50403bcac12672b2b18fb387ab6d289d957dab67dd201875391e52f1"
 dependencies = [
  "itoa",
  "ryu",
+ "serde",
+]
+
+[[package]]
+name = "serde_spanned"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0efd8caf556a6cebd3b285caf480045fcc1ac04f6bd786b09a6f11af30c4fcf4"
+dependencies = [
  "serde",
 ]
 
@@ -2089,6 +2137,40 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f4f7f0dd8d50a853a531c426359045b1998f04219d88799810762cd4ad314234"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "toml"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b403acf6f2bb0859c93c7f0d967cb4a75a7ac552100f9322faf64dc047669b21"
+dependencies = [
+ "serde",
+ "serde_spanned",
+ "toml_datetime",
+ "toml_edit",
+]
+
+[[package]]
+name = "toml_datetime"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ab8ed2edee10b50132aed5f331333428b011c99402b5a534154ed15746f9622"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "toml_edit"
+version = "0.19.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "239410c8609e8125456927e6707163a3b1fdb40561e4b803bc041f466ccfdc13"
+dependencies = [
+ "indexmap",
+ "serde",
+ "serde_spanned",
+ "toml_datetime",
+ "winnow",
 ]
 
 [[package]]
@@ -2534,6 +2616,15 @@ name = "windows_x86_64_msvc"
 version = "0.48.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
+
+[[package]]
+name = "winnow"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae8970b36c66498d8ff1d66685dc86b91b29db0c7739899012f63a63814b4b28"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "ws_stream_wasm"
