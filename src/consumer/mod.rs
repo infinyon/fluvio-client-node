@@ -133,7 +133,10 @@ impl PartitionConsumerJS {
             .as_ref()
             .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
 
-        let stream = client.stream(offset.0).await.map_err(|err| FluvioErrorJS::new(err.to_string()))?;
+        let stream = client
+            .stream(offset.0)
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))?;
         let mut iterator = PartitionConsumerIterator::new();
         iterator.set_inner(Box::pin(stream));
         Ok(iterator)
@@ -150,7 +153,10 @@ impl PartitionConsumerJS {
             .inner
             .as_ref()
             .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        let stream = client.stream_with_config(offset.0, config).await.map_err(|err| FluvioErrorJS::new(err.to_string()))?;
+        let stream = client
+            .stream_with_config(offset.0, config)
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))?;
         let mut iterator = PartitionConsumerIterator::new();
 
         iterator.set_inner(Box::pin(stream));

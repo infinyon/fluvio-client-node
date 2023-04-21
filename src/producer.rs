@@ -5,7 +5,6 @@ use tracing::debug;
 
 use fluvio::TopicProducer;
 
-
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::{NjError, JSValue};
 use node_bindgen::core::val::JsEnv;
@@ -65,7 +64,7 @@ impl TopicProducerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(||FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
 
         let key = match &key {
             ProduceArg::String(string) => string.as_bytes(),
