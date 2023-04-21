@@ -7,7 +7,7 @@ on:
       - staging
       - trying
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   cancel_previous_runs:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [ '16' ]
+        node: ["16"]
     steps:
       - uses: actions/checkout@v3
       - name: Install Rust stable
@@ -52,7 +52,7 @@ jobs:
       matrix:
         os: [macos-latest]
         rust: [stable]
-        node: [ '14', '16', '18' ]
+        node: ["14", "16", "18.13"]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}
@@ -83,7 +83,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '14', '16', '18']
+        node: ["14", "16", "18.13"]
     steps:
       - uses: AbsaOSS/k3d-action@v2
         name: "Create fluvio k3d Cluster"
@@ -93,7 +93,7 @@ jobs:
         uses: infinyon/fluvio@master
         with:
           cluster-type: local
-          version: 'latest'
+          version: "stable"
       - name: Check Fluvio Installation
         run: |
           fluvio version
@@ -137,7 +137,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '16' ]
+        node: ["16"]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}
