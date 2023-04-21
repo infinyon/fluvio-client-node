@@ -6,7 +6,6 @@ on:
     branches:
       - staging
       - trying
-      - try-older-version-of-node-18
   pull_request:
     branches: [master]
 
