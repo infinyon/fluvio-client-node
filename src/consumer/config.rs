@@ -5,13 +5,16 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use log::debug;
+use base64::Engine;
+use flate2::write::GzEncoder;
+use flate2::Compression;
+
 use fluvio::ConsumerConfig;
 use fluvio_spu_schema::server::smartmodule::{
     SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm,
 };
 
-use flate2::write::GzEncoder;
-use flate2::Compression;
+
 
 use node_bindgen::core::NjError;
 use node_bindgen::core::JSValue;
@@ -99,7 +102,7 @@ impl JSValue<'_> for ConfigWrapper {
                         ..Default::default()
                     }]),
                     (None, None, Some(data)) => {
-                        let wasm = base64::decode(data).map_err(|e| {
+                        let wasm = base64::engine::general_purpose::STANDARD.decode(data).map_err(|e| {
                             NjError::Other(format!(
                 "An error ocurred attempting to decode the Base64 WASM file provided. {:?}",
                 e
