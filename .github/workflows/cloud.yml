@@ -3,19 +3,15 @@ name: Fluvio Cloud CI
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [master]
   schedule:
-    - cron:  '0 14 * * *'
+    - cron: "0 14 * * *"
+
+concurrency:
+  group: cloud-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  cancel_previous_runs:
-    name: Cancel Previous Runs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: styfle/cancel-workflow-action@0.10.0
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-
   smoke_test:
     name: Smoke test
     runs-on: ${{ matrix.os }}
@@ -23,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         rust: [stable]
-        node: [ '14', '16', '18']
+        node: ["14", "16", "18"]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}

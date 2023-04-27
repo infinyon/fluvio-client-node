@@ -1,5 +1,9 @@
 name: Fluvio CI with latest fluvio
 
+concurrency:
+  group: latest-fluvio-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
   push:
