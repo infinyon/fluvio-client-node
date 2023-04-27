@@ -4,9 +4,9 @@ use crate::consumer::PartitionConsumerJS;
 use crate::producer::TopicProducerJS;
 use crate::error::FluvioErrorJS;
 
-use log::debug;
+use tracing::debug;
 
-use fluvio::{Fluvio, FluvioError};
+use fluvio::{Fluvio};
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::TryIntoJs;
@@ -54,7 +54,7 @@ impl FluvioJS {
             let admin_client = client.admin().await;
             Ok(FluvioAdminJS::from(admin_client))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -69,7 +69,7 @@ impl FluvioJS {
                 client.partition_consumer(topic, partition).await?,
             ))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -78,7 +78,7 @@ impl FluvioJS {
         if let Some(client) = &mut self.inner {
             Ok(TopicProducerJS::from(client.topic_producer(topic).await?))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 }

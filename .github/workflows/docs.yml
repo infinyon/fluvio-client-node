@@ -1,11 +1,15 @@
 name: Docs
 
+permissions:
+  # contents permission to update benchmark contents in gh-pages branch
+  contents: write
+
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [master]
     tags:
-      - 'v*'
+      - "v*"
 jobs:
   docs:
     name: build and push static docs
@@ -13,11 +17,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: ['18']
+        node: ["18.13"]
     steps:
       - uses: actions/checkout@v3
         with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
           fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
@@ -44,5 +47,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: docs
+          github-token: ${{ secrets.GITHUB_TOKEN }}

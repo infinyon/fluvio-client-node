@@ -4,7 +4,7 @@ use crate::error::FluvioErrorJS;
 
 use std::convert::{TryInto, TryFrom};
 use std::fmt::Display;
-use log::debug;
+use anyhow::{Result};
 
 use fluvio::{FluvioAdmin, FluvioError};
 use fluvio::metadata::objects::ListResponse;
@@ -31,6 +31,7 @@ use node_bindgen::core::JSClass;
 use node_bindgen::core::JSValue;
 use node_bindgen::core::val::JsObject;
 use node_bindgen::core::buffer::ArrayBuffer;
+use tracing::debug;
 
 // JS Object Keys used to convert Rust Struct to JS Object;
 const SPU_KEY: &str = "spu";
@@ -77,7 +78,7 @@ impl FluvioAdminJS {
         self.inner.replace(client);
     }
 
-    fn client(&self) -> Result<&FluvioAdmin, FluvioErrorJS> {
+    fn client(&self) -> Result<&FluvioAdmin> {
         if let Some(client) = &self.inner {
             Ok(client)
         } else {
@@ -85,7 +86,7 @@ impl FluvioAdminJS {
         }
     }
 
-    async fn js_list<S>(&mut self) -> Result<ArrayBuffer, FluvioErrorJS>
+    async fn js_list<S>(&mut self) -> Result<ArrayBuffer>
     where
         S: AdminSpec + Encoder + Decoder + Serialize,
 
@@ -96,15 +97,16 @@ impl FluvioAdminJS {
     {
         let client = self.client()?;
         let data = client.all::<S>().await?;
-        let json_slice = serde_json::to_vec(&data)
-            .map_err(|err| FluvioError::Other(format!("serialization error: {}", err)))?;
+        let json_slice = serde_json::to_vec(&data)?;
         // // convert to array buffer and wrap in the buffer
         Ok(ArrayBuffer::new(json_slice))
     }
 
     #[node_bindgen]
     async fn list_topic(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
-        self.js_list::<TopicSpec>().await
+        self.js_list::<TopicSpec>()
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))
     }
 
     #[node_bindgen]
@@ -114,12 +116,12 @@ impl FluvioAdminJS {
 
             let topic = topics.iter().find(|topic| topic.name == topic_name);
 
-            let json = serde_json::to_vec(&topic)
-                .map_err(|err| FluvioError::Other(format!("serialization error: {}", err)))?;
+            let json =
+                serde_json::to_vec(&topic).map_err(|err| FluvioErrorJS::new(err.to_string()))?;
             // // convert to array buffer and wrap in the buffer
             Ok(TopicInfo(Some(ArrayBuffer::new(json))))
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -134,7 +136,7 @@ impl FluvioAdminJS {
             client.create(topic.clone(), false, spec.0).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -144,13 +146,15 @@ impl FluvioAdminJS {
             client.delete::<TopicSpec, String>(topic.clone()).await?;
             Ok(topic)
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
     #[node_bindgen]
     async fn list_spu(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
-        self.js_list::<SpuSpec>().await
+        self.js_list::<SpuSpec>()
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))
     }
 
     #[node_bindgen]
@@ -173,16 +177,18 @@ impl FluvioAdminJS {
                 debug!("Found Partition: {:?}", partition);
                 Ok(PartitionMetadataWrapper(partition))
             } else {
-                Err(FluvioError::Other("failed to find partition".to_owned()).into())
+                Err(FluvioErrorJS::new("failed to find partition".to_owned()))
             }
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
     #[node_bindgen]
     async fn list_partitions(&mut self) -> Result<ArrayBuffer, FluvioErrorJS> {
-        self.js_list::<PartitionSpec>().await
+        self.js_list::<PartitionSpec>()
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))
     }
 
     #[node_bindgen]
@@ -196,7 +202,7 @@ impl FluvioAdminJS {
             client.create::<SpuGroupSpec>(name, false, spec.0).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 
@@ -206,7 +212,7 @@ impl FluvioAdminJS {
             client.delete::<SpuGroupSpec, _>(name).await?;
             Ok(())
         } else {
-            Err(FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()).into())
+            Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
         }
     }
 }

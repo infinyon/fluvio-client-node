@@ -7,9 +7,12 @@ use crate::error::FluvioErrorJS;
 use std::fmt;
 use std::pin::Pin;
 use std::sync::Arc;
-use log::{debug, error};
+
+use tracing::{debug, error};
+use anyhow::Result;
+
 use fluvio::{PartitionConsumer, ConsumerConfig};
-use fluvio::{Offset, FluvioError};
+use fluvio::{Offset};
 use fluvio::dataplane::record::RecordSet;
 use fluvio::consumer::Record;
 use fluvio_future::task::spawn;
@@ -96,7 +99,7 @@ impl PartitionConsumerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
         spawn(Self::stream_inner(client.clone(), offset, cb));
         Ok(())
     }
@@ -105,7 +108,7 @@ impl PartitionConsumerJS {
         client: Arc<PartitionConsumer>,
         offset: OffsetWrapper,
         cb: F,
-    ) -> Result<(), FluvioErrorJS> {
+    ) -> Result<()> {
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
@@ -128,9 +131,12 @@ impl PartitionConsumerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
 
-        let stream = client.stream(offset.0).await?;
+        let stream = client
+            .stream(offset.0)
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))?;
         let mut iterator = PartitionConsumerIterator::new();
         iterator.set_inner(Box::pin(stream));
         Ok(iterator)
@@ -146,8 +152,11 @@ impl PartitionConsumerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
-        let stream = client.stream_with_config(offset.0, config).await?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        let stream = client
+            .stream_with_config(offset.0, config)
+            .await
+            .map_err(|err| FluvioErrorJS::new(err.to_string()))?;
         let mut iterator = PartitionConsumerIterator::new();
 
         iterator.set_inner(Box::pin(stream));

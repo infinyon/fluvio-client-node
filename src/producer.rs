@@ -1,9 +1,9 @@
 use crate::CLIENT_NOT_FOUND_ERROR_MSG;
 use crate::error::FluvioErrorJS;
 
-use log::debug;
+use tracing::debug;
+
 use fluvio::TopicProducer;
-use fluvio::FluvioError;
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::{NjError, JSValue};
@@ -52,7 +52,7 @@ impl TopicProducerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
         client
             .send_all(Some((Vec::new(), value.into_bytes())))
             .await?;
@@ -64,7 +64,7 @@ impl TopicProducerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
 
         let key = match &key {
             ProduceArg::String(string) => string.as_bytes(),
@@ -85,7 +85,7 @@ impl TopicProducerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
 
         let records: Vec<_> = elements
             .iter()
@@ -112,7 +112,7 @@ impl TopicProducerJS {
         let client = self
             .inner
             .as_ref()
-            .ok_or_else(|| FluvioError::Other(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+            .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))?;
         client.flush().await?;
         Ok(())
     }
