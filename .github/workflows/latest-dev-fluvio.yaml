@@ -3,9 +3,9 @@ name: Fluvio CI with latest fluvio
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
   schedule:
-    - cron:  '0 14 * * *'
+    - cron: "0 14 * * *"
 
 jobs:
   smoke_test:
@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: [ '18' ]
+        node: ["18.13"]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}
