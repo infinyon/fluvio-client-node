@@ -10,9 +10,7 @@ use flate2::write::GzEncoder;
 use flate2::Compression;
 
 use fluvio::ConsumerConfig;
-use fluvio_spu_schema::server::smartmodule::{
-    SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm,
-};
+use fluvio::{SmartModuleInvocation, SmartModuleKind, SmartModuleInvocationWasm};
 
 use node_bindgen::core::NjError;
 use node_bindgen::core::JSValue;
