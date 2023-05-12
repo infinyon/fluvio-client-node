@@ -611,7 +611,6 @@ dependencies = [
  "flate2",
  "fluvio",
  "fluvio-future 0.5.1",
- "fluvio-sc-schema",
  "fluvio-spu-schema",
  "node-bindgen",
  "serde",
