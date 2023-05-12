@@ -20,7 +20,7 @@ serde = { version = "1.0.136", features = ["derive"] }
 serde_json = "1.0.79"
 node-bindgen = "5.1.0"
 flate2 = "1.0.24"
-fluvio = { features = ["admin"], git = "https://github.com/infinyon/fluvio.git", tag = "v0.10.8" }
+fluvio = { features = ["admin"], git = "https://github.com/infinyon/fluvio.git", tag = "v0.10.9" }
 fluvio-future = { version = "0.5.1", features = ["tls", "task", "io"] }
 fluvio-spu-schema = { git = "https://github.com/infinyon/fluvio.git", tag = "v0.10.8" } 
 
