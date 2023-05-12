@@ -2,26 +2,22 @@ use crate::{CLIENT_NOT_FOUND_ERROR_MSG};
 use crate::{optional_property, must_property};
 use crate::error::FluvioErrorJS;
 
-use std::convert::{TryInto, TryFrom};
-use std::fmt::Display;
-use anyhow::{Result};
+use std::convert::TryInto;
+use std::fmt::Debug;
+use anyhow::Result;
 
 use fluvio::{FluvioAdmin, FluvioError};
-use fluvio::metadata::objects::ListResponse;
 use fluvio::metadata::AdminSpec;
 use fluvio::dataplane::record::ReplicaKey;
 use fluvio::dataplane::core::{Decoder, Encoder};
-use fluvio::metadata::{
-    spu::{SpuSpec},
-};
+use fluvio::metadata::spu::SpuSpec;
 use fluvio::metadata::spg::{SpuGroupSpec, SpuConfig, StorageConfig, ReplicationConfig, EnvVar};
 use fluvio::metadata::topic::{PartitionMap};
 use fluvio::metadata::objects::Metadata;
 use fluvio::metadata::partition::{PartitionSpec, PartitionStatus, PartitionResolution, ReplicaStatus};
 use fluvio::metadata::topic::TopicSpec;
-use fluvio::metadata::objects::{ObjectApiListRequest, ObjectApiListResponse, ListRequest};
-use serde::{Serialize};
 
+use serde::Serialize;
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::TryIntoJs;
 use node_bindgen::core::NjError;
@@ -89,10 +85,6 @@ impl FluvioAdminJS {
     async fn js_list<S>(&mut self) -> Result<ArrayBuffer>
     where
         S: AdminSpec + Encoder + Decoder + Serialize,
-
-        ObjectApiListRequest: From<ListRequest<S>>,
-        ListResponse<S>: TryFrom<ObjectApiListResponse>,
-        <ListResponse<S> as TryFrom<ObjectApiListResponse>>::Error: Display,
         S::Status: Serialize + Encoder + Decoder,
     {
         let client = self.client()?;
