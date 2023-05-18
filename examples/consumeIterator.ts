@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import Fluvio, { Offset, Record } from '@fluvio/client'
+import Fluvio, { Offset } from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 const PARTITION = 0
@@ -19,7 +19,7 @@ async function consumeIterator() {
         console.log(`read from ${TOPIC_NAME}`)
 
         let count = 1
-        let stream = await consumer.createStream(Offset.FromBeginning())
+        const stream = await consumer.createStream(Offset.FromBeginning())
 
         for await (const record of stream) {
             const key = record.keyString()

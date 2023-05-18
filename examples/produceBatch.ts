@@ -14,7 +14,7 @@ async function produceBatch() {
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
         const records: KeyValue[] = []
-        for (let i: number = 1; i <= 10; i++) {
+        for (let i = 1; i <= 10; i++) {
             // Create a JSON message as our value
             const message = JSON.stringify({
                 key: i,

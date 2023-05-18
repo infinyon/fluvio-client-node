@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file */
-import { EventEmitter } from 'events'
+/* eslint @typescript-eslint/no-explicit-any: 0 */
 
 export const DEFAULT_HOST = '127.0.0.1'
 export const DEFAULT_PORT = 9003
@@ -40,6 +40,7 @@ const native_path = !process.env.FLUVIO_DEV
     ? `${getDistPath()}/index.node`
     : `${process.cwd()}/dist/${getDistPath()}/index.node`
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const native = require(`${native_path}`)
 
 export const PartitionConsumerJS = native.PartitionConsumerJS
@@ -320,7 +321,7 @@ export class PartitionConsumer {
      * ```
      */
     async createStream(offset: Offset): Promise<AsyncIterable<Record>> {
-        let stream = await this.inner.createStream(offset)
+        const stream = await this.inner.createStream(offset)
         stream[Symbol.asyncIterator] = () => {
             return stream
         }
@@ -331,7 +332,7 @@ export class PartitionConsumer {
         offset: Offset,
         config: ConsumerConfig
     ): Promise<AsyncIterable<Record>> {
-        let stream = await this.inner.streamWithConfig(offset, config)
+        const stream = await this.inner.streamWithConfig(offset, config)
         stream[Symbol.asyncIterator] = () => {
             return stream
         }

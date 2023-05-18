@@ -3,7 +3,7 @@ import Fluvio from '@fluvio/client'
 
 const TOPIC_NAME = 'node-examples'
 
-async function produce(keyValue: boolean = true) {
+async function produce(keyValue = true) {
     try {
         const fluvio = new Fluvio()
 
@@ -13,7 +13,7 @@ async function produce(keyValue: boolean = true) {
         await fluvio.connect()
 
         const producer = await fluvio.topicProducer(TOPIC_NAME)
-        for (let i: number = 1; i <= 10; i++) {
+        for (let i = 1; i <= 10; i++) {
             // Create a JSON message as our value
             const message = JSON.stringify({
                 key: i,

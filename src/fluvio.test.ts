@@ -1,6 +1,5 @@
 import Fluvio, {
     FluvioAdmin,
-    OffsetFrom,
     KeyValue,
     Offset,
     SmartModuleType,
@@ -35,7 +34,8 @@ describe('Fluvio Producer and Consume using AsyncIterator', () => {
         fluvio = await Fluvio.connect()
         admin = await fluvio.admin()
         console.log(`Creating topic ${topic}`)
-        const new_topic = await admin.createTopic(topic)
+
+        await admin.createTopic(topic)
         await sleep(topic_create_timeout)
     })
 
@@ -97,7 +97,7 @@ describe('Fluvio Batch Producer', () => {
         fluvio = await Fluvio.connect()
         admin = await fluvio.admin()
         console.log(`Creating topic ${topic}`)
-        const new_topic = await admin.createTopic(topic)
+        await admin.createTopic(topic)
         await sleep(topic_create_timeout)
     })
 
@@ -169,7 +169,7 @@ describe('Configures a SmartModule', () => {
         })
         const receivedLogs = []
 
-        for (let log of serverLogs) {
+        for (const log of serverLogs) {
             producer.send(uuidV4(), JSON.stringify(log))
         }
 
@@ -207,7 +207,7 @@ describe('Configures a SmartModule', () => {
         })
         const receivedLogs = []
 
-        for (let log of serverLogs) {
+        for (const log of serverLogs) {
             producer.send(uuidV4(), JSON.stringify(log))
         }
 
@@ -250,7 +250,7 @@ describe('MacOSCi', () => {
     test('', async () => {
         // The errors will either be ['Fluvio socket error'] or ['Fluvio config error']
         // Getting expect to work with either is annoying.
-        let error = await expect(Fluvio.connect()).rejects.toEqual([
+        await expect(Fluvio.connect()).rejects.toEqual([
             'Config error: Config has no active profile',
         ])
     })
