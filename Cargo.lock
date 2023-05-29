@@ -570,7 +570,7 @@ dependencies = [
 [[package]]
 name = "fluvio"
 version = "0.19.1"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
+source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -584,14 +584,14 @@ dependencies = [
  "derive_builder",
  "dirs",
  "event-listener",
- "fluvio-compression 0.3.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-compression",
  "fluvio-future 0.5.1",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
  "fluvio-sc-schema",
- "fluvio-smartmodule 0.5.1 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-smartmodule",
  "fluvio-socket",
- "fluvio-spu-schema 0.14.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-spu-schema",
+ "fluvio-types",
  "futures-util",
  "once_cell",
  "pin-project",
@@ -614,7 +614,7 @@ dependencies = [
  "flate2",
  "fluvio",
  "fluvio-future 0.5.1",
- "fluvio-spu-schema 0.14.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
+ "fluvio-spu-schema",
  "node-bindgen",
  "serde",
  "serde_json",
@@ -625,15 +625,6 @@ dependencies = [
 name = "fluvio-compression"
 version = "0.3.0"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
-dependencies = [
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "fluvio-compression"
-version = "0.3.0"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
 dependencies = [
  "bytes",
  "flate2",
@@ -647,16 +638,16 @@ dependencies = [
 [[package]]
 name = "fluvio-controlplane-metadata"
 version = "0.22.2"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
+source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "async-trait",
  "base64",
  "bytes",
  "flate2",
  "fluvio-future 0.5.1",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
  "fluvio-stream-model",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-types",
  "flv-util",
  "lenient_semver",
  "semver",
@@ -719,29 +710,10 @@ dependencies = [
  "content_inspector",
  "crc32c",
  "eyre",
- "fluvio-compression 0.3.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "fluvio-protocol-derive 0.5.1 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "flv-util",
- "once_cell",
- "semver",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-protocol"
-version = "0.10.0"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
-dependencies = [
- "bytes",
- "content_inspector",
- "crc32c",
- "eyre",
- "fluvio-compression 0.3.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-compression",
  "fluvio-future 0.5.1",
- "fluvio-protocol-derive 0.5.1 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol-derive",
+ "fluvio-types",
  "flv-util",
  "once_cell",
  "semver",
@@ -762,26 +734,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "fluvio-protocol-derive"
-version = "0.5.1"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 1.0.109",
- "tracing",
-]
-
-[[package]]
 name = "fluvio-sc-schema"
 version = "0.19.0"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
+source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "anyhow",
  "fluvio-controlplane-metadata",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
  "fluvio-socket",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-types",
  "paste",
  "serde",
  "static_assertions",
@@ -795,20 +756,8 @@ version = "0.5.1"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "eyre",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "fluvio-smartmodule-derive 0.4.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-smartmodule"
-version = "0.5.1"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
-dependencies = [
- "eyre",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
- "fluvio-smartmodule-derive 0.4.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
+ "fluvio-smartmodule-derive",
  "thiserror",
  "tracing",
 ]
@@ -824,19 +773,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "fluvio-smartmodule-derive"
-version = "0.4.0"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "fluvio-socket"
 version = "0.14.3"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
+source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "async-channel",
  "async-lock",
@@ -846,7 +785,7 @@ dependencies = [
  "cfg-if",
  "event-listener",
  "fluvio-future 0.5.1",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
  "futures-util",
  "once_cell",
  "pin-project",
@@ -866,27 +805,10 @@ dependencies = [
  "derive_builder",
  "educe",
  "flate2",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "fluvio-smartmodule 0.5.1 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10)",
- "serde",
- "static_assertions",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-spu-schema"
-version = "0.14.0"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
-dependencies = [
- "bytes",
- "derive_builder",
- "educe",
- "flate2",
  "fluvio-future 0.5.1",
- "fluvio-protocol 0.10.0 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
- "fluvio-smartmodule 0.5.1 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
- "fluvio-types 0.4.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1)",
+ "fluvio-protocol",
+ "fluvio-smartmodule",
+ "fluvio-types",
  "serde",
  "static_assertions",
  "tracing",
@@ -895,7 +817,7 @@ dependencies = [
 [[package]]
 name = "fluvio-stream-model"
 version = "0.9.2"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
+source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
 dependencies = [
  "async-rwlock",
  "event-listener",
@@ -907,15 +829,6 @@ dependencies = [
 name = "fluvio-types"
 version = "0.4.2"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10#98e548270827672a2ba17729708ff0b13f147181"
-dependencies = [
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-types"
-version = "0.4.2"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.10.10-dev-1#3de3c83809bb8a1a0b072256c00f008e87631e02"
 dependencies = [
  "event-listener",
  "thiserror",
