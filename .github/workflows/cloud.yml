@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         rust: [stable]
-        node: ["14", "16", "18.13"]
+        node: ["16", "18.13"]
     steps:
       - uses: actions/checkout@v3
       - name: Install ${{ matrix.rust }}
