@@ -38,6 +38,7 @@
         "test": "npm run build:test && npx jest"
     },
     "devDependencies": {
+        "@tsconfig/recommended": "^1.0.2",
         "@types/jest": "^28.1.4",
         "@types/mocha": "^10.0.1",
         "@types/node": "^20.2.3",

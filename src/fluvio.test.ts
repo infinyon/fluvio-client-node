@@ -1,6 +1,5 @@
 import Fluvio, {
     FluvioAdmin,
-    OffsetFrom,
     KeyValue,
     Offset,
     SmartModuleType,
