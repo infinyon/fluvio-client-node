@@ -1088,9 +1088,9 @@ checksum = "fed44880c466736ef9a5c5b5facefb5ed0785676d0c02d612db14e54f0d84286"
 
 [[package]]
 name = "http_req"
-version = "0.7.2"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1dab1fb99f5163b9b25805e4c191ea9425ae311442688bfe03c97e8a2ba66e9d"
+checksum = "9e6cd45a270dff33553602fd84beb02c89460ee32db638715f10d9060389fd6a"
 dependencies = [
  "native-tls",
  "unicase",
@@ -1375,9 +1375,8 @@ dependencies = [
 
 [[package]]
 name = "nj-build"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7d17ba7479c149a332a1b2eb185040fd89cc8ec0976cb82c852dd719c734bf1"
+version = "0.3.0"
+source = "git+https://github.com/infinyon/node-bindgen#40c7c1cbb65b63674913a99940c6cefe175a700f"
 dependencies = [
  "cc",
  "http_req",
@@ -1385,9 +1384,8 @@ dependencies = [
 
 [[package]]
 name = "nj-core"
-version = "5.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0e476586e781b7a34285d30198d5a513d45dd447339a6843d471709b75d5aa0"
+version = "6.0.0"
+source = "git+https://github.com/infinyon/node-bindgen#40c7c1cbb65b63674913a99940c6cefe175a700f"
 dependencies = [
  "async-trait",
  "ctor",
@@ -1404,8 +1402,7 @@ dependencies = [
 [[package]]
 name = "nj-derive"
 version = "3.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a639d3248104847b63569503e5bd0b99b114e295be49a0d96c6deb607557b025"
+source = "git+https://github.com/infinyon/node-bindgen#40c7c1cbb65b63674913a99940c6cefe175a700f"
 dependencies = [
  "Inflector",
  "proc-macro2",
@@ -1415,15 +1412,13 @@ dependencies = [
 
 [[package]]
 name = "nj-sys"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8de78f0e9f8a2a4f224273e282f9b61bfe8d598b22fe9d00a57b09e1f6b1cd51"
+version = "4.0.0"
+source = "git+https://github.com/infinyon/node-bindgen#40c7c1cbb65b63674913a99940c6cefe175a700f"
 
 [[package]]
 name = "node-bindgen"
-version = "5.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9126a2d2dadb8ce53ab57df4bddf5bd5395faf75b0f225187a01dbdea429bab3"
+version = "6.0.0"
+source = "git+https://github.com/infinyon/node-bindgen#40c7c1cbb65b63674913a99940c6cefe175a700f"
 dependencies = [
  "nj-build",
  "nj-core",
