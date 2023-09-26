@@ -33,7 +33,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Install fluvio
         run: |
-          curl -fsS https://packages.fluvio.io/v1/install.sh | bash
+          curl -fsS https://hub.infinyon.cloud/install/install.sh | bash
           echo "${HOME}/.fluvio/bin" >> $GITHUB_PATH
 
       - uses: actions-rs/install@v0.1
