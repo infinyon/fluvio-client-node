@@ -407,6 +407,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ctor"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f34ba9a9bcb8645379e9de8cb3ecfcf4d1c85ba66d90deb3259206fa5aa193b"
+dependencies = [
+ "quote",
+ "syn 2.0.15",
+]
+
+[[package]]
 name = "darling"
 version = "0.14.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -677,25 +687,6 @@ dependencies = [
 
 [[package]]
 name = "fluvio-future"
-version = "0.3.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e2d1fad8e412d44c516add2349a34f6d71d9279b108c8e012325ab17fcbf982"
-dependencies = [
- "async-io",
- "async-std",
- "cfg-if",
- "fluvio-wasm-timer",
- "futures-lite",
- "log",
- "pin-project",
- "thiserror",
- "tracing",
- "tracing-subscriber",
- "ws_stream_wasm",
-]
-
-[[package]]
-name = "fluvio-future"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5f2d572470f98b25383ffe78d9c3fba2b986d9891efd78808025397e54eb1ec"
@@ -738,6 +729,7 @@ dependencies = [
  "socket2 0.5.3",
  "thiserror",
  "tracing",
+ "tracing-subscriber",
  "ws_stream_wasm",
 ]
 
@@ -1088,9 +1080,9 @@ checksum = "fed44880c466736ef9a5c5b5facefb5ed0785676d0c02d612db14e54f0d84286"
 
 [[package]]
 name = "http_req"
-version = "0.7.2"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1dab1fb99f5163b9b25805e4c191ea9425ae311442688bfe03c97e8a2ba66e9d"
+checksum = "42ce34c74ec562d68f2c23a532c62c1332ff1d1b6147fd118bd1938e090137d0"
 dependencies = [
  "native-tls",
  "unicase",
@@ -1195,7 +1187,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0eb5160c60ba1e809707918ee329adb99d222888155835c6feedba19f6c3fd4"
 dependencies = [
- "ctor",
+ "ctor 0.1.26",
  "ghost",
  "inventory-impl",
 ]
@@ -1375,9 +1367,8 @@ dependencies = [
 
 [[package]]
 name = "nj-build"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7d17ba7479c149a332a1b2eb185040fd89cc8ec0976cb82c852dd719c734bf1"
+version = "0.3.0"
+source = "git+https://github.com/infinyon/node-bindgen.git?rev=309bc50489668ea3f79baa7fb1c94adc5bf1a50f#309bc50489668ea3f79baa7fb1c94adc5bf1a50f"
 dependencies = [
  "cc",
  "http_req",
@@ -1385,27 +1376,25 @@ dependencies = [
 
 [[package]]
 name = "nj-core"
-version = "5.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0e476586e781b7a34285d30198d5a513d45dd447339a6843d471709b75d5aa0"
+version = "6.0.0"
+source = "git+https://github.com/infinyon/node-bindgen.git?rev=309bc50489668ea3f79baa7fb1c94adc5bf1a50f#309bc50489668ea3f79baa7fb1c94adc5bf1a50f"
 dependencies = [
  "async-trait",
- "ctor",
- "fluvio-future 0.3.18",
+ "ctor 0.2.4",
+ "fluvio-future 0.6.0",
  "futures-lite",
  "inventory",
  "libc",
- "log",
  "nj-sys",
  "num-bigint",
  "pin-utils",
+ "tracing",
 ]
 
 [[package]]
 name = "nj-derive"
-version = "3.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a639d3248104847b63569503e5bd0b99b114e295be49a0d96c6deb607557b025"
+version = "3.4.2"
+source = "git+https://github.com/infinyon/node-bindgen.git?rev=309bc50489668ea3f79baa7fb1c94adc5bf1a50f#309bc50489668ea3f79baa7fb1c94adc5bf1a50f"
 dependencies = [
  "Inflector",
  "proc-macro2",
@@ -1415,15 +1404,13 @@ dependencies = [
 
 [[package]]
 name = "nj-sys"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8de78f0e9f8a2a4f224273e282f9b61bfe8d598b22fe9d00a57b09e1f6b1cd51"
+version = "4.0.0"
+source = "git+https://github.com/infinyon/node-bindgen.git?rev=309bc50489668ea3f79baa7fb1c94adc5bf1a50f#309bc50489668ea3f79baa7fb1c94adc5bf1a50f"
 
 [[package]]
 name = "node-bindgen"
-version = "5.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9126a2d2dadb8ce53ab57df4bddf5bd5395faf75b0f225187a01dbdea429bab3"
+version = "6.0.0"
+source = "git+https://github.com/infinyon/node-bindgen.git?rev=309bc50489668ea3f79baa7fb1c94adc5bf1a50f#309bc50489668ea3f79baa7fb1c94adc5bf1a50f"
 dependencies = [
  "nj-build",
  "nj-core",
@@ -2311,7 +2298,7 @@ version = "1.0.0-alpha.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2209b78d1249f7e6f3293657c9779fe31ced465df091bbd433a1cf88e916ec55"
 dependencies = [
- "ctor",
+ "ctor 0.1.26",
  "version_check",
 ]
 
