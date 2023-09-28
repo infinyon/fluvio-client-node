@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         rust: [stable]
-        node: ["18.13"]
+        node: ["18", "20"]
     steps:
       - uses: actions/checkout@v4
       - name: Install ${{ matrix.rust }}
@@ -38,7 +38,11 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Update the fluvio client to use the latest on the fluvio master branch.
         run: |
-          cargo add fluvio --git https://github.com/infinyon/fluvio --branch master
+          # work around cargo bug
+          #cargo add fluvio --git https://github.com/infinyon/fluvio --branch master
+          sed -i "s/fluvio = { features = .*/fluvio = { features = \[\"admin\"\], git = \"https:\/\/github.com\/infinyon\/fluvio.git\" }/g" Cargo.toml
+
+          cargo add fluvio-spu-schema --git https://github.com/infinyon/fluvio --branch master
           git diff Cargo.toml
 
       - name: cargo check
