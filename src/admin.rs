@@ -135,7 +135,7 @@ impl FluvioAdminJS {
     #[node_bindgen]
     async fn delete_topic(&mut self, topic: String) -> Result<String, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
-            client.delete::<TopicSpec, String>(topic.clone()).await?;
+            client.delete::<TopicSpec>(topic.clone()).await?;
             Ok(topic)
         } else {
             Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
@@ -201,7 +201,7 @@ impl FluvioAdminJS {
     #[node_bindgen]
     async fn delete_managed_spu(&mut self, name: String) -> Result<(), FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
-            client.delete::<SpuGroupSpec, _>(name).await?;
+            client.delete::<SpuGroupSpec>(name).await?;
             Ok(())
         } else {
             Err(FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_owned()))
