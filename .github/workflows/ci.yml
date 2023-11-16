@@ -5,11 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  merge_group:
   workflow_dispatch:
-  push:
-    branches:
-      - staging
-      - trying
   pull_request:
     branches: [master]
 
@@ -152,7 +149,7 @@ jobs:
   done:
     name: Done
     needs: [check_fmt, check_security, smoke_test, macos_ci]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    if: ${{ github.event_name == 'merge_group' }}
     runs-on: ubuntu-latest
     steps:
       - name: Done
