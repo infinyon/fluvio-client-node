@@ -31,7 +31,7 @@ jobs:
       - name: Check clippy
         run: make check-clippy
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       - name: Check prettier
@@ -60,7 +60,7 @@ jobs:
           version: latest
           use-tool-cache: true
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       - name: Install and Build
@@ -111,7 +111,7 @@ jobs:
           version: latest
           use-tool-cache: true
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       - name: Install and Build
