@@ -59,7 +59,7 @@ jobs:
           nj-cli build -o ./dist/${{matrix.target}} --release --target ${{matrix.target}}
 
       - name: "Upload Artifact - ${{matrix.os}} for ${{matrix.target}}"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.target}}
           path: ./dist/${{matrix.target}}
