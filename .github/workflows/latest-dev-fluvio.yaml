@@ -67,11 +67,12 @@ jobs:
 
       - name: Install fluvio
         run: |
-          curl -fsS https://hub.infinyon.cloud/install/install.sh | bash
+          curl -fsS https://hub.infinyon.cloud/install/install.sh?ctx=ci | bash
+          echo "${HOME}/.fvm/bin" >> $GITHUB_PATH
           echo "${HOME}/.fluvio/bin" >> $GITHUB_PATH
       - name: Update fluvio client to development and start the local cluster.
         run: |
-          fluvio update --develop
+          fvm install latest
           fluvio cluster start --rust-log debug --local
 
       - name: Sleep 10 to ensure the fluvio cluster is ready

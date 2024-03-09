@@ -14,12 +14,7 @@ Follow the instructions in the links above to install the development tools.
 ## Building and Testing
 
 ### Developing the Native Module
-
-Running `make build` will build the `./src/**/*.{ts,rs}` files, generating a `dist/` folder for the JavaScript files and a native module at the location `./dist/<platform>/index.node`.
-
-```
-make build
-```
+fluvio update --develop
 
 When developing, you need to set the environment variable, `FLUVIO_DEV` to a non zero value.
 
@@ -43,4 +38,6 @@ However, make sure you have your `FLUVIO_DEV` environment variable set before ru
 
 ### Publishing `@fluvio/client`
 
-Run the [Publish GitHub workflow](https://github.com/infinyon/fluvio-client-node/actions/workflows/publish.yml).
+Run the [Publish GitHub workflow](https://github.com/infinyon/fluvio-client-node/actions/workflows/publish.yml) by tagging
+the repository with the a version tag "vX.Y.Z".
+
