@@ -1,0 +1,10 @@
+[package]
+name = "server-logs-filter"
+group = "local"
+version = "0.1.0"
+apiVersion = "0.1.0"
+description = ""
+license = "Apache-2.0"
+visibility = "private"
+
+[[params]]

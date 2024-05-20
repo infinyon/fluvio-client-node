@@ -109,6 +109,7 @@ impl PartitionConsumerJS {
         offset: OffsetWrapper,
         cb: F,
     ) -> Result<()> {
+        #[allow(deprecated)]
         let mut stream = client.stream(offset.0).await?;
 
         debug!("Waiting for stream");
@@ -133,6 +134,7 @@ impl PartitionConsumerJS {
             .as_ref()
             .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
 
+        #[allow(deprecated)]
         let stream = client
             .stream(offset.0)
             .await
@@ -153,6 +155,7 @@ impl PartitionConsumerJS {
             .inner
             .as_ref()
             .ok_or_else(|| FluvioErrorJS::new(CLIENT_NOT_FOUND_ERROR_MSG.to_string()))?;
+        #[allow(deprecated)]
         let stream = client
             .stream_with_config(offset.0, config)
             .await
