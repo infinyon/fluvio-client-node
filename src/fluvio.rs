@@ -6,7 +6,7 @@ use crate::error::FluvioErrorJS;
 
 use tracing::debug;
 
-use fluvio::{Fluvio};
+use fluvio::Fluvio;
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::TryIntoJs;
@@ -65,6 +65,7 @@ impl FluvioJS {
         partition: u32,
     ) -> Result<PartitionConsumerJS, FluvioErrorJS> {
         if let Some(client) = &mut self.inner {
+            #[allow(deprecated)]
             Ok(PartitionConsumerJS::from(
                 client.partition_consumer(topic, partition).await?,
             ))
