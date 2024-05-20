@@ -19,14 +19,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         rust: [stable]
-        node: ["16", "18.13"]
+        node: ["18", "20"]
     steps:
       - uses: actions/checkout@v4
       - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
-          override: true
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
