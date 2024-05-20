@@ -370,7 +370,11 @@ impl JSValue<'_> for PartitionWrap {
             let id = must_property!("id", u32, js_obj);
             let replicas = must_property!("replicas", Vec<i32>, js_obj);
 
-            Ok(Self(PartitionMap { id, replicas }))
+            Ok(Self(PartitionMap {
+                id,
+                replicas,
+                ..Default::default()
+            }))
         } else {
             Err(NjError::Other("partition map must be json".to_owned()))
         }
