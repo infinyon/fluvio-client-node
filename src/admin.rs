@@ -229,16 +229,15 @@ impl TryIntoJs for ReplicaStatusWrapper {
 
 pub struct PartitionResolutionWrapper(PartitionResolution);
 
-impl ToString for PartitionResolutionWrapper {
-    fn to_string(&self) -> String {
+impl std::fmt::Display for PartitionResolutionWrapper {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let status = match self.0 {
             PartitionResolution::Offline => "Offline",
             PartitionResolution::Online => "Online",
             PartitionResolution::LeaderOffline => "LeaderOffline",
             PartitionResolution::ElectionLeaderFound => "ElectionLeaderFound",
         };
-
-        status.to_string()
+        f.write_str(status)
     }
 }
 
