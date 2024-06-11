@@ -676,14 +676,14 @@ dependencies = [
  "derive_builder",
  "dirs",
  "event-listener 3.1.0",
- "fluvio-compression 0.3.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-compression",
  "fluvio-future",
- "fluvio-protocol 0.10.15",
+ "fluvio-protocol",
  "fluvio-sc-schema",
- "fluvio-smartmodule 0.7.3 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-smartmodule",
  "fluvio-socket",
- "fluvio-spu-schema 0.14.7 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-spu-schema",
+ "fluvio-types",
  "futures-util",
  "once_cell",
  "pin-project",
@@ -706,20 +706,11 @@ dependencies = [
  "flate2",
  "fluvio",
  "fluvio-future",
- "fluvio-spu-schema 0.14.7 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
+ "fluvio-spu-schema",
  "node-bindgen",
  "serde",
  "serde_json",
  "tracing",
-]
-
-[[package]]
-name = "fluvio-compression"
-version = "0.3.2"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "serde",
- "thiserror",
 ]
 
 [[package]]
@@ -749,9 +740,9 @@ dependencies = [
  "derive_builder",
  "flate2",
  "fluvio-future",
- "fluvio-protocol 0.10.15",
+ "fluvio-protocol",
  "fluvio-stream-model",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-types",
  "flv-util",
  "humantime-serde",
  "lenient_semver",
@@ -793,25 +784,6 @@ dependencies = [
 
 [[package]]
 name = "fluvio-protocol"
-version = "0.10.13"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "bytes",
- "content_inspector",
- "crc32c",
- "eyre",
- "fluvio-compression 0.3.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "fluvio-protocol-derive 0.5.4 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "flv-util",
- "once_cell",
- "semver",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-protocol"
 version = "0.10.15"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.9#c93d7c33b0a4a48b30050a5faf5a4f4ee211aca1"
 dependencies = [
@@ -819,26 +791,15 @@ dependencies = [
  "content_inspector",
  "crc32c",
  "eyre",
- "fluvio-compression 0.3.2 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-compression",
  "fluvio-future",
- "fluvio-protocol-derive 0.5.4 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-protocol-derive",
+ "fluvio-types",
  "flv-util",
  "once_cell",
  "semver",
  "thiserror",
  "tokio-util",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-protocol-derive"
-version = "0.5.4"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 1.0.109",
  "tracing",
 ]
 
@@ -860,10 +821,10 @@ source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.9#c93d7c33b0a4a48
 dependencies = [
  "anyhow",
  "fluvio-controlplane-metadata",
- "fluvio-protocol 0.10.15",
+ "fluvio-protocol",
  "fluvio-socket",
  "fluvio-stream-model",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-types",
  "paste",
  "serde",
  "static_assertions",
@@ -874,35 +835,13 @@ dependencies = [
 [[package]]
 name = "fluvio-smartmodule"
 version = "0.7.3"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "eyre",
- "fluvio-protocol 0.10.13",
- "fluvio-smartmodule-derive 0.6.3 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-smartmodule"
-version = "0.7.3"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.9#c93d7c33b0a4a48b30050a5faf5a4f4ee211aca1"
 dependencies = [
  "eyre",
- "fluvio-protocol 0.10.15",
- "fluvio-smartmodule-derive 0.6.3 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-protocol",
+ "fluvio-smartmodule-derive",
  "thiserror",
  "tracing",
-]
-
-[[package]]
-name = "fluvio-smartmodule-derive"
-version = "0.6.3"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.37",
 ]
 
 [[package]]
@@ -928,7 +867,7 @@ dependencies = [
  "cfg-if",
  "event-listener 3.1.0",
  "fluvio-future",
- "fluvio-protocol 0.10.15",
+ "fluvio-protocol",
  "futures-util",
  "nix",
  "once_cell",
@@ -943,23 +882,6 @@ dependencies = [
 [[package]]
 name = "fluvio-spu-schema"
 version = "0.14.7"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "bytes",
- "derive_builder",
- "educe",
- "flate2",
- "fluvio-protocol 0.10.13",
- "fluvio-smartmodule 0.7.3 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.8)",
- "serde",
- "static_assertions",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-spu-schema"
-version = "0.14.7"
 source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.9#c93d7c33b0a4a48b30050a5faf5a4f4ee211aca1"
 dependencies = [
  "bytes",
@@ -967,9 +889,9 @@ dependencies = [
  "educe",
  "flate2",
  "fluvio-future",
- "fluvio-protocol 0.10.15",
- "fluvio-smartmodule 0.7.3 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
- "fluvio-types 0.4.6 (git+https://github.com/infinyon/fluvio.git?tag=v0.11.9)",
+ "fluvio-protocol",
+ "fluvio-smartmodule",
+ "fluvio-types",
  "serde",
  "static_assertions",
  "tracing",
@@ -985,17 +907,6 @@ dependencies = [
  "k8-types",
  "once_cell",
  "serde",
- "tracing",
-]
-
-[[package]]
-name = "fluvio-types"
-version = "0.4.6"
-source = "git+https://github.com/infinyon/fluvio.git?tag=v0.11.8#919aa365b25a6193efb55961d5e84dc2ee804100"
-dependencies = [
- "serde",
- "thiserror",
- "toml",
  "tracing",
 ]
 
