@@ -3,7 +3,7 @@ use crate::error::FluvioErrorJS;
 
 use tracing::debug;
 
-use fluvio::TopicProducer;
+use fluvio::TopicProducerPool;
 
 use node_bindgen::derive::node_bindgen;
 use node_bindgen::core::{NjError, JSValue};
@@ -26,11 +26,11 @@ impl TryIntoJs for TopicProducerJS {
 }
 
 pub struct TopicProducerJS {
-    inner: Option<TopicProducer>,
+    inner: Option<TopicProducerPool>,
 }
 
-impl From<TopicProducer> for TopicProducerJS {
-    fn from(inner: TopicProducer) -> Self {
+impl From<TopicProducerPool> for TopicProducerJS {
+    fn from(inner: TopicProducerPool) -> Self {
         Self { inner: Some(inner) }
     }
 }
@@ -42,7 +42,7 @@ impl TopicProducerJS {
         Self { inner: None }
     }
 
-    pub fn set_client(&mut self, client: TopicProducer) {
+    pub fn set_client(&mut self, client: TopicProducerPool) {
         self.inner.replace(client);
     }
 
