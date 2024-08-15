@@ -43,7 +43,6 @@ impl TopicProducerJS {
     }
 
     pub fn set_client(&mut self, client: TopicProducerPool) {
-
         self.inner.replace(client);
     }
 
