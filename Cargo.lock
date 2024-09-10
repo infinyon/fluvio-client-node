@@ -1716,9 +1716,9 @@ checksum = "0e5f893c198d616dd3a1483752962e94180419013169f578d112c7204ef554ad"
 
 [[package]]
 name = "node-bindgen"
-version = "6.0.2"
+version = "6.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1eadc0eb998e642380cae540549d532bf301f4cf62ff1121db54b1621a372b1"
+checksum = "3c28e6c3de89cac453f07b62949d1482e7aac07546497ea136dcc5eb295b7354"
 dependencies = [
  "nj-build",
  "nj-core",
