@@ -22,7 +22,7 @@ node-bindgen = "6.1"
 flate2 = "1.0"
 fluvio-future = { version = "0.7.0", features = ["tls", "task", "io"] }
 fluvio = { features = ["admin"], git = "https://github.com/infinyon/fluvio.git", tag = "v0.11.12" }
-fluvio-spu-schema = { git = "https://github.com/infinyon/fluvio.git", tag = "v0.11.11" }
+fluvio-spu-schema = { git = "https://github.com/infinyon/fluvio.git", tag = "v0.12.0" }
 
 [build-dependencies]
 node-bindgen = { version = "6.1", default-features = false, features = ["build"] }
