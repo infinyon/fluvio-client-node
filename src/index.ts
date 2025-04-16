@@ -75,6 +75,7 @@ export interface Options {
     id?: number
     offsetIndex?: number
     offsetFrom?: string
+    use_spu_local_address?: boolean
 }
 
 /**
