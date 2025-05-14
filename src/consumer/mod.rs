@@ -401,7 +401,7 @@ impl<'a> FetchablePartitionResponseWrapper {
         Some(self.0.as_ref()?.log_start_offset)
     }
     #[node_bindgen(getter)]
-    fn aborted(&'a self) -> Vec<AbortedTransactionWrapper> {
+    fn aborted(&'a self) -> Vec<AbortedTransactionWrapper<'a>> {
         let mut aborted_transactions: Vec<AbortedTransactionWrapper> = Vec::new();
 
         let inner = if let Some(inner) = self.0.as_ref() {
@@ -419,7 +419,7 @@ impl<'a> FetchablePartitionResponseWrapper {
     }
 
     #[node_bindgen(getter)]
-    fn records(&'a self) -> Option<RecordSetWrapper> {
+    fn records(&'a self) -> Option<RecordSetWrapper<'a>> {
         Some(RecordSetWrapper(&self.0.as_ref()?.records))
     }
 
