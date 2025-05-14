@@ -236,6 +236,7 @@ impl std::fmt::Display for PartitionResolutionWrapper {
             PartitionResolution::Online => "Online",
             PartitionResolution::LeaderOffline => "LeaderOffline",
             PartitionResolution::ElectionLeaderFound => "ElectionLeaderFound",
+            PartitionResolution::OutOfStorage => "OutOfStorage",
         };
         f.write_str(status)
     }
