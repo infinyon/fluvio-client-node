@@ -5,10 +5,18 @@ use crate::error::FluvioErrorJS;
 use crate::fluvio::FluvioJS;
 
 #[node_bindgen()]
-async fn connect(host_addr: Option<String>) -> Result<FluvioJS, FluvioErrorJS> {
+async fn connect(
+    host_addr: Option<String>,
+    use_spu_local_address: Option<bool>,
+) -> Result<FluvioJS, FluvioErrorJS> {
     match host_addr {
         Some(host) => {
-            let config = FluvioConfig::new(host);
+            let mut config = FluvioConfig::new(host);
+
+            if let Some(use_spu_local_address) = use_spu_local_address {
+                config.use_spu_local_address = use_spu_local_address;
+            }
+
             let socket = Fluvio::connect_with_config(&config).await?;
             Ok(FluvioJS::from(socket))
         }
