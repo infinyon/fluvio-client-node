@@ -75,6 +75,38 @@ export interface Options {
     id?: number
     offsetIndex?: number
     offsetFrom?: string
+    use_spu_local_address?: boolean
+}
+
+/**
+ * Configuration options for a topic producer
+ */
+export interface TopicProducerConfig {
+    /**
+     * Maximum size of a batch before it's sent automatically (in bytes)
+     */
+    batchSize?: number
+    /**
+     * Maximum time in milliseconds to wait before sending a batch, even if not full
+     */
+    timeoutMs?: number
+    /**
+     * Maximum number of records to include in a batch
+     */
+    batchQueueSize?: number
+    /**
+     * Time in milliseconds to wait for additional records before sending a batch
+     */
+    lingerMs?: number
+    /**
+     * Compression algorithm to use for batches
+     * Supported values: "none", "gzip", "snappy", "lz4"
+     */
+    compression?: 'none' | 'gzip' | 'snappy' | 'lz4'
+    /**
+     * Maximum size of a single request in bytes
+     */
+    maxRequestSize?: number
 }
 
 /**
@@ -525,6 +557,10 @@ export interface FluvioClient {
     connect(options?: Partial<Options>): Promise<FluvioClient>
     // connectWithConfig(config: any): Promise<this>
     topicProducer(topic: string): Promise<TopicProducer>
+    topicProducerWithConfig(
+        topic: string,
+        config: TopicProducerConfig
+    ): Promise<TopicProducer>
     partitionConsumer(
         topic: string,
         partition: number
@@ -676,6 +712,24 @@ export default class Fluvio implements FluvioClient {
         const inner = await this.client?.topicProducer(topic)
         if (!inner) {
             throw new Error('Failed to create topic producer')
+        }
+        return TopicProducer.create(inner)
+    }
+
+    /**
+     * Creates a new TopicProducer for the given topic name with configuration
+     *
+     * @param {string} topic Name of the topic to create a producer for
+     * @param {TopicProducerConfig} config Configuration for the topic producer
+     */
+    async topicProducerWithConfig(
+        topic: string,
+        config: TopicProducerConfig
+    ): Promise<TopicProducer> {
+        this.checkConnection()
+        const inner = await this.client?.topicProducerWithConfig(topic, config)
+        if (!inner) {
+            throw new Error('Failed to create topic producer with config')
         }
         return TopicProducer.create(inner)
     }
