@@ -84,7 +84,7 @@ jobs:
         with:
           cluster-name: "fluvio"
       - name: Install Fluvio Local Cluster
-        uses: infinyon/fluvio@a4e8144d3d1d9c6faad4b9cfdcb8c8111ef248d3 # use until #4651 gets merged 
+        uses: infinyon/fluvio@473421822e9853c6b6cb9b2dd961c43c967aaa48 # use until #4651 gets merged 
         with:
           cluster-type: local
           version: "stable"
